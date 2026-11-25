@@ -7,7 +7,7 @@
     'برايت للخيوط — متجر الجملة والقطاعي': 'Bright Threads — wholesale & retail store',
     'طلباتي': 'My orders', 'دخول': 'Sign in', 'خروج': 'Sign out', 'لوحة التحكم': 'Dashboard', 'السلة': 'Cart',
     'خيوط برايت': 'Bright Threads', 'برايت شركة مصرية رائدة تقدّم مجموعات متميّزة من خيوط الحياكة اليدوية والخيوط، ونفخر بحصولنا على شهادة الأيزو (ISO).': 'Bright is a premier Egyptian company that offers various outstanding collections of hand knitting yarns & threads. We are proud to be ISO certified.', 'واتساب': 'WhatsApp', 'انستجرام': 'Instagram', 'فيسبوك': 'Facebook',
-    'فودافون كاش': 'Vodafone Cash', 'فودافون كاش (تحوّل ثم تؤكد التحويل)': 'Vodafone Cash (transfer, then confirm the transfer)', 'الدفع عند الاستلام، أو بفودافون كاش، أو بإنستا باي.': 'Pay on delivery, by Vodafone Cash, or by Instapay.',
+    'فودافون كاش': 'Vodafone Cash', 'فودافون كاش (تحوّل ثم تؤكد التحويل)': 'Vodafone Cash (transfer, then confirm the transfer)', 'الدفع بفودافون كاش أو بإنستا باي.': 'Pay by Vodafone Cash or Instapay.', 'الدفع عند الاستلام، أو بفودافون كاش، أو بإنستا باي.': 'Pay on delivery, by Vodafone Cash, or by Instapay.',
     'الدفع عبر رابط إنستا باي': 'Pay with InstaPay link',
     'نتائج الألوان': 'Color results', 'نوصّل لكل المحافظات': 'Delivery to all governorates', 'نتواصل معك لتأكيد الطلب': 'We contact you to confirm your order', 'بيانات التوصيل': 'Delivery details',
     'المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.': 'Total excludes shipping. The shipping company will contact you with the cost.',

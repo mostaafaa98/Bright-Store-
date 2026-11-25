@@ -275,7 +275,8 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   const lines = (Array.isArray(req.body.items) ? req.body.items.slice(0, 200) : []).map(i => ({ id: parseInt(i.id, 10), color: parseInt(i.color, 10) || 0, qty: parseInt(i.qty, 10) }))
     .filter(l => l.id > 0 && l.qty > 0 && l.qty <= 100000);
   const info = { name: str(req.body.name, 80), phone: phoneOf(req.body.phone), governorate: str(req.body.governorate, 40), area: str(req.body.area, 80), address: str(req.body.address, 300), note: str(req.body.note, 300) };
-  const method = ['cod', 'wallet', 'instapay'].includes(req.body.payment) ? req.body.payment : 'cod';
+  const method = ['wallet', 'instapay'].includes(req.body.payment) ? req.body.payment : '';
+  if (!method) return fail(res, 400, 'اختر طريقة الدفع: فودافون كاش أو إنستا باي');
   if (!lines.length || !info.name || !/^\+?\d{10,15}$/.test(info.phone) || !info.address) return fail(res, 400, 'أكمل بيانات الطلب (الاسم، رقم موبايل صحيح، العنوان)');
   let r; try { r = createOrder(req.user ? req.user.id : GUEST, lines, info, method); } catch (e) { return fail(res, 409, e.message); }
   const items = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=?').all(r.id).map(i => `• ${i.name}${i.color ? ' [' + i.color + ']' : ''} × ${i.qty}`).join('\n');

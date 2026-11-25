@@ -48,7 +48,7 @@ addCol('orders', 'area', "TEXT NOT NULL DEFAULT ''");
 addCol('orders', 'shipping_cents', 'INTEGER NOT NULL DEFAULT 0');
 addCol('orders', 'token', "TEXT NOT NULL DEFAULT ''");
 
-const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '01030869840', wallet_name: '',
+const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '01030869840', wallet_name: 'Mustafa Mahmoud Hanafy',
   instapay_number: '01030869840', instapay_handle: 'mustafatelda98@instapay', instapay_qr: '/img/instapay-qr.jpg', instapay_link: 'https://ipn.eg/S/mustafatelda98/instapay/8g0p46', shipping_note: 'الشحن يُحسب حسب المحافظة قبل تأكيد الطلب.',
   whatsapp_number: '201034497729', telegram_token: '', telegram_chat: '', free_shipping_over: '0' };
 for (const [k, v] of Object.entries(defaults)) db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)').run(k, v);
@@ -168,3 +168,7 @@ if (!db.prepare('SELECT 1 FROM zones LIMIT 1').get()) {
   Z.forEach(([fee, ...names]) => names.forEach(n => ins.run(n, fee * 100, i++)));
 }
 module.exports = require('./wal')(db);
+
+flag('mig_wallet_name', () => {
+  db.prepare("UPDATE settings SET value='Mustafa Mahmoud Hanafy' WHERE key='wallet_name' AND (value IS NULL OR value='')").run();
+});
