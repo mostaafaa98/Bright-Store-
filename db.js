@@ -50,7 +50,7 @@ addCol('orders', 'token', "TEXT NOT NULL DEFAULT ''");
 
 const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '', wallet_name: '',
   instapay_number: '', instapay_handle: '', instapay_qr: '', shipping_note: 'الشحن يُحسب حسب المحافظة قبل تأكيد الطلب.',
-  whatsapp_number: '', telegram_token: '', telegram_chat: '', free_shipping_over: '0' };
+  whatsapp_number: '201034497729', telegram_token: '', telegram_chat: '', free_shipping_over: '0' };
 for (const [k, v] of Object.entries(defaults)) db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)').run(k, v);
 
 const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;

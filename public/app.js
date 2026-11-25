@@ -102,6 +102,15 @@
   }
 
   // ---------- المتجر ----------
+  var WA = 'https://wa.me/201034497729', IG = 'https://www.instagram.com/bright_for_threads__yarns', FB = 'https://www.facebook.com/share/19xHuZcGUj/';
+  var SI = {
+    wa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-2.9.9.9-2.8-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.700 6.700 0 0 1-3.300-2.900c-.2-.4.2-.4.700-1.300.1-.2 0-.3 0-.4l-.8-1.800c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.200 5.200 5.200 0 0 0 1.100 2.800 11.900 11.900 0 0 0 4.600 4c1.700.7 2.400.8 3.200.7a2.700 2.700 0 0 0 1.800-1.300 2.200 2.200 0 0 0 .2-1.300c-.1-.1-.3-.2-.5-.3z"/></svg>',
+    ig: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/></svg>',
+    fb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.500 21v-7.500h2.600l.4-3h-3V8.600c0-.9.3-1.500 1.600-1.500h1.500V4.400A20 20 0 0 0 14.400 4.300c-2.300 0-3.900 1.400-3.900 4v2.200H8v3h2.500V21z"/></svg>'
+  };
+  function socials() {
+    return '<div class="soc"><a class="sw" target="_blank" rel="noopener" href="' + WA + '">' + SI.wa + '<span>واتساب <bdi dir="ltr">01034497729</bdi></span></a><a class="si" target="_blank" rel="noopener" href="' + IG + '">' + SI.ig + '<span>انستجرام</span></a><a class="si" target="_blank" rel="noopener" href="' + FB + '">' + SI.fb + '<span>فيسبوك</span></a></div>';
+  }
   function cardCols(p) {
     if (!p.has_colors) return [];
     var cs = p.color_ids.map(color).filter(function (c) { return c && c.img; });
@@ -125,7 +134,7 @@
     if (cres.length) cres.sort(function (x, y) { return (x.code.toLowerCase() === q ? 0 : x.code.toLowerCase().indexOf(q) === 0 ? 1 : 2) - (y.code.toLowerCase() === q ? 0 : y.code.toLowerCase().indexOf(q) === 0 ? 1 : 2); });
     if (!filtering) {
       var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
-      h += '<section class="hero"><div class="hero-t"><p class="eyebrow">Bright for Threads &amp; Yarns</p><h1>خيوط قطن مصري، بمئات الألوان</h1><p class="lead">كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.</p><div class="ctas"><button class="lg" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
+      h += '<section class="hero"><div class="hero-t"><h1>خيوط برايت</h1><p class="lead">قطن مصري بمئات الألوان، بالقطعة أو بالجملة.</p>' + socials() + '<div class="ctas"><button class="g" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
         '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>نوصّل لكل المحافظات</b><span>نتواصل معك لتأكيد الطلب</span></p></div></section>';
     }
     if (S.colors.length && S.colors.length < 80) {

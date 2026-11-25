@@ -6,6 +6,7 @@
     'ابحث عن منتج أو كود لون: W001، كروشيه…': 'Search a product or color code: W001, crochet…',
     'برايت للخيوط — متجر الجملة والقطاعي': 'Bright Threads — wholesale & retail store',
     'طلباتي': 'My orders', 'دخول': 'Sign in', 'خروج': 'Sign out', 'لوحة التحكم': 'Dashboard', 'السلة': 'Cart',
+    'خيوط برايت': 'Bright Threads', 'قطن مصري بمئات الألوان، بالقطعة أو بالجملة.': 'Egyptian cotton in hundreds of colors, by the piece or wholesale.', 'واتساب': 'WhatsApp', 'انستجرام': 'Instagram', 'فيسبوك': 'Facebook',
     'نتائج الألوان': 'Color results', 'نوصّل لكل المحافظات': 'Delivery to all governorates', 'نتواصل معك لتأكيد الطلب': 'We contact you to confirm your order', 'بيانات التوصيل': 'Delivery details',
     'المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.': 'Total excludes shipping. The shipping company will contact you with the cost.',
     'خيوط قطن مصري، بمئات الألوان': 'Egyptian cotton thread, in hundreds of colors',
