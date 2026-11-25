@@ -8,7 +8,7 @@
   var SPECS = [['spec_weight', 'الوزن'], ['spec_count', 'عدد البكر / القطع'], ['spec_length', 'الطول'], ['spec_material', 'الخامة'], ['spec_size', 'المقاس / الإبر المناسبة'], ['spec_usage', 'الاستخدام']];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function egp(c) { var v = c / 100; return (v % 1 ? v.toFixed(2) : v).toLocaleString('ar-EG') + ' ج.م'; }
+  function egp(c) { var v = c / 100; var en = document.documentElement.lang === 'en'; return (v % 1 ? v.toFixed(2) : v).toLocaleString(en ? 'en-US' : 'ar-EG') + (en ? ' EGP' : ' ج.م'); }
   function toast(t) { var e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(function () { e.hidden = true; }, 2400); }
   function api(path, opt) {
     opt = opt || {}; var h = { 'Content-Type': 'application/json' }; if (S.token) h.Authorization = 'Bearer ' + S.token;
@@ -24,6 +24,11 @@
   }
   function qs(o) { return Object.keys(o).filter(function (k) { return o[k]; }).map(function (k) { return k + '=' + encodeURIComponent(o[k]); }).join('&'); }
   function prod(id) { return S.products.filter(function (p) { return p.id === Number(id); })[0]; }
+  function wall() {
+    var cs = S.colors.filter(function (c) { return c.t; }), out = [], step = Math.max(1, Math.floor(cs.length / 15));
+    for (var i = 0; i < cs.length && out.length < 15; i += step) out.push(cs[i]);
+    return out.length ? '<div class="wall" aria-hidden="true">' + out.map(function (c) { return '<i style="' + esc(cbg(c)) + '"></i>'; }).join('') + '</div>' : '';
+  }
   function cl(c) { return c ? (c.name ? c.code + ' - ' + c.name : c.code) : ''; }
   function cbg(c) { return c ? 'background:' + c.hex + (c.t ? ' url(' + c.t + ') center/cover' : '') : ''; }
   function color(id) { return S.colors.filter(function (c) { return c.id === Number(id); })[0]; }
@@ -110,7 +115,7 @@
     var filtering = q || S.cat || S.colorF, h = '', c = S.cfg;
     if (!filtering) {
       var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
-      h += '<section class="hero"><div><h1>خيوط قطن مصري، بمئات الألوان</h1><p>كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.</p><div class="ctas"><button class="lg" data-act="goto" data-v="products">تصفّح المنتجات</button><button class="g lg" data-act="goto" data-v="colors">تسوّق بحسب اللون</button></div></div><div class="mos">' + ims.map(function (u) { return '<div style="' + bg(u) + '"></div>'; }).join('') + '</div></section>' +
+      h += '<section class="hero"><div class="hero-t"><p class="eyebrow">Bright for Threads &amp; Yarns</p><h1>خيوط قطن مصري، بمئات الألوان</h1><p class="lead">كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.</p><div class="ctas"><button class="lg" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
         '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>شحن لكل المحافظات</b><span>التكلفة تظهر قبل التأكيد</span></p></div></section>';
     }
     if (S.colors.length && S.colors.length < 80) {
@@ -130,14 +135,15 @@
     var el = $('#modal'); el.hidden = false;
     var specs = SPECS.filter(function (s) { return p[s[0]]; }).map(function (s) { return '<tr><td>' + s[1] + '</td><td>' + esc(p[s[0]]) + '</td></tr>'; }).join('');
     el.innerHTML = '<div class="sheet"><div class="sh-head"><div><div class="mut">' + esc(p.category) + '</div><h2 style="margin:0">' + esc(p.name) + '</h2><div class="mut" dir="ltr" style="text-align:right">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close" aria-label="إغلاق">✕</button></div>' +
-      '<div class="sh-body"><div><div class="img" id="gm" style="' + bg(p.images[0]) + ';border:1px solid var(--line);border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
+      '<div class="sh-body"><div><div class="img zoomable" id="gm" data-act="zoomimg" title="تكبير" style="' + bg(p.images[0]) + ';border:1px solid var(--line);border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
       '<div><p class="mut" style="font-size:14px;margin-top:0">' + esc(p.description) + '</p><div id="tt"></div>' + (specs ? '<table class="spec">' + specs + '</table>' : '') +
-      (p.has_colors ? (p.color_ids.length ? '<label for="cq">اختر الألوان (اضغط اللون لإضافة قطعة)</label><input id="cq" placeholder="ابحث باسم اللون أو رقمه…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '</div></div><div id="ms"></div></div>';
+      (p.has_colors ? (p.color_ids.length ? '<label for="cq">اختر الألوان (اضغط على اللون لتكبير الصورة وإضافته)</label><input id="cq" placeholder="ابحث باسم اللون أو رقمه…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '</div></div><div id="ms"></div></div>';
     mColors(); mSel();
   }
   function mColors() {
     var sw = $('#sw'); if (!sw) return; var q = M.q.toLowerCase();
-    sw.innerHTML = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }).map(function (c) {
+    var vis = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }); M.vis = vis.map(function (c) { return c.id; });
+    sw.innerHTML = vis.map(function (c) {
       var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + '" data-act="pick" data-id="' + c.id + '">' + (n ? '<em>' + n + '</em>' : '') + '<i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
@@ -323,6 +329,55 @@
   }
   function reAdmin() { if (S.A.tab === 'products') aProducts($('#abody')); }
 
+
+  // ---------- Lightbox ----------
+  var Z = { items: [], i: 0 };
+  function lbEl() {
+    var el = document.getElementById('lb');
+    if (!el) {
+      el = document.createElement('div'); el.id = 'lb'; el.className = 'lb'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+      el.innerHTML = '<button class="lbx" data-act="lbclose" aria-label="إغلاق">✕</button><button class="lbn lbp" data-act="lbprev" aria-label="السابق">‹</button><button class="lbn lbq" data-act="lbnext" aria-label="التالي">›</button><div class="lbs" id="lbs"><img id="lbimg" alt="" data-act="lbz"></div><div class="lbf" id="lbf"></div>';
+      document.body.appendChild(el);
+      var x0 = null; el.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+      el.addEventListener('touchend', function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 60 && !$('#lbs').classList.contains('z')) lbGo(dx < 0 ? 1 : -1); }, { passive: true });
+    }
+    return el;
+  }
+  function lbOpen(items, i) { Z.items = items; Z.i = i; lbEl().hidden = false; document.body.classList.add('noscroll'); lbShow(); var b = document.querySelector('#lb .lbx'); if (b) b.focus(); }
+  function lbClose() { var el = document.getElementById('lb'); if (el) el.hidden = true; document.body.classList.remove('noscroll'); }
+  function lbGo(d) { if (!Z.items.length) return; Z.i = (Z.i + d + Z.items.length) % Z.items.length; $('#lbs').classList.remove('z'); lbShow(); }
+  function lbShow() {
+    var it = Z.items[Z.i]; if (!it) return;
+    var im = $('#lbimg'); if (im.getAttribute('src') !== it.src) im.src = it.src; im.alt = it.title || '';
+    var multi = Z.items.length > 1; document.querySelectorAll('#lb .lbn').forEach(function (b) { b.hidden = !multi; });
+    var h = '<div class="lbt"><b>' + esc(it.title || '') + '</b><span class="mut">' + (Z.i + 1) + ' / ' + Z.items.length + '</span></div>';
+    if (it.id) { var n = (M.sel[it.id] || 0); h += '<div class="lba"><span class="step"><button class="g sm" data-act="lbdec" data-id="' + it.id + '" aria-label="إنقاص">−</button><b class="lbq">' + n + '</b><button class="sm" data-act="lbinc" data-id="' + it.id + '" aria-label="زيادة">+</button></span></div>'; }
+    $('#lbf').innerHTML = h;
+  }
+  function zoomColor(id) {
+    var ids = (M.vis && M.vis.indexOf(Number(id)) > -1) ? M.vis : [Number(id)];
+    var items = ids.map(function (cid) { var c = color(cid); return { src: c && c.img || '', title: cl(c), id: cid }; }).filter(function (x) { return x.src; });
+    var i = items.map(function (x) { return x.id; }).indexOf(Number(id));
+    if (i < 0) { setSel(id, (M.sel[id] || 0) + 1); return; }
+    lbOpen(items, i);
+  }
+  function zoomProduct() {
+    var items = M.p.images.map(function (u) { return { src: u, title: M.p.name }; }); if (!items.length) return;
+    var cur = ($('#gm').style.backgroundImage || '').replace(/^url\(["']?|["']?\)$/g, ''), i = 0;
+    items.forEach(function (x, k) { if (cur.indexOf(x.src) > -1 && x.src) i = k; });
+    lbOpen(items, i);
+  }
+  document.addEventListener('keydown', function (e) {
+    var el = document.getElementById('lb'); if (!el || el.hidden) return;
+    if (e.key === 'Escape') { lbClose(); e.stopPropagation(); } else if (e.key === 'ArrowLeft') lbGo(document.documentElement.dir === 'rtl' ? 1 : -1); else if (e.key === 'ArrowRight') lbGo(document.documentElement.dir === 'rtl' ? -1 : 1);
+  }, true);
+  document.addEventListener('click', function (e) { if (e.target && e.target.id === 'lb') lbClose(); });
+  // ---------- Theme / language ----------
+  function setTheme(t) { document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem('theme', t); } catch (x) {} var m = document.querySelector('meta[name=theme-color]'); if (m) m.content = t === 'dark' ? '#12141b' : '#faf8f5'; }
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#theme')) setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    else if (e.target.closest('#lang')) { try { localStorage.setItem('lang', document.documentElement.lang === 'en' ? 'ar' : 'en'); } catch (x) {} location.reload(); }
+  });
   // ---------- Events ----------
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-act]'); if (!t || t.tagName === 'INPUT') return;
@@ -336,7 +391,14 @@
     else if (a === 'open') openProduct(id);
     else if (a === 'close') $('#modal').hidden = true;
     else if (a === 'gal') { $('#gm').style.backgroundImage = "url('" + M.p.images[t.dataset.i] + "')"; document.querySelectorAll('.gal .th').forEach(function (x) { x.classList.toggle('on', x === t); }); }
-    else if (a === 'pick') setSel(id, (M.sel[id] || 0) + 1);
+    else if (a === 'pick') zoomColor(id);
+    else if (a === 'zoomimg') zoomProduct();
+    else if (a === 'lbclose') lbClose();
+    else if (a === 'lbprev') lbGo(-1);
+    else if (a === 'lbnext') lbGo(1);
+    else if (a === 'lbz') $('#lbs').classList.toggle('z');
+    else if (a === 'lbinc') { setSel(id, (M.sel[id] || 0) + 1); lbShow(); }
+    else if (a === 'lbdec') { setSel(id, (M.sel[id] || 0) - 1); lbShow(); }
     else if (a === 'minc') setSel(k, (M.sel[k] || 0) + 1);
     else if (a === 'mdec') setSel(k, (M.sel[k] || 0) - 1);
     else if (a === 'addcart') {
@@ -412,13 +474,12 @@
   window.addEventListener('hashchange', route);
 
   function footer() {
-    var c = S.cfg; $('#bar').textContent = 'الشحن لكل المحافظات، ويُطبَّق سعر الجملة تلقائياً من ' + c.wholeMin + ' وحدة من كل منتج.';
-    $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع عند الاستلام، أو بمحفظة إلكترونية، أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: ' + esc(c.whatsapp) + '</a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع عند الاستلام، أو بمحفظة إلكترونية، أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: ' + esc(c.whatsapp) + '</a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
     api('/config').then(function (c) { S.cfg = c; $('#shopname').textContent = c.shop; document.title = c.shop + ' — متجر الجملة والقطاعي'; footer(); if (c.whatsapp) { var w = $('#wa'); w.href = 'https://wa.me/' + c.whatsapp; w.innerHTML = ic('chat') + ' واتساب'; w.hidden = false; } }),
-    api('/products').then(function (p) { S.products = p; }), api('/colors').then(function (c) { S.colors = c; }),
+    api('/products').then(function (p) { S.products = p; window.BR = { products: p }; }), api('/colors').then(function (c) { S.colors = c; }),
     S.token ? api('/me').then(function (r) { S.user = r.user; }).catch(function () {}) : 0
   ]).then(function () { nav(); route(); }).catch(function (e) { app.textContent = 'تعذر تحميل المتجر: ' + e.message; });
 })();
