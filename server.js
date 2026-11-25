@@ -78,7 +78,17 @@ app.get('/api/config', (req, res) => {
     wallet: { number: s.wallet_number, name: s.wallet_name }, instapay: { number: s.instapay_number, handle: s.instapay_handle, qr: s.instapay_qr } });
 });
 app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
-app.get('/api/colors', (req, res) => res.json(db.prepare('SELECT id,code,name,hex FROM colors WHERE active=1 ORDER BY CAST(code AS INTEGER),code').all()));
+app.get('/api/colors', (req, res) => {
+  const rows = db.prepare('SELECT id,code,line,name,hex,(thumb IS NOT NULL) AS has_img FROM colors WHERE active=1').all()
+    .sort((a, b) => a.line.localeCompare(b.line) || a.code.localeCompare(b.code, 'en', { numeric: true }));
+  res.json(rows.map(({ has_img, ...c }) => has_img ? { ...c, t: '/api/color-img/' + c.id + '?t=1', img: '/api/color-img/' + c.id } : c));
+});
+app.get('/api/color-img/:id', (req, res) => {
+  const c = db.prepare('SELECT image,thumb FROM colors WHERE id=?').get(Number(req.params.id));
+  const data = c && (req.query.t ? c.thumb || c.image : c.image);
+  if (!data) return res.sendStatus(404);
+  res.set({ 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=604800' }).send(data);
+});
 app.get('/api/img/:id', (req, res) => {
   const i = db.prepare('SELECT mime,data FROM product_images WHERE id=?').get(Number(req.params.id));
   if (!i) return res.sendStatus(404);
@@ -173,8 +183,8 @@ app.delete('/api/admin/images/:id', auth, admin, (req, res) => { db.prepare('DEL
 
 // ---------- Admin: colors / settings / zones / stats / audit / backup ----------
 app.post('/api/admin/colors/bulk', auth, admin, wrap((req, res) => {
-  const up = db.prepare('INSERT INTO colors(code,name,hex,active) VALUES(?,?,?,1) ON CONFLICT(code) DO UPDATE SET name=excluded.name,hex=excluded.hex,active=1');
-  const link = db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) SELECT p.id,c.id FROM products p, colors c WHERE p.has_colors=1 AND c.code=?');
+  const up = db.prepare('INSERT INTO colors(code,line,name,hex,active) VALUES(?,\'\',?,?,1) ON CONFLICT(line,code) DO UPDATE SET name=excluded.name,hex=excluded.hex,active=1');
+  const link = db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) SELECT p.id,c.id FROM products p, colors c WHERE p.has_colors=1 AND c.code=? AND c.line=\'\'');
   let n = 0;
   db.transaction(() => {
     for (const line of str(req.body.text, 60000).split('\n')) {
@@ -231,7 +241,7 @@ const createOrder = db.transaction((uid, lines, info, method) => {
     if (p.has_colors) {
       const c = db.prepare('SELECT c.* FROM colors c JOIN product_colors pc ON pc.color_id=c.id WHERE c.id=? AND pc.product_id=? AND c.active=1').get(l.color, p.id);
       if (!c) throw new Error('اللون غير متاح لهذا المنتج: ' + p.name);
-      color = `${c.code} - ${c.name}`;
+      color = c.name ? `${c.code} - ${c.name}` : c.code;
     }
     const g = groups.get(p.id) || { p, q: 0, items: [] };
     g.q += l.qty; g.items.push([color, l.qty]); groups.set(p.id, g);

@@ -24,6 +24,8 @@
   }
   function qs(o) { return Object.keys(o).filter(function (k) { return o[k]; }).map(function (k) { return k + '=' + encodeURIComponent(o[k]); }).join('&'); }
   function prod(id) { return S.products.filter(function (p) { return p.id === Number(id); })[0]; }
+  function cl(c) { return c ? (c.name ? c.code + ' - ' + c.name : c.code) : ''; }
+  function cbg(c) { return c ? 'background:' + c.hex + (c.t ? ' url(' + c.t + ') center/cover' : '') : ''; }
   function color(id) { return S.colors.filter(function (c) { return c.id === Number(id); })[0]; }
   function unitPrice(p, q) { return q >= S.cfg.wholeMin ? p.p_whole : q >= S.cfg.halfMin ? p.p_half : p.p_retail; }
   function saveCart() { localStorage.setItem('cart', JSON.stringify(S.cart)); nav(); }
@@ -111,10 +113,10 @@
       h += '<section class="hero"><div><h1>خيوط قطن مصري، بمئات الألوان</h1><p>كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.</p><div class="ctas"><button class="lg" data-act="goto" data-v="products">تصفّح المنتجات</button><button class="g lg" data-act="goto" data-v="colors">تسوّق بحسب اللون</button></div></div><div class="mos">' + ims.map(function (u) { return '<div style="' + bg(u) + '"></div>'; }).join('') + '</div></section>' +
         '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>شحن لكل المحافظات</b><span>التكلفة تظهر قبل التأكيد</span></p></div></section>';
     }
-    if (S.colors.length) {
+    if (S.colors.length && S.colors.length < 80) {
       var cn = S.colorF && color(S.colorF);
-      h += '<section id="colors"><div class="sec"><h2>تسوّق بحسب اللون</h2><span class="mut">' + (cn ? '' : 'اختر لوناً لتعرف أي المنتجات متوفرة به') + '</span>' + (cn ? '<span class="fchip">' + esc(cn.code + ' - ' + cn.name) + '<button data-act="clear" aria-label="إلغاء فلتر اللون">إلغاء</button></span>' : '') + '</div><div class="spools">' +
-        S.colors.map(function (k) { return '<button class="spool' + (S.colorF === k.id ? ' on' : '') + '" style="--c:' + esc(k.hex) + '" data-act="cfilter" data-id="' + k.id + '" title="' + esc(k.code + ' - ' + k.name) + '" aria-label="' + esc(k.code + ' - ' + k.name) + '"></button>'; }).join('') + '</div></section>';
+      h += '<section id="colors"><div class="sec"><h2>تسوّق بحسب اللون</h2><span class="mut">' + (cn ? '' : 'اختر لوناً لتعرف أي المنتجات متوفرة به') + '</span>' + (cn ? '<span class="fchip">' + esc(cl(cn)) + '<button data-act="clear" aria-label="إلغاء فلتر اللون">إلغاء</button></span>' : '') + '</div><div class="spools">' +
+        S.colors.map(function (k) { return '<button class="spool' + (S.colorF === k.id ? ' on' : '') + '" style="--c:' + esc(k.hex) + '" data-act="cfilter" data-id="' + k.id + '" title="' + esc(cl(k)) + '" aria-label="' + esc(cl(k)) + '"></button>'; }).join('') + '</div></section>';
     }
     h += '<section id="products"><div class="sec"><h2>المنتجات</h2><span class="mut">' + list.length + ' منتج</span></div><div class="tiles">' +
       '<button class="tile' + (!S.cat ? ' on' : '') + '" data-act="tile" data-v=""><b>الكل</b></button>' + cats.map(function (k) { return '<button class="tile' + (S.cat === k ? ' on' : '') + '" data-act="tile" data-v="' + esc(k) + '"><i style="' + bg(cimg[k]) + '"></i><span>' + esc(k) + '<small>' + count[k] + ' منتج</small></span></button>'; }).join('') + '</div><div class="grid" style="margin-top:14px">' +
@@ -136,13 +138,13 @@
   function mColors() {
     var sw = $('#sw'); if (!sw) return; var q = M.q.toLowerCase();
     sw.innerHTML = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }).map(function (c) {
-      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + '" data-act="pick" data-id="' + c.id + '">' + (n ? '<em>' + n + '</em>' : '') + '<i style="background:' + esc(c.hex) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>';
+      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + '" data-act="pick" data-id="' + c.id + '">' + (n ? '<em>' + n + '</em>' : '') + '<i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
   function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '" aria-label="إنقاص">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" aria-label="الكمية"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '" aria-label="زيادة">+</button></span>'; }
   function mSel() {
     var p = M.p, keys = Object.keys(M.sel), q = keys.reduce(function (n, k) { return n + M.sel[k]; }, 0), lines;
-    if (p.has_colors) lines = keys.map(function (k) { var c = color(k); return '<div class="it"><span><i class="dotc" style="background:' + esc(c && c.hex) + '"></i> ' + esc(c ? c.code + ' - ' + c.name : '') + '</span>' + step('m', k, M.sel[k]) + '</div>'; }).join('');
+    if (p.has_colors) lines = keys.map(function (k) { var c = color(k); return '<div class="it"><span><i class="dotc" style="' + esc(cbg(c)) + '"></i> ' + esc(cl(c)) + '</span>' + step('m', k, M.sel[k]) + '</div>'; }).join('');
     else lines = '<div class="it"><span>الكمية (' + esc(p.unit) + ')</span>' + step('m', '0', M.sel['0'] || 0) + '</div>';
     var u = unitPrice(p, q), n = nudge({ p: p, q: q });
     $('#tt').innerHTML = tiersTable(p, q);
@@ -170,7 +172,7 @@
     gs.forEach(function (g) {
       var u = unitPrice(g.p, g.q), n = nudge(g);
       h += '<div class="line"><div class="th2" style="' + bg(g.p.images[0]) + '"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px"><b>' + esc(g.p.name) + '</b><b>' + egp(u * g.q) + '</b></div><div class="mut">' + g.q + ' ' + esc(g.p.unit) + ' × ' + egp(u) + ' (' + tierName(g) + ')</div>';
-      g.lines.forEach(function (l) { var c = color(l.cid); h += '<div class="it"><span>' + (l.cid && c ? '<i class="dotc" style="background:' + esc(c.hex) + '"></i> ' + esc(c.code + ' - ' + c.name) : 'الكمية') + '</span>' + step('c', l.key, l.qty) + '</div>'; });
+      g.lines.forEach(function (l) { var c = color(l.cid); h += '<div class="it"><span>' + (l.cid && c ? '<i class="dotc" style="' + esc(cbg(c)) + '"></i> ' + esc(cl(c)) : 'الكمية') + '</span>' + step('c', l.key, l.qty) + '</div>'; });
       h += (n ? '<div class="nudge">' + esc(n) + '</div>' : '') + '<button class="g sm" style="margin-top:8px" data-act="rmprod" data-id="' + g.p.id + '">إزالة المنتج</button></div></div>';
     });
     var hasW = S.cfg.wallet.number, hasI = S.cfg.instapay.number || S.cfg.instapay.handle || S.cfg.instapay.qr;
@@ -241,7 +243,7 @@
   function f(n, l, t, v, x) { return '<div><label>' + l + '</label><input name="' + n + '" type="' + (t || 'text') + '" ' + (x || '') + ' value="' + esc(v == null ? '' : v) + '"></div>'; }
   function renderPC() {
     var g = $('#pcg'); if (!g) return;
-    g.innerHTML = S.colors.map(function (c) { var on = S.pc[c.id]; return '<div class="s' + (on ? ' on' : '') + '" data-act="pcol" data-id="' + c.id + '">' + (on ? '<em>✓</em>' : '') + '<i style="background:' + esc(c.hex) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>'; }).join('');
+    g.innerHTML = S.colors.map(function (c) { var on = S.pc[c.id]; return '<div class="s' + (on ? ' on' : '') + '" data-act="pcol" data-id="' + c.id + '">' + (on ? '<em>✓</em>' : '') + '<i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>'; }).join('');
     $('#pcn').textContent = Object.keys(S.pc).filter(function (k) { return S.pc[k]; }).length + ' / ' + S.colors.length;
   }
   function aProducts(b) {
@@ -268,7 +270,7 @@
     api('/colors').then(function (cs) {
       S.colors = cs;
       b.innerHTML = '<form class="panel" id="cf"><h3>استيراد / تحديث الألوان</h3><p class="mut">سطر لكل لون: <b>الكود , الاسم , #لون</b> — مثال: 205, أزرق ملكي, #1f3a93. الكود الموجود يتم تحديثه.</p><textarea name="text" style="min-height:140px;direction:ltr" placeholder="205,أزرق ملكي,#1f3a93"></textarea><label><input type="checkbox" name="addToAll" style="width:auto" checked> إضافة الألوان الجديدة لكل المنتجات ذات الألوان (يمكن تخصيصها لاحقاً لكل منتج)</label><p id="m"></p><button>استيراد</button></form>' +
-        '<div class="panel"><h3>كل الألوان (' + cs.length + ')</h3><div class="sw" style="max-height:none">' + cs.map(function (c) { return '<div class="s"><i style="background:' + esc(c.hex) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '<br><button class="g sm" data-act="delcolor" data-id="' + c.id + '">حذف</button></div>'; }).join('') + '</div></div>';
+        '<div class="panel"><h3>كل الألوان (' + cs.length + ')</h3><div class="sw" style="max-height:none">' + cs.map(function (c) { return '<div class="s"><i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '<br><button class="g sm" data-act="delcolor" data-id="' + c.id + '">حذف</button></div>'; }).join('') + '</div></div>';
     });
   }
   function sel(obj, cur, id, k) { return '<select data-ostat="' + id + '" data-k="' + k + '">' + Object.keys(obj).map(function (x) { return '<option value="' + x + '"' + (x === cur ? ' selected' : '') + '>' + obj[x] + '</option>'; }).join('') + '</select>'; }

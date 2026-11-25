@@ -1,0 +1,6291 @@
+{
+"colors": [
+{
+"line": "acrylic",
+"code": "BLACK",
+"ginga": false,
+"hex": "#a08481",
+"file": "0000.jpg"
+},
+{
+"line": "acrylic",
+"code": "W001",
+"ginga": false,
+"hex": "#534528",
+"file": "0001.jpg"
+},
+{
+"line": "acrylic",
+"code": "W002",
+"ginga": false,
+"hex": "#464c43",
+"file": "0002.jpg"
+},
+{
+"line": "acrylic",
+"code": "W005",
+"ginga": false,
+"hex": "#4f4a2c",
+"file": "0003.jpg"
+},
+{
+"line": "acrylic",
+"code": "W006",
+"ginga": false,
+"hex": "#45403d",
+"file": "0004.jpg"
+},
+{
+"line": "acrylic",
+"code": "W007",
+"ginga": false,
+"hex": "#4c4a41",
+"file": "0005.jpg"
+},
+{
+"line": "acrylic",
+"code": "W008",
+"ginga": false,
+"hex": "#4b362e",
+"file": "0006.jpg"
+},
+{
+"line": "acrylic",
+"code": "W009",
+"ginga": false,
+"hex": "#493e34",
+"file": "0007.jpg"
+},
+{
+"line": "acrylic",
+"code": "W010",
+"ginga": false,
+"hex": "#443126",
+"file": "0008.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0100",
+"ginga": false,
+"hex": "#45342d",
+"file": "0009.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0101",
+"ginga": false,
+"hex": "#957774",
+"file": "0010.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0102",
+"ginga": false,
+"hex": "#3c4137",
+"file": "0011.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0103",
+"ginga": false,
+"hex": "#52452c",
+"file": "0012.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0104",
+"ginga": false,
+"hex": "#847f65",
+"file": "0013.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0105",
+"ginga": false,
+"hex": "#4c5244",
+"file": "0014.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0107",
+"ginga": false,
+"hex": "#393c32",
+"file": "0015.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0108",
+"ginga": false,
+"hex": "#9d9b8e",
+"file": "0016.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0109",
+"ginga": false,
+"hex": "#534f41",
+"file": "0017.jpg"
+},
+{
+"line": "acrylic",
+"code": "W011",
+"ginga": false,
+"hex": "#402f23",
+"file": "0018.jpg"
+},
+{
+"line": "acrylic",
+"code": "W0110",
+"ginga": false,
+"hex": "#41403a",
+"file": "0019.jpg"
+},
+{
+"line": "acrylic",
+"code": "W012",
+"ginga": false,
+"hex": "#514739",
+"file": "0020.jpg"
+},
+{
+"line": "acrylic",
+"code": "W013",
+"ginga": false,
+"hex": "#5c5948",
+"file": "0021.jpg"
+},
+{
+"line": "acrylic",
+"code": "W014",
+"ginga": false,
+"hex": "#43382f",
+"file": "0022.jpg"
+},
+{
+"line": "acrylic",
+"code": "W016",
+"ginga": false,
+"hex": "#4b3931",
+"file": "0023.jpg"
+},
+{
+"line": "acrylic",
+"code": "W017",
+"ginga": false,
+"hex": "#543c33",
+"file": "0024.jpg"
+},
+{
+"line": "acrylic",
+"code": "W018",
+"ginga": false,
+"hex": "#41533f",
+"file": "0025.jpg"
+},
+{
+"line": "acrylic",
+"code": "W019",
+"ginga": false,
+"hex": "#c79f98",
+"file": "0026.jpg"
+},
+{
+"line": "acrylic",
+"code": "W020",
+"ginga": false,
+"hex": "#4b432d",
+"file": "0027.jpg"
+},
+{
+"line": "acrylic",
+"code": "W021",
+"ginga": false,
+"hex": "#463f26",
+"file": "0028.jpg"
+},
+{
+"line": "acrylic",
+"code": "W022",
+"ginga": false,
+"hex": "#595e47",
+"file": "0029.jpg"
+},
+{
+"line": "acrylic",
+"code": "W023",
+"ginga": false,
+"hex": "#cbaea3",
+"file": "0030.jpg"
+},
+{
+"line": "acrylic",
+"code": "W026",
+"ginga": false,
+"hex": "#c19c9b",
+"file": "0031.jpg"
+},
+{
+"line": "acrylic",
+"code": "W026-G2",
+"ginga": false,
+"hex": "#c2b2a7",
+"file": "0032.jpg"
+},
+{
+"line": "acrylic",
+"code": "W027",
+"ginga": false,
+"hex": "#5a4436",
+"file": "0033.jpg"
+},
+{
+"line": "acrylic",
+"code": "W028",
+"ginga": false,
+"hex": "#423329",
+"file": "0034.jpg"
+},
+{
+"line": "acrylic",
+"code": "W029",
+"ginga": false,
+"hex": "#403d25",
+"file": "0035.jpg"
+},
+{
+"line": "acrylic",
+"code": "W030",
+"ginga": false,
+"hex": "#3b473a",
+"file": "0036.jpg"
+},
+{
+"line": "acrylic",
+"code": "W031",
+"ginga": false,
+"hex": "#4a4f42",
+"file": "0037.jpg"
+},
+{
+"line": "acrylic",
+"code": "W032",
+"ginga": false,
+"hex": "#4d5c4e",
+"file": "0038.jpg"
+},
+{
+"line": "acrylic",
+"code": "W033",
+"ginga": false,
+"hex": "#4d503b",
+"file": "0039.jpg"
+},
+{
+"line": "acrylic",
+"code": "W034",
+"ginga": false,
+"hex": "#716958",
+"file": "0040.jpg"
+},
+{
+"line": "acrylic",
+"code": "W035",
+"ginga": false,
+"hex": "#4f483b",
+"file": "0041.jpg"
+},
+{
+"line": "acrylic",
+"code": "W036",
+"ginga": false,
+"hex": "#6d6957",
+"file": "0042.jpg"
+},
+{
+"line": "acrylic",
+"code": "W037",
+"ginga": false,
+"hex": "#585543",
+"file": "0043.jpg"
+},
+{
+"line": "acrylic",
+"code": "W038",
+"ginga": false,
+"hex": "#605b49",
+"file": "0044.jpg"
+},
+{
+"line": "acrylic",
+"code": "W039",
+"ginga": false,
+"hex": "#787158",
+"file": "0045.jpg"
+},
+{
+"line": "acrylic",
+"code": "W042",
+"ginga": false,
+"hex": "#ae9694",
+"file": "0046.jpg"
+},
+{
+"line": "acrylic",
+"code": "W043",
+"ginga": false,
+"hex": "#c6b1ad",
+"file": "0047.jpg"
+},
+{
+"line": "acrylic",
+"code": "W045",
+"ginga": false,
+"hex": "#4f4837",
+"file": "0048.jpg"
+},
+{
+"line": "acrylic",
+"code": "W051",
+"ginga": false,
+"hex": "#8e8070",
+"file": "0049.jpg"
+},
+{
+"line": "acrylic",
+"code": "W052",
+"ginga": false,
+"hex": "#b89591",
+"file": "0050.jpg"
+},
+{
+"line": "acrylic",
+"code": "W053",
+"ginga": false,
+"hex": "#ae8e89",
+"file": "0051.jpg"
+},
+{
+"line": "acrylic",
+"code": "W054",
+"ginga": false,
+"hex": "#3a3432",
+"file": "0052.jpg"
+},
+{
+"line": "acrylic",
+"code": "W055",
+"ginga": false,
+"hex": "#565141",
+"file": "0053.jpg"
+},
+{
+"line": "acrylic",
+"code": "W056",
+"ginga": false,
+"hex": "#3d4c35",
+"file": "0054.jpg"
+},
+{
+"line": "acrylic",
+"code": "W057",
+"ginga": false,
+"hex": "#332e1c",
+"file": "0055.jpg"
+},
+{
+"line": "acrylic",
+"code": "W058",
+"ginga": false,
+"hex": "#616045",
+"file": "0056.jpg"
+},
+{
+"line": "acrylic",
+"code": "W059",
+"ginga": false,
+"hex": "#98857a",
+"file": "0057.jpg"
+},
+{
+"line": "acrylic",
+"code": "W060",
+"ginga": false,
+"hex": "#514b3b",
+"file": "0058.jpg"
+},
+{
+"line": "acrylic",
+"code": "W061",
+"ginga": false,
+"hex": "#5c6652",
+"file": "0059.jpg"
+},
+{
+"line": "acrylic",
+"code": "W062",
+"ginga": false,
+"hex": "#72715c",
+"file": "0060.jpg"
+},
+{
+"line": "acrylic",
+"code": "W063",
+"ginga": false,
+"hex": "#4d4330",
+"file": "0061.jpg"
+},
+{
+"line": "acrylic",
+"code": "W064",
+"ginga": false,
+"hex": "#a6837a",
+"file": "0062.jpg"
+},
+{
+"line": "acrylic",
+"code": "W065",
+"ginga": false,
+"hex": "#423a29",
+"file": "0063.jpg"
+},
+{
+"line": "acrylic",
+"code": "W066",
+"ginga": false,
+"hex": "#47463b",
+"file": "0064.jpg"
+},
+{
+"line": "acrylic",
+"code": "W067",
+"ginga": false,
+"hex": "#9c837d",
+"file": "0065.jpg"
+},
+{
+"line": "acrylic",
+"code": "W068",
+"ginga": false,
+"hex": "#473821",
+"file": "0066.jpg"
+},
+{
+"line": "acrylic",
+"code": "W069",
+"ginga": false,
+"hex": "#dcaf8c",
+"file": "0067.jpg"
+},
+{
+"line": "acrylic",
+"code": "W070",
+"ginga": false,
+"hex": "#5e5047",
+"file": "0068.jpg"
+},
+{
+"line": "acrylic",
+"code": "W071",
+"ginga": false,
+"hex": "#604f47",
+"file": "0069.jpg"
+},
+{
+"line": "acrylic",
+"code": "W072",
+"ginga": false,
+"hex": "#b09597",
+"file": "0070.jpg"
+},
+{
+"line": "acrylic",
+"code": "W073",
+"ginga": false,
+"hex": "#6d3c31",
+"file": "0071.jpg"
+},
+{
+"line": "acrylic",
+"code": "W074",
+"ginga": false,
+"hex": "#4e463d",
+"file": "0072.jpg"
+},
+{
+"line": "acrylic",
+"code": "W075",
+"ginga": false,
+"hex": "#505144",
+"file": "0073.jpg"
+},
+{
+"line": "acrylic",
+"code": "W077",
+"ginga": false,
+"hex": "#59543c",
+"file": "0074.jpg"
+},
+{
+"line": "acrylic",
+"code": "W078",
+"ginga": false,
+"hex": "#413c2f",
+"file": "0075.jpg"
+},
+{
+"line": "acrylic",
+"code": "W080",
+"ginga": false,
+"hex": "#595944",
+"file": "0076.jpg"
+},
+{
+"line": "acrylic",
+"code": "W081",
+"ginga": false,
+"hex": "#3a3c35",
+"file": "0077.jpg"
+},
+{
+"line": "acrylic",
+"code": "W083",
+"ginga": false,
+"hex": "#402e1f",
+"file": "0078.jpg"
+},
+{
+"line": "acrylic",
+"code": "W085",
+"ginga": false,
+"hex": "#403e30",
+"file": "0079.jpg"
+},
+{
+"line": "acrylic",
+"code": "W086",
+"ginga": false,
+"hex": "#6f6449",
+"file": "0080.jpg"
+},
+{
+"line": "acrylic",
+"code": "W087",
+"ginga": false,
+"hex": "#99847c",
+"file": "0081.jpg"
+},
+{
+"line": "acrylic",
+"code": "W089",
+"ginga": false,
+"hex": "#5c5532",
+"file": "0082.jpg"
+},
+{
+"line": "acrylic",
+"code": "W090",
+"ginga": false,
+"hex": "#675a46",
+"file": "0083.jpg"
+},
+{
+"line": "acrylic",
+"code": "W091",
+"ginga": false,
+"hex": "#3a261d",
+"file": "0084.jpg"
+},
+{
+"line": "acrylic",
+"code": "W092",
+"ginga": false,
+"hex": "#575c42",
+"file": "0085.jpg"
+},
+{
+"line": "acrylic",
+"code": "W093",
+"ginga": false,
+"hex": "#423f31",
+"file": "0086.jpg"
+},
+{
+"line": "acrylic",
+"code": "W094",
+"ginga": false,
+"hex": "#9a827e",
+"file": "0087.jpg"
+},
+{
+"line": "acrylic",
+"code": "W096",
+"ginga": false,
+"hex": "#9e8181",
+"file": "0088.jpg"
+},
+{
+"line": "acrylic",
+"code": "W097",
+"ginga": false,
+"hex": "#a38684",
+"file": "0089.jpg"
+},
+{
+"line": "acrylic",
+"code": "W099",
+"ginga": false,
+"hex": "#565745",
+"file": "0090.jpg"
+},
+{
+"line": "crochet",
+"code": "012",
+"ginga": false,
+"hex": "#8e8578",
+"file": "0091.jpg"
+},
+{
+"line": "crochet",
+"code": "013",
+"ginga": false,
+"hex": "#603421",
+"file": "0092.jpg"
+},
+{
+"line": "crochet",
+"code": "015",
+"ginga": false,
+"hex": "#2a201d",
+"file": "0093.jpg"
+},
+{
+"line": "crochet",
+"code": "017",
+"ginga": false,
+"hex": "#353f1b",
+"file": "0094.jpg"
+},
+{
+"line": "crochet",
+"code": "024",
+"ginga": false,
+"hex": "#917280",
+"file": "0095.jpg"
+},
+{
+"line": "crochet",
+"code": "025",
+"ginga": false,
+"hex": "#1e6655",
+"file": "0096.jpg"
+},
+{
+"line": "crochet",
+"code": "026",
+"ginga": false,
+"hex": "#496f63",
+"file": "0097.jpg"
+},
+{
+"line": "crochet",
+"code": "028",
+"ginga": false,
+"hex": "#a8622d",
+"file": "0098.jpg"
+},
+{
+"line": "crochet",
+"code": "035",
+"ginga": false,
+"hex": "#eddfa7",
+"file": "0099.jpg"
+},
+{
+"line": "crochet",
+"code": "037",
+"ginga": false,
+"hex": "#2a6ea7",
+"file": "0100.jpg"
+},
+{
+"line": "crochet",
+"code": "039",
+"ginga": false,
+"hex": "#141822",
+"file": "0101.jpg"
+},
+{
+"line": "crochet",
+"code": "104",
+"ginga": false,
+"hex": "#d2c980",
+"file": "0102.jpg"
+},
+{
+"line": "crochet",
+"code": "215",
+"ginga": false,
+"hex": "#dfcfac",
+"file": "0103.jpg"
+},
+{
+"line": "crochet",
+"code": "230",
+"ginga": false,
+"hex": "#bba682",
+"file": "0104.jpg"
+},
+{
+"line": "crochet",
+"code": "236",
+"ginga": false,
+"hex": "#8f9073",
+"file": "0105.jpg"
+},
+{
+"line": "crochet",
+"code": "3000",
+"ginga": false,
+"hex": "#aaabb0",
+"file": "0106.jpg"
+},
+{
+"line": "crochet",
+"code": "315",
+"ginga": false,
+"hex": "#c5bca2",
+"file": "0107.jpg"
+},
+{
+"line": "crochet",
+"code": "320",
+"ginga": false,
+"hex": "#c19983",
+"file": "0108.jpg"
+},
+{
+"line": "crochet",
+"code": "330",
+"ginga": false,
+"hex": "#b9ab92",
+"file": "0109.jpg"
+},
+{
+"line": "crochet",
+"code": "4000",
+"ginga": false,
+"hex": "#39191e",
+"file": "0110.jpg"
+},
+{
+"line": "crochet",
+"code": "425",
+"ginga": false,
+"hex": "#c3c5c3",
+"file": "0111.jpg"
+},
+{
+"line": "crochet",
+"code": "460",
+"ginga": false,
+"hex": "#778086",
+"file": "0112.jpg"
+},
+{
+"line": "crochet",
+"code": "490",
+"ginga": false,
+"hex": "#2a2c30",
+"file": "0113.jpg"
+},
+{
+"line": "crochet",
+"code": "6000",
+"ginga": false,
+"hex": "#773422",
+"file": "0114.jpg"
+},
+{
+"line": "crochet",
+"code": "645",
+"ginga": false,
+"hex": "#9dabca",
+"file": "0115.jpg"
+},
+{
+"line": "crochet",
+"code": "7000",
+"ginga": false,
+"hex": "#182621",
+"file": "0116.jpg"
+},
+{
+"line": "crochet",
+"code": "720",
+"ginga": false,
+"hex": "#a8bba9",
+"file": "0117.jpg"
+},
+{
+"line": "crochet",
+"code": "A104",
+"ginga": false,
+"hex": "#dcc373",
+"file": "0118.jpg"
+},
+{
+"line": "crochet",
+"code": "A108",
+"ginga": false,
+"hex": "#444954",
+"file": "0119.jpg"
+},
+{
+"line": "crochet",
+"code": "A109",
+"ginga": false,
+"hex": "#71634e",
+"file": "0120.jpg"
+},
+{
+"line": "crochet",
+"code": "A121",
+"ginga": false,
+"hex": "#d9d6c8",
+"file": "0121.jpg"
+},
+{
+"line": "crochet",
+"code": "A122",
+"ginga": false,
+"hex": "#99dadb",
+"file": "0122.jpg"
+},
+{
+"line": "crochet",
+"code": "A123",
+"ginga": false,
+"hex": "#edd03a",
+"file": "0123.jpg"
+},
+{
+"line": "crochet",
+"code": "A236",
+"ginga": false,
+"hex": "#c4c4b0",
+"file": "0124.jpg"
+},
+{
+"line": "crochet",
+"code": "A57",
+"ginga": false,
+"hex": "#36171c",
+"file": "0125.jpg"
+},
+{
+"line": "crochet",
+"code": "B322",
+"ginga": false,
+"hex": "#afb4ae",
+"file": "0126.jpg"
+},
+{
+"line": "crochet",
+"code": "B3811",
+"ginga": false,
+"hex": "#c3c7bc",
+"file": "0127.jpg"
+},
+{
+"line": "crochet",
+"code": "B7200",
+"ginga": false,
+"hex": "#c9a384",
+"file": "0128.jpg"
+},
+{
+"line": "crochet",
+"code": "B746",
+"ginga": false,
+"hex": "#d8d3bf",
+"file": "0129.jpg"
+},
+{
+"line": "crochet",
+"code": "B857",
+"ginga": false,
+"hex": "#a6837b",
+"file": "0130.jpg"
+},
+{
+"line": "crochet",
+"code": "BLACK",
+"ginga": false,
+"hex": "#141414",
+"file": "0131.jpg"
+},
+{
+"line": "crochet",
+"code": "C4000",
+"ginga": false,
+"hex": "#8e7c74",
+"file": "0132.jpg"
+},
+{
+"line": "crochet",
+"code": "M-58",
+"ginga": false,
+"hex": "#e9dca6",
+"file": "0133.jpg"
+},
+{
+"line": "crochet",
+"code": "M50",
+"ginga": false,
+"hex": "#93a68f",
+"file": "0134.jpg"
+},
+{
+"line": "crochet",
+"code": "M55",
+"ginga": false,
+"hex": "#281b16",
+"file": "0135.jpg"
+},
+{
+"line": "crochet",
+"code": "S005",
+"ginga": false,
+"hex": "#cec28f",
+"file": "0136.jpg"
+},
+{
+"line": "crochet",
+"code": "S500",
+"ginga": false,
+"hex": "#eedf8b",
+"file": "0137.jpg"
+},
+{
+"line": "crochet",
+"code": "S501",
+"ginga": false,
+"hex": "#d98d3e",
+"file": "0138.jpg"
+},
+{
+"line": "crochet",
+"code": "S502",
+"ginga": false,
+"hex": "#b1d47d",
+"file": "0139.jpg"
+},
+{
+"line": "crochet",
+"code": "S503",
+"ginga": false,
+"hex": "#f17c89",
+"file": "0140.jpg"
+},
+{
+"line": "crochet",
+"code": "S504",
+"ginga": false,
+"hex": "#c01a3b",
+"file": "0141.jpg"
+},
+{
+"line": "crochet",
+"code": "S505",
+"ginga": false,
+"hex": "#eac4d0",
+"file": "0142.jpg"
+},
+{
+"line": "crochet",
+"code": "S507",
+"ginga": false,
+"hex": "#c59e69",
+"file": "0143.jpg"
+},
+{
+"line": "crochet",
+"code": "S508",
+"ginga": false,
+"hex": "#a51217",
+"file": "0144.jpg"
+},
+{
+"line": "crochet",
+"code": "S511",
+"ginga": false,
+"hex": "#c2c6c3",
+"file": "0145.jpg"
+},
+{
+"line": "crochet",
+"code": "S512",
+"ginga": false,
+"hex": "#600f15",
+"file": "0146.jpg"
+},
+{
+"line": "crochet",
+"code": "S513",
+"ginga": false,
+"hex": "#5eb0d3",
+"file": "0147.jpg"
+},
+{
+"line": "crochet",
+"code": "S514",
+"ginga": false,
+"hex": "#2890c3",
+"file": "0148.jpg"
+},
+{
+"line": "crochet",
+"code": "S516",
+"ginga": false,
+"hex": "#1b6780",
+"file": "0149.jpg"
+},
+{
+"line": "crochet",
+"code": "S517",
+"ginga": false,
+"hex": "#63be66",
+"file": "0150.jpg"
+},
+{
+"line": "crochet",
+"code": "S518",
+"ginga": false,
+"hex": "#a867a0",
+"file": "0151.jpg"
+},
+{
+"line": "crochet",
+"code": "S522",
+"ginga": false,
+"hex": "#353b76",
+"file": "0152.jpg"
+},
+{
+"line": "crochet",
+"code": "S528",
+"ginga": false,
+"hex": "#bf5e86",
+"file": "0153.jpg"
+},
+{
+"line": "crochet",
+"code": "S529",
+"ginga": false,
+"hex": "#ae5a62",
+"file": "0154.jpg"
+},
+{
+"line": "crochet",
+"code": "S533",
+"ginga": false,
+"hex": "#3d4a66",
+"file": "0155.jpg"
+},
+{
+"line": "crochet",
+"code": "S775",
+"ginga": false,
+"hex": "#6d8051",
+"file": "0156.jpg"
+},
+{
+"line": "crochet",
+"code": "WHITE",
+"ginga": false,
+"hex": "#e5e5df",
+"file": "0157.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "009",
+"ginga": false,
+"hex": "#e4dea9",
+"file": "0158.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "010",
+"ginga": false,
+"hex": "#a9e1cd",
+"file": "0159.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "012",
+"ginga": false,
+"hex": "#8d7e59",
+"file": "0160.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "019",
+"ginga": false,
+"hex": "#774d41",
+"file": "0161.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "029",
+"ginga": false,
+"hex": "#e1ac53",
+"file": "0162.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "035",
+"ginga": false,
+"hex": "#f3e092",
+"file": "0163.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "215",
+"ginga": false,
+"hex": "#e7d39d",
+"file": "0164.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "3000",
+"ginga": false,
+"hex": "#201e41",
+"file": "0165.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "320",
+"ginga": false,
+"hex": "#cb9d69",
+"file": "0166.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "4000",
+"ginga": false,
+"hex": "#3b1818",
+"file": "0167.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "425",
+"ginga": false,
+"hex": "#9d9c8a",
+"file": "0168.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "628",
+"ginga": false,
+"hex": "#d9b079",
+"file": "0169.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "645",
+"ginga": false,
+"hex": "#bbc7c8",
+"file": "0170.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "A104",
+"ginga": false,
+"hex": "#f1cc64",
+"file": "0171.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "A106",
+"ginga": false,
+"hex": "#752e0d",
+"file": "0172.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "A107",
+"ginga": false,
+"hex": "#b3b2a2",
+"file": "0173.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "A117",
+"ginga": false,
+"hex": "#151414",
+"file": "0174.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB072",
+"ginga": false,
+"hex": "#3f1516",
+"file": "0175.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB22",
+"ginga": false,
+"hex": "#651713",
+"file": "0176.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB230",
+"ginga": false,
+"hex": "#26713c",
+"file": "0177.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB291",
+"ginga": false,
+"hex": "#f7c70a",
+"file": "0178.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB298",
+"ginga": false,
+"hex": "#ecb90c",
+"file": "0179.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB305",
+"ginga": false,
+"hex": "#f5d355",
+"file": "0180.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB306",
+"ginga": false,
+"hex": "#e6a722",
+"file": "0181.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB366",
+"ginga": false,
+"hex": "#d7ba7e",
+"file": "0182.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB367",
+"ginga": false,
+"hex": "#dab276",
+"file": "0183.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB46",
+"ginga": false,
+"hex": "#c51f0c",
+"file": "0184.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB47",
+"ginga": false,
+"hex": "#ab190d",
+"file": "0185.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB877",
+"ginga": false,
+"hex": "#517151",
+"file": "0186.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB879",
+"ginga": false,
+"hex": "#233d2d",
+"file": "0187.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "AB96",
+"ginga": false,
+"hex": "#bd8f97",
+"file": "0188.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B154",
+"ginga": false,
+"hex": "#2c1519",
+"file": "0189.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B223",
+"ginga": false,
+"hex": "#b76958",
+"file": "0190.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B224",
+"ginga": false,
+"hex": "#d7a885",
+"file": "0191.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B230",
+"ginga": false,
+"hex": "#98150b",
+"file": "0192.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B311",
+"ginga": false,
+"hex": "#1f2b42",
+"file": "0193.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B316",
+"ginga": false,
+"hex": "#be837c",
+"file": "0194.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B319",
+"ginga": false,
+"hex": "#283d24",
+"file": "0195.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B321",
+"ginga": false,
+"hex": "#aa120b",
+"file": "0196.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3325",
+"ginga": false,
+"hex": "#a8bbba",
+"file": "0197.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3326",
+"ginga": false,
+"hex": "#e69383",
+"file": "0198.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3328",
+"ginga": false,
+"hex": "#c34c38",
+"file": "0199.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3345",
+"ginga": false,
+"hex": "#32461e",
+"file": "0200.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3346",
+"ginga": false,
+"hex": "#4f6026",
+"file": "0201.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B35",
+"ginga": false,
+"hex": "#511430",
+"file": "0202.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B351",
+"ginga": false,
+"hex": "#d14a20",
+"file": "0203.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B352",
+"ginga": false,
+"hex": "#e68d5d",
+"file": "0204.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B353",
+"ginga": false,
+"hex": "#f0b78b",
+"file": "0205.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3607",
+"ginga": false,
+"hex": "#b74671",
+"file": "0206.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3608",
+"ginga": false,
+"hex": "#cd848b",
+"file": "0207.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B367",
+"ginga": false,
+"hex": "#d8b074",
+"file": "0208.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B368",
+"ginga": false,
+"hex": "#93ad6f",
+"file": "0209.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3687",
+"ginga": false,
+"hex": "#c15f61",
+"file": "0210.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3688",
+"ginga": false,
+"hex": "#c67975",
+"file": "0211.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3821",
+"ginga": false,
+"hex": "#e5bf29",
+"file": "0212.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3834",
+"ginga": false,
+"hex": "#4b232b",
+"file": "0213.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B3835",
+"ginga": false,
+"hex": "#895559",
+"file": "0214.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B420",
+"ginga": false,
+"hex": "#8f5b19",
+"file": "0215.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B434",
+"ginga": false,
+"hex": "#90470d",
+"file": "0216.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B435",
+"ginga": false,
+"hex": "#aa6d23",
+"file": "0217.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B436",
+"ginga": false,
+"hex": "#b8752b",
+"file": "0218.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B445",
+"ginga": false,
+"hex": "#f2e87d",
+"file": "0219.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B469",
+"ginga": false,
+"hex": "#555a11",
+"file": "0220.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B471",
+"ginga": false,
+"hex": "#99982c",
+"file": "0221.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B517",
+"ginga": false,
+"hex": "#42698f",
+"file": "0222.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B550",
+"ginga": false,
+"hex": "#3c1c40",
+"file": "0223.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B552",
+"ginga": false,
+"hex": "#733c68",
+"file": "0224.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B553",
+"ginga": false,
+"hex": "#925580",
+"file": "0225.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B554",
+"ginga": false,
+"hex": "#c29097",
+"file": "0226.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B580",
+"ginga": false,
+"hex": "#555b15",
+"file": "0227.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B581",
+"ginga": false,
+"hex": "#909322",
+"file": "0228.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B600",
+"ginga": false,
+"hex": "#b4232f",
+"file": "0229.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B602",
+"ginga": false,
+"hex": "#cf595f",
+"file": "0230.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B603",
+"ginga": false,
+"hex": "#e37d7f",
+"file": "0231.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B604",
+"ginga": false,
+"hex": "#e58a89",
+"file": "0232.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B605",
+"ginga": false,
+"hex": "#ebaea6",
+"file": "0233.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B666",
+"ginga": false,
+"hex": "#b21807",
+"file": "0234.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B718",
+"ginga": false,
+"hex": "#a1274f",
+"file": "0235.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B726",
+"ginga": false,
+"hex": "#fad336",
+"file": "0236.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B727",
+"ginga": false,
+"hex": "#f8e066",
+"file": "0237.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B740",
+"ginga": false,
+"hex": "#f87905",
+"file": "0238.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B742",
+"ginga": false,
+"hex": "#f6ae10",
+"file": "0239.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B743",
+"ginga": false,
+"hex": "#f7cb3f",
+"file": "0240.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B744",
+"ginga": false,
+"hex": "#f7d76a",
+"file": "0241.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B745",
+"ginga": false,
+"hex": "#f6d87d",
+"file": "0242.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B781",
+"ginga": false,
+"hex": "#a65f0a",
+"file": "0243.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B782",
+"ginga": false,
+"hex": "#a8690a",
+"file": "0244.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B783",
+"ginga": false,
+"hex": "#cd8a1c",
+"file": "0245.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B798",
+"ginga": false,
+"hex": "#556fa7",
+"file": "0246.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B799",
+"ginga": false,
+"hex": "#738aa2",
+"file": "0247.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B809",
+"ginga": false,
+"hex": "#8b9fb2",
+"file": "0248.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B814",
+"ginga": false,
+"hex": "#491314",
+"file": "0249.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B815",
+"ginga": false,
+"hex": "#671a18",
+"file": "0250.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B816",
+"ginga": false,
+"hex": "#87110c",
+"file": "0251.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B817",
+"ginga": false,
+"hex": "#b51705",
+"file": "0252.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B820",
+"ginga": false,
+"hex": "#201b4d",
+"file": "0253.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B823",
+"ginga": false,
+"hex": "#1b1b23",
+"file": "0254.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B841",
+"ginga": false,
+"hex": "#a88d63",
+"file": "0255.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B890",
+"ginga": false,
+"hex": "#203119",
+"file": "0256.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B900",
+"ginga": false,
+"hex": "#c93c10",
+"file": "0257.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B904",
+"ginga": false,
+"hex": "#415c1b",
+"file": "0258.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B905",
+"ginga": false,
+"hex": "#49741d",
+"file": "0259.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B906",
+"ginga": false,
+"hex": "#6d961d",
+"file": "0260.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B915",
+"ginga": false,
+"hex": "#69141f",
+"file": "0261.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B919",
+"ginga": false,
+"hex": "#8f290a",
+"file": "0262.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B920",
+"ginga": false,
+"hex": "#a0360d",
+"file": "0263.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B921",
+"ginga": false,
+"hex": "#d15816",
+"file": "0264.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B922",
+"ginga": false,
+"hex": "#d46925",
+"file": "0265.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B938",
+"ginga": false,
+"hex": "#372214",
+"file": "0266.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B943",
+"ginga": false,
+"hex": "#4ca278",
+"file": "0267.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B946",
+"ginga": false,
+"hex": "#f45d0a",
+"file": "0268.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B972",
+"ginga": false,
+"hex": "#f7b00a",
+"file": "0269.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "B991",
+"ginga": false,
+"hex": "#377356",
+"file": "0270.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJ115",
+"ginga": true,
+"hex": "#64130e",
+"file": "0271.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJ116",
+"ginga": true,
+"hex": "#67416f",
+"file": "0272.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJ120",
+"ginga": true,
+"hex": "#a42949",
+"file": "0273.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJ505",
+"ginga": true,
+"hex": "#738034",
+"file": "0274.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJD90",
+"ginga": true,
+"hex": "#f7b829",
+"file": "0275.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BJD92",
+"ginga": true,
+"hex": "#7f9d38",
+"file": "0276.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BNB",
+"ginga": false,
+"hex": "#13140f",
+"file": "0277.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "BS510",
+"ginga": false,
+"hex": "#898772",
+"file": "0278.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "D169",
+"ginga": false,
+"hex": "#6d7d6e",
+"file": "0279.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "D209",
+"ginga": false,
+"hex": "#b48a94",
+"file": "0280.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "ECRU",
+"ginga": false,
+"hex": "#e4d6a9",
+"file": "0281.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J002",
+"ginga": true,
+"hex": "#d39d60",
+"file": "0282.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J107",
+"ginga": true,
+"hex": "#df5653",
+"file": "0283.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J111",
+"ginga": true,
+"hex": "#b6740f",
+"file": "0284.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J121",
+"ginga": true,
+"hex": "#586c93",
+"file": "0285.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J51",
+"ginga": true,
+"hex": "#e58329",
+"file": "0286.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J52",
+"ginga": true,
+"hex": "#5d7293",
+"file": "0287.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J667",
+"ginga": true,
+"hex": "#aac2c3",
+"file": "0288.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "J67",
+"ginga": true,
+"hex": "#b6cbc6",
+"file": "0289.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "JS003",
+"ginga": true,
+"hex": "#e7722b",
+"file": "0290.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "M50",
+"ginga": false,
+"hex": "#256834",
+"file": "0291.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "M54",
+"ginga": false,
+"hex": "#35649e",
+"file": "0292.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "M58",
+"ginga": false,
+"hex": "#f5e7a1",
+"file": "0293.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S501",
+"ginga": false,
+"hex": "#e99131",
+"file": "0294.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S502",
+"ginga": false,
+"hex": "#cad971",
+"file": "0295.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S503",
+"ginga": false,
+"hex": "#f47d76",
+"file": "0296.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S505",
+"ginga": false,
+"hex": "#f0cbc4",
+"file": "0297.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S508",
+"ginga": false,
+"hex": "#b5190a",
+"file": "0298.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S512",
+"ginga": false,
+"hex": "#791412",
+"file": "0299.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S514",
+"ginga": false,
+"hex": "#419cb9",
+"file": "0300.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S517",
+"ginga": false,
+"hex": "#84d354",
+"file": "0301.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S520",
+"ginga": false,
+"hex": "#5b72a0",
+"file": "0302.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S522",
+"ginga": false,
+"hex": "#3f426f",
+"file": "0303.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "S563",
+"ginga": false,
+"hex": "#d09e68",
+"file": "0304.jpg"
+},
+{
+"line": "fine_pearl",
+"code": "WHITE",
+"ginga": false,
+"hex": "#edebd3",
+"file": "0305.jpg"
+},
+{
+"line": "floss",
+"code": "0101",
+"ginga": false,
+"hex": "#f5f3f2",
+"file": "0306.jpg"
+},
+{
+"line": "floss",
+"code": "0103",
+"ginga": false,
+"hex": "#f5f2ec",
+"file": "0307.jpg"
+},
+{
+"line": "floss",
+"code": "0303",
+"ginga": false,
+"hex": "#f6f1d9",
+"file": "0308.jpg"
+},
+{
+"line": "floss",
+"code": "0305",
+"ginga": false,
+"hex": "#f7efd2",
+"file": "0309.jpg"
+},
+{
+"line": "floss",
+"code": "0510",
+"ginga": false,
+"hex": "#f5ecd9",
+"file": "0310.jpg"
+},
+{
+"line": "floss",
+"code": "0716",
+"ginga": false,
+"hex": "#f2d9d6",
+"file": "0311.jpg"
+},
+{
+"line": "floss",
+"code": "0808",
+"ginga": false,
+"hex": "#f2dcd8",
+"file": "0312.jpg"
+},
+{
+"line": "floss",
+"code": "0810",
+"ginga": false,
+"hex": "#f2dedc",
+"file": "0313.jpg"
+},
+{
+"line": "floss",
+"code": "1106",
+"ginga": false,
+"hex": "#f7e2e8",
+"file": "0314.jpg"
+},
+{
+"line": "floss",
+"code": "1108",
+"ginga": false,
+"hex": "#f6dfe4",
+"file": "0315.jpg"
+},
+{
+"line": "floss",
+"code": "1110",
+"ginga": false,
+"hex": "#f1dce0",
+"file": "0316.jpg"
+},
+{
+"line": "floss",
+"code": "1200",
+"ginga": false,
+"hex": "#e1ced0",
+"file": "0317.jpg"
+},
+{
+"line": "floss",
+"code": "1201",
+"ginga": false,
+"hex": "#ebe3e2",
+"file": "0318.jpg"
+},
+{
+"line": "floss",
+"code": "2502",
+"ginga": false,
+"hex": "#e8ebed",
+"file": "0319.jpg"
+},
+{
+"line": "floss",
+"code": "2602",
+"ginga": false,
+"hex": "#f2f2f2",
+"file": "0320.jpg"
+},
+{
+"line": "floss",
+"code": "2606",
+"ginga": false,
+"hex": "#dce1ea",
+"file": "0321.jpg"
+},
+{
+"line": "floss",
+"code": "2608",
+"ginga": false,
+"hex": "#e2e4e9",
+"file": "0322.jpg"
+},
+{
+"line": "floss",
+"code": "2610",
+"ginga": false,
+"hex": "#dcdfe9",
+"file": "0323.jpg"
+},
+{
+"line": "floss",
+"code": "2704",
+"ginga": false,
+"hex": "#eff1f0",
+"file": "0324.jpg"
+},
+{
+"line": "floss",
+"code": "2706",
+"ginga": false,
+"hex": "#ebeef1",
+"file": "0325.jpg"
+},
+{
+"line": "floss",
+"code": "2714",
+"ginga": false,
+"hex": "#dfe4ec",
+"file": "0326.jpg"
+},
+{
+"line": "floss",
+"code": "3008",
+"ginga": false,
+"hex": "#e3eff2",
+"file": "0327.jpg"
+},
+{
+"line": "floss",
+"code": "3350",
+"ginga": false,
+"hex": "#ecd6da",
+"file": "0328.jpg"
+},
+{
+"line": "floss",
+"code": "3807",
+"ginga": false,
+"hex": "#dadbd8",
+"file": "0329.jpg"
+},
+{
+"line": "floss",
+"code": "3908",
+"ginga": false,
+"hex": "#e1e7de",
+"file": "0330.jpg"
+},
+{
+"line": "floss",
+"code": "3909",
+"ginga": false,
+"hex": "#e0e6d3",
+"file": "0331.jpg"
+},
+{
+"line": "floss",
+"code": "3910",
+"ginga": false,
+"hex": "#d4ddd3",
+"file": "0332.jpg"
+},
+{
+"line": "floss",
+"code": "3912",
+"ginga": false,
+"hex": "#e4e7e1",
+"file": "0333.jpg"
+},
+{
+"line": "floss",
+"code": "3914",
+"ginga": false,
+"hex": "#e0e2dd",
+"file": "0334.jpg"
+},
+{
+"line": "floss",
+"code": "4108",
+"ginga": false,
+"hex": "#ccd8d1",
+"file": "0335.jpg"
+},
+{
+"line": "floss",
+"code": "4109",
+"ginga": false,
+"hex": "#dfe5dd",
+"file": "0336.jpg"
+},
+{
+"line": "floss",
+"code": "4111",
+"ginga": false,
+"hex": "#dee2dd",
+"file": "0337.jpg"
+},
+{
+"line": "floss",
+"code": "4112",
+"ginga": false,
+"hex": "#d4ddd8",
+"file": "0338.jpg"
+},
+{
+"line": "floss",
+"code": "4706",
+"ginga": false,
+"hex": "#edf0dd",
+"file": "0339.jpg"
+},
+{
+"line": "floss",
+"code": "4707",
+"ginga": false,
+"hex": "#edeee1",
+"file": "0340.jpg"
+},
+{
+"line": "floss",
+"code": "5136",
+"ginga": false,
+"hex": "#f3f0ed",
+"file": "0341.jpg"
+},
+{
+"line": "floss",
+"code": "5711",
+"ginga": false,
+"hex": "#dad7d5",
+"file": "0342.jpg"
+},
+{
+"line": "floss",
+"code": "5812",
+"ginga": false,
+"hex": "#eae4e2",
+"file": "0343.jpg"
+},
+{
+"line": "floss",
+"code": "5912",
+"ginga": false,
+"hex": "#dad3d0",
+"file": "0344.jpg"
+},
+{
+"line": "floss",
+"code": "603",
+"ginga": false,
+"hex": "#f7e4e7",
+"file": "0345.jpg"
+},
+{
+"line": "floss",
+"code": "604",
+"ginga": false,
+"hex": "#f7ebeb",
+"file": "0346.jpg"
+},
+{
+"line": "floss",
+"code": "605",
+"ginga": false,
+"hex": "#f3e8e8",
+"file": "0347.jpg"
+},
+{
+"line": "floss",
+"code": "6513",
+"ginga": false,
+"hex": "#e0dcd9",
+"file": "0348.jpg"
+},
+{
+"line": "floss",
+"code": "6516",
+"ginga": false,
+"hex": "#d2d0ce",
+"file": "0349.jpg"
+},
+{
+"line": "floss",
+"code": "7000",
+"ginga": false,
+"hex": "#f5f4f1",
+"file": "0350.jpg"
+},
+{
+"line": "floss",
+"code": "7001",
+"ginga": false,
+"hex": "#e9e7e6",
+"file": "0351.jpg"
+},
+{
+"line": "floss",
+"code": "7210",
+"ginga": false,
+"hex": "#d5d4d4",
+"file": "0352.jpg"
+},
+{
+"line": "floss",
+"code": "8802",
+"ginga": false,
+"hex": "#d7ded0",
+"file": "0353.jpg"
+},
+{
+"line": "floss",
+"code": "B152",
+"ginga": false,
+"hex": "#f8f4f1",
+"file": "0354.jpg"
+},
+{
+"line": "floss",
+"code": "B21",
+"ginga": false,
+"hex": "#f1e2de",
+"file": "0355.jpg"
+},
+{
+"line": "floss",
+"code": "B221",
+"ginga": false,
+"hex": "#f2efed",
+"file": "0356.jpg"
+},
+{
+"line": "floss",
+"code": "B2708",
+"ginga": false,
+"hex": "#dbe2ea",
+"file": "0357.jpg"
+},
+{
+"line": "floss",
+"code": "B3053",
+"ginga": false,
+"hex": "#f5f3f0",
+"file": "0358.jpg"
+},
+{
+"line": "floss",
+"code": "B307",
+"ginga": false,
+"hex": "#faf5da",
+"file": "0359.jpg"
+},
+{
+"line": "floss",
+"code": "B3363",
+"ginga": false,
+"hex": "#ddded8",
+"file": "0360.jpg"
+},
+{
+"line": "floss",
+"code": "B3371",
+"ginga": false,
+"hex": "#d2d0cf",
+"file": "0361.jpg"
+},
+{
+"line": "floss",
+"code": "B338",
+"ginga": false,
+"hex": "#f4f1ee",
+"file": "0362.jpg"
+},
+{
+"line": "floss",
+"code": "B349",
+"ginga": false,
+"hex": "#f3eeeb",
+"file": "0363.jpg"
+},
+{
+"line": "floss",
+"code": "B355",
+"ginga": false,
+"hex": "#ddc6c4",
+"file": "0364.jpg"
+},
+{
+"line": "floss",
+"code": "B356",
+"ginga": false,
+"hex": "#e1d2ce",
+"file": "0365.jpg"
+},
+{
+"line": "floss",
+"code": "B3731",
+"ginga": false,
+"hex": "#efd8da",
+"file": "0366.jpg"
+},
+{
+"line": "floss",
+"code": "B3766",
+"ginga": false,
+"hex": "#e0eaeb",
+"file": "0367.jpg"
+},
+{
+"line": "floss",
+"code": "B3809",
+"ginga": false,
+"hex": "#d4d9db",
+"file": "0368.jpg"
+},
+{
+"line": "floss",
+"code": "B3821",
+"ginga": false,
+"hex": "#e6dfcb",
+"file": "0369.jpg"
+},
+{
+"line": "floss",
+"code": "B3830",
+"ginga": false,
+"hex": "#e7dcda",
+"file": "0370.jpg"
+},
+{
+"line": "floss",
+"code": "B407",
+"ginga": false,
+"hex": "#f6f2ee",
+"file": "0371.jpg"
+},
+{
+"line": "floss",
+"code": "B445",
+"ginga": false,
+"hex": "#f6f2ee",
+"file": "0372.jpg"
+},
+{
+"line": "floss",
+"code": "B517",
+"ginga": false,
+"hex": "#d5dbe3",
+"file": "0373.jpg"
+},
+{
+"line": "floss",
+"code": "B597",
+"ginga": false,
+"hex": "#e1e7e9",
+"file": "0374.jpg"
+},
+{
+"line": "floss",
+"code": "B600",
+"ginga": false,
+"hex": "#f4f1ee",
+"file": "0375.jpg"
+},
+{
+"line": "floss",
+"code": "B601",
+"ginga": false,
+"hex": "#f1ecea",
+"file": "0376.jpg"
+},
+{
+"line": "floss",
+"code": "B603",
+"ginga": false,
+"hex": "#f3f0ed",
+"file": "0377.jpg"
+},
+{
+"line": "floss",
+"code": "B608",
+"ginga": false,
+"hex": "#f1ddd7",
+"file": "0378.jpg"
+},
+{
+"line": "floss",
+"code": "B632",
+"ginga": false,
+"hex": "#ded5d3",
+"file": "0379.jpg"
+},
+{
+"line": "floss",
+"code": "B680",
+"ginga": false,
+"hex": "#f0e5d6",
+"file": "0380.jpg"
+},
+{
+"line": "floss",
+"code": "B704",
+"ginga": false,
+"hex": "#f4f1ed",
+"file": "0381.jpg"
+},
+{
+"line": "floss",
+"code": "B732",
+"ginga": false,
+"hex": "#f5f3ee",
+"file": "0382.jpg"
+},
+{
+"line": "floss",
+"code": "B733",
+"ginga": false,
+"hex": "#f6f2ed",
+"file": "0383.jpg"
+},
+{
+"line": "floss",
+"code": "B760",
+"ginga": false,
+"hex": "#f8f3f0",
+"file": "0384.jpg"
+},
+{
+"line": "floss",
+"code": "B775",
+"ginga": false,
+"hex": "#edeeed",
+"file": "0385.jpg"
+},
+{
+"line": "floss",
+"code": "B783",
+"ginga": false,
+"hex": "#efe8e0",
+"file": "0386.jpg"
+},
+{
+"line": "floss",
+"code": "B817",
+"ginga": false,
+"hex": "#eedcdb",
+"file": "0387.jpg"
+},
+{
+"line": "floss",
+"code": "B818",
+"ginga": false,
+"hex": "#f4ecea",
+"file": "0388.jpg"
+},
+{
+"line": "floss",
+"code": "B841",
+"ginga": false,
+"hex": "#f4f0ee",
+"file": "0389.jpg"
+},
+{
+"line": "floss",
+"code": "B893",
+"ginga": false,
+"hex": "#f3eeea",
+"file": "0390.jpg"
+},
+{
+"line": "floss",
+"code": "B907",
+"ginga": false,
+"hex": "#f3f0eb",
+"file": "0391.jpg"
+},
+{
+"line": "floss",
+"code": "B915",
+"ginga": false,
+"hex": "#e6dedf",
+"file": "0392.jpg"
+},
+{
+"line": "floss",
+"code": "B921",
+"ginga": false,
+"hex": "#efe0d9",
+"file": "0393.jpg"
+},
+{
+"line": "floss",
+"code": "B930",
+"ginga": false,
+"hex": "#d4d6d7",
+"file": "0394.jpg"
+},
+{
+"line": "floss",
+"code": "B938",
+"ginga": false,
+"hex": "#d7d4d2",
+"file": "0395.jpg"
+},
+{
+"line": "floss",
+"code": "B947",
+"ginga": false,
+"hex": "#f6e6de",
+"file": "0396.jpg"
+},
+{
+"line": "floss",
+"code": "B970",
+"ginga": false,
+"hex": "#fae0d0",
+"file": "0397.jpg"
+},
+{
+"line": "floss",
+"code": "B973",
+"ginga": false,
+"hex": "#f6f2ed",
+"file": "0398.jpg"
+},
+{
+"line": "floss",
+"code": "B975",
+"ginga": false,
+"hex": "#ddd3cf",
+"file": "0399.jpg"
+},
+{
+"line": "floss",
+"code": "BLACK",
+"ginga": false,
+"hex": "#f5f2ef",
+"file": "0400.jpg"
+},
+{
+"line": "floss",
+"code": "D304",
+"ginga": false,
+"hex": "#f1ebe7",
+"file": "0401.jpg"
+},
+{
+"line": "floss",
+"code": "D3371",
+"ginga": false,
+"hex": "#cdcbca",
+"file": "0402.jpg"
+},
+{
+"line": "floss",
+"code": "D613",
+"ginga": false,
+"hex": "#f2f0eb",
+"file": "0403.jpg"
+},
+{
+"line": "floss",
+"code": "D644",
+"ginga": false,
+"hex": "#eae9e3",
+"file": "0404.jpg"
+},
+{
+"line": "floss",
+"code": "D739",
+"ginga": false,
+"hex": "#f5f1eb",
+"file": "0405.jpg"
+},
+{
+"line": "floss",
+"code": "D799",
+"ginga": false,
+"hex": "#f5f3f2",
+"file": "0406.jpg"
+},
+{
+"line": "floss",
+"code": "D939",
+"ginga": false,
+"hex": "#d4d3d5",
+"file": "0407.jpg"
+},
+{
+"line": "floss",
+"code": "ECUR",
+"ginga": false,
+"hex": "#f5f3ec",
+"file": "0408.jpg"
+},
+{
+"line": "floss",
+"code": "OFFWHITE",
+"ginga": false,
+"hex": "#f2eee9",
+"file": "0409.jpg"
+},
+{
+"line": "floss",
+"code": "U3022",
+"ginga": false,
+"hex": "#f5f2ee",
+"file": "0410.jpg"
+},
+{
+"line": "linen",
+"code": "015",
+"ginga": false,
+"hex": "#b3aeaa",
+"file": "0411.jpg"
+},
+{
+"line": "linen",
+"code": "017",
+"ginga": false,
+"hex": "#b0b1a8",
+"file": "0412.jpg"
+},
+{
+"line": "linen",
+"code": "025",
+"ginga": false,
+"hex": "#a5b9ac",
+"file": "0413.jpg"
+},
+{
+"line": "linen",
+"code": "026",
+"ginga": false,
+"hex": "#c3c7bf",
+"file": "0414.jpg"
+},
+{
+"line": "linen",
+"code": "037",
+"ginga": false,
+"hex": "#cad3d0",
+"file": "0415.jpg"
+},
+{
+"line": "linen",
+"code": "039",
+"ginga": false,
+"hex": "#bebfbd",
+"file": "0416.jpg"
+},
+{
+"line": "linen",
+"code": "236",
+"ginga": false,
+"hex": "#cccbc3",
+"file": "0417.jpg"
+},
+{
+"line": "linen",
+"code": "3000",
+"ginga": false,
+"hex": "#bfbfc8",
+"file": "0418.jpg"
+},
+{
+"line": "linen",
+"code": "4000",
+"ginga": false,
+"hex": "#9c9292",
+"file": "0419.jpg"
+},
+{
+"line": "linen",
+"code": "490",
+"ginga": false,
+"hex": "#cacac6",
+"file": "0420.jpg"
+},
+{
+"line": "linen",
+"code": "6000",
+"ginga": false,
+"hex": "#c5b5af",
+"file": "0421.jpg"
+},
+{
+"line": "linen",
+"code": "7000-1",
+"ginga": false,
+"hex": "#bebebb",
+"file": "0422.jpg"
+},
+{
+"line": "linen",
+"code": "BLACK",
+"ginga": false,
+"hex": "#bcbbb7",
+"file": "0423.jpg"
+},
+{
+"line": "linen",
+"code": "J001",
+"ginga": false,
+"hex": "#b4c0b2",
+"file": "0424.jpg"
+},
+{
+"line": "linen",
+"code": "M57",
+"ginga": false,
+"hex": "#d3c9c5",
+"file": "0425.jpg"
+},
+{
+"line": "linen",
+"code": "S504",
+"ginga": false,
+"hex": "#cfb1b4",
+"file": "0426.jpg"
+},
+{
+"line": "linen",
+"code": "S522",
+"ginga": false,
+"hex": "#c2c1c9",
+"file": "0427.jpg"
+},
+{
+"line": "linen",
+"code": "S529",
+"ginga": false,
+"hex": "#c3ada7",
+"file": "0428.jpg"
+},
+{
+"line": "linen",
+"code": "X024",
+"ginga": false,
+"hex": "#c6bfbe",
+"file": "0429.jpg"
+},
+{
+"line": "linen",
+"code": "X320",
+"ginga": false,
+"hex": "#d3c7b9",
+"file": "0430.jpg"
+},
+{
+"line": "linen",
+"code": "X3604",
+"ginga": false,
+"hex": "#cdd2d1",
+"file": "0431.jpg"
+},
+{
+"line": "linen",
+"code": "XA108",
+"ginga": false,
+"hex": "#cdcbc8",
+"file": "0432.jpg"
+},
+{
+"line": "linen",
+"code": "XS618",
+"ginga": false,
+"hex": "#d0c2c3",
+"file": "0433.jpg"
+},
+{
+"line": "macrame",
+"code": "S529",
+"ginga": false,
+"hex": "#ac7c7e",
+"file": "0434.jpg"
+},
+{
+"line": "pearl",
+"code": "007",
+"ginga": false,
+"hex": "#e4cf88",
+"file": "0435.jpg"
+},
+{
+"line": "pearl",
+"code": "010",
+"ginga": false,
+"hex": "#b3d9d7",
+"file": "0436.jpg"
+},
+{
+"line": "pearl",
+"code": "012",
+"ginga": false,
+"hex": "#f3ab2d",
+"file": "0437.jpg"
+},
+{
+"line": "pearl",
+"code": "015",
+"ginga": false,
+"hex": "#6e554d",
+"file": "0438.jpg"
+},
+{
+"line": "pearl",
+"code": "020",
+"ginga": false,
+"hex": "#718fc8",
+"file": "0439.jpg"
+},
+{
+"line": "pearl",
+"code": "021",
+"ginga": false,
+"hex": "#a49a8a",
+"file": "0440.jpg"
+},
+{
+"line": "pearl",
+"code": "024",
+"ginga": false,
+"hex": "#ad939b",
+"file": "0441.jpg"
+},
+{
+"line": "pearl",
+"code": "025",
+"ginga": false,
+"hex": "#259b79",
+"file": "0442.jpg"
+},
+{
+"line": "pearl",
+"code": "027",
+"ginga": false,
+"hex": "#ba965d",
+"file": "0443.jpg"
+},
+{
+"line": "pearl",
+"code": "029",
+"ginga": false,
+"hex": "#efc98d",
+"file": "0444.jpg"
+},
+{
+"line": "pearl",
+"code": "035",
+"ginga": false,
+"hex": "#f2dfab",
+"file": "0445.jpg"
+},
+{
+"line": "pearl",
+"code": "037",
+"ginga": false,
+"hex": "#4685c4",
+"file": "0446.jpg"
+},
+{
+"line": "pearl",
+"code": "038",
+"ginga": false,
+"hex": "#e1c798",
+"file": "0447.jpg"
+},
+{
+"line": "pearl",
+"code": "039",
+"ginga": false,
+"hex": "#4d5781",
+"file": "0448.jpg"
+},
+{
+"line": "pearl",
+"code": "104",
+"ginga": false,
+"hex": "#fcde6d",
+"file": "0449.jpg"
+},
+{
+"line": "pearl",
+"code": "205",
+"ginga": false,
+"hex": "#f1f0e6",
+"file": "0450.jpg"
+},
+{
+"line": "pearl",
+"code": "207",
+"ginga": false,
+"hex": "#dfe2d3",
+"file": "0451.jpg"
+},
+{
+"line": "pearl",
+"code": "230",
+"ginga": false,
+"hex": "#d0c0a5",
+"file": "0452.jpg"
+},
+{
+"line": "pearl",
+"code": "3000",
+"ginga": false,
+"hex": "#293e90",
+"file": "0453.jpg"
+},
+{
+"line": "pearl",
+"code": "320",
+"ginga": false,
+"hex": "#cfad95",
+"file": "0454.jpg"
+},
+{
+"line": "pearl",
+"code": "330",
+"ginga": false,
+"hex": "#bdb49e",
+"file": "0455.jpg"
+},
+{
+"line": "pearl",
+"code": "4000",
+"ginga": false,
+"hex": "#4e262e",
+"file": "0456.jpg"
+},
+{
+"line": "pearl",
+"code": "415",
+"ginga": false,
+"hex": "#babbb5",
+"file": "0457.jpg"
+},
+{
+"line": "pearl",
+"code": "425",
+"ginga": false,
+"hex": "#bebfc2",
+"file": "0458.jpg"
+},
+{
+"line": "pearl",
+"code": "460",
+"ginga": false,
+"hex": "#666d73",
+"file": "0459.jpg"
+},
+{
+"line": "pearl",
+"code": "490",
+"ginga": false,
+"hex": "#464b4c",
+"file": "0460.jpg"
+},
+{
+"line": "pearl",
+"code": "6000",
+"ginga": false,
+"hex": "#954a30",
+"file": "0461.jpg"
+},
+{
+"line": "pearl",
+"code": "610",
+"ginga": false,
+"hex": "#936665",
+"file": "0462.jpg"
+},
+{
+"line": "pearl",
+"code": "628",
+"ginga": false,
+"hex": "#dcc0a7",
+"file": "0463.jpg"
+},
+{
+"line": "pearl",
+"code": "645",
+"ginga": false,
+"hex": "#bdc5d8",
+"file": "0464.jpg"
+},
+{
+"line": "pearl",
+"code": "6500",
+"ginga": false,
+"hex": "#943d2c",
+"file": "0465.jpg"
+},
+{
+"line": "pearl",
+"code": "7000",
+"ginga": false,
+"hex": "#324e3d",
+"file": "0466.jpg"
+},
+{
+"line": "pearl",
+"code": "720",
+"ginga": false,
+"hex": "#b4c2b3",
+"file": "0467.jpg"
+},
+{
+"line": "pearl",
+"code": "8000",
+"ginga": false,
+"hex": "#e3cd9d",
+"file": "0468.jpg"
+},
+{
+"line": "pearl",
+"code": "A102",
+"ginga": false,
+"hex": "#bf8e3f",
+"file": "0469.jpg"
+},
+{
+"line": "pearl",
+"code": "A103",
+"ginga": false,
+"hex": "#e0c48b",
+"file": "0470.jpg"
+},
+{
+"line": "pearl",
+"code": "A105",
+"ginga": false,
+"hex": "#f89a0e",
+"file": "0471.jpg"
+},
+{
+"line": "pearl",
+"code": "A106",
+"ginga": false,
+"hex": "#8b4621",
+"file": "0472.jpg"
+},
+{
+"line": "pearl",
+"code": "A107",
+"ginga": false,
+"hex": "#c4c5c9",
+"file": "0473.jpg"
+},
+{
+"line": "pearl",
+"code": "A108",
+"ginga": false,
+"hex": "#646371",
+"file": "0474.jpg"
+},
+{
+"line": "pearl",
+"code": "A111",
+"ginga": false,
+"hex": "#40312b",
+"file": "0475.jpg"
+},
+{
+"line": "pearl",
+"code": "A119",
+"ginga": false,
+"hex": "#d3dfa2",
+"file": "0476.jpg"
+},
+{
+"line": "pearl",
+"code": "A120",
+"ginga": false,
+"hex": "#4a699b",
+"file": "0477.jpg"
+},
+{
+"line": "pearl",
+"code": "A122",
+"ginga": false,
+"hex": "#b8e5dd",
+"file": "0478.jpg"
+},
+{
+"line": "pearl",
+"code": "A123",
+"ginga": false,
+"hex": "#f8dc28",
+"file": "0479.jpg"
+},
+{
+"line": "pearl",
+"code": "AB298",
+"ginga": false,
+"hex": "#ecd210",
+"file": "0480.jpg"
+},
+{
+"line": "pearl",
+"code": "AB366",
+"ginga": false,
+"hex": "#d9c5a6",
+"file": "0481.jpg"
+},
+{
+"line": "pearl",
+"code": "AB367",
+"ginga": false,
+"hex": "#d8be97",
+"file": "0482.jpg"
+},
+{
+"line": "pearl",
+"code": "B165",
+"ginga": false,
+"hex": "#bcb955",
+"file": "0483.jpg"
+},
+{
+"line": "pearl",
+"code": "B18",
+"ginga": false,
+"hex": "#d7c73b",
+"file": "0484.jpg"
+},
+{
+"line": "pearl",
+"code": "B223",
+"ginga": false,
+"hex": "#ae6665",
+"file": "0485.jpg"
+},
+{
+"line": "pearl",
+"code": "B224",
+"ginga": false,
+"hex": "#d3ae9e",
+"file": "0486.jpg"
+},
+{
+"line": "pearl",
+"code": "B230",
+"ginga": false,
+"hex": "#cb2d33",
+"file": "0487.jpg"
+},
+{
+"line": "pearl",
+"code": "B307",
+"ginga": false,
+"hex": "#eee54c",
+"file": "0488.jpg"
+},
+{
+"line": "pearl",
+"code": "B320",
+"ginga": false,
+"hex": "#769675",
+"file": "0489.jpg"
+},
+{
+"line": "pearl",
+"code": "B321",
+"ginga": false,
+"hex": "#b91722",
+"file": "0490.jpg"
+},
+{
+"line": "pearl",
+"code": "B3325",
+"ginga": false,
+"hex": "#a8b9cb",
+"file": "0491.jpg"
+},
+{
+"line": "pearl",
+"code": "B3326",
+"ginga": false,
+"hex": "#e8b4b5",
+"file": "0492.jpg"
+},
+{
+"line": "pearl",
+"code": "B3328",
+"ginga": false,
+"hex": "#c45955",
+"file": "0493.jpg"
+},
+{
+"line": "pearl",
+"code": "B353",
+"ginga": false,
+"hex": "#eecdb7",
+"file": "0494.jpg"
+},
+{
+"line": "pearl",
+"code": "B368",
+"ginga": false,
+"hex": "#98b185",
+"file": "0495.jpg"
+},
+{
+"line": "pearl",
+"code": "B3687",
+"ginga": false,
+"hex": "#c9778e",
+"file": "0496.jpg"
+},
+{
+"line": "pearl",
+"code": "B3801",
+"ginga": false,
+"hex": "#eb4e40",
+"file": "0497.jpg"
+},
+{
+"line": "pearl",
+"code": "B3834",
+"ginga": false,
+"hex": "#793c5e",
+"file": "0498.jpg"
+},
+{
+"line": "pearl",
+"code": "B420",
+"ginga": false,
+"hex": "#a17433",
+"file": "0499.jpg"
+},
+{
+"line": "pearl",
+"code": "B435",
+"ginga": false,
+"hex": "#ba8125",
+"file": "0500.jpg"
+},
+{
+"line": "pearl",
+"code": "B436",
+"ginga": false,
+"hex": "#b68951",
+"file": "0501.jpg"
+},
+{
+"line": "pearl",
+"code": "B469",
+"ginga": false,
+"hex": "#5c661c",
+"file": "0502.jpg"
+},
+{
+"line": "pearl",
+"code": "B517",
+"ginga": false,
+"hex": "#4070ad",
+"file": "0503.jpg"
+},
+{
+"line": "pearl",
+"code": "B552",
+"ginga": false,
+"hex": "#cac466",
+"file": "0504.jpg"
+},
+{
+"line": "pearl",
+"code": "B581",
+"ginga": false,
+"hex": "#a0a942",
+"file": "0505.jpg"
+},
+{
+"line": "pearl",
+"code": "B600",
+"ginga": false,
+"hex": "#d03b65",
+"file": "0506.jpg"
+},
+{
+"line": "pearl",
+"code": "B604",
+"ginga": false,
+"hex": "#e9a6b5",
+"file": "0507.jpg"
+},
+{
+"line": "pearl",
+"code": "B605",
+"ginga": false,
+"hex": "#eec3cb",
+"file": "0508.jpg"
+},
+{
+"line": "pearl",
+"code": "B606",
+"ginga": false,
+"hex": "#d33920",
+"file": "0509.jpg"
+},
+{
+"line": "pearl",
+"code": "B726",
+"ginga": false,
+"hex": "#fde487",
+"file": "0510.jpg"
+},
+{
+"line": "pearl",
+"code": "B727",
+"ginga": false,
+"hex": "#f1e494",
+"file": "0511.jpg"
+},
+{
+"line": "pearl",
+"code": "B781",
+"ginga": false,
+"hex": "#ac701b",
+"file": "0512.jpg"
+},
+{
+"line": "pearl",
+"code": "B782",
+"ginga": false,
+"hex": "#b58323",
+"file": "0513.jpg"
+},
+{
+"line": "pearl",
+"code": "B783",
+"ginga": false,
+"hex": "#c89028",
+"file": "0514.jpg"
+},
+{
+"line": "pearl",
+"code": "B798",
+"ginga": false,
+"hex": "#5b73c1",
+"file": "0515.jpg"
+},
+{
+"line": "pearl",
+"code": "B815",
+"ginga": false,
+"hex": "#a52d35",
+"file": "0516.jpg"
+},
+{
+"line": "pearl",
+"code": "B816",
+"ginga": false,
+"hex": "#be2b37",
+"file": "0517.jpg"
+},
+{
+"line": "pearl",
+"code": "B817",
+"ginga": false,
+"hex": "#c52622",
+"file": "0518.jpg"
+},
+{
+"line": "pearl",
+"code": "B905",
+"ginga": false,
+"hex": "#538138",
+"file": "0519.jpg"
+},
+{
+"line": "pearl",
+"code": "B922",
+"ginga": false,
+"hex": "#db7b4f",
+"file": "0520.jpg"
+},
+{
+"line": "pearl",
+"code": "B946",
+"ginga": false,
+"hex": "#f36c25",
+"file": "0521.jpg"
+},
+{
+"line": "pearl",
+"code": "B957",
+"ginga": false,
+"hex": "#f6a7b0",
+"file": "0522.jpg"
+},
+{
+"line": "pearl",
+"code": "B973",
+"ginga": false,
+"hex": "#dfce3e",
+"file": "0523.jpg"
+},
+{
+"line": "pearl",
+"code": "BJ107",
+"ginga": true,
+"hex": "#e15c73",
+"file": "0524.jpg"
+},
+{
+"line": "pearl",
+"code": "BJ115",
+"ginga": true,
+"hex": "#a12d32",
+"file": "0525.jpg"
+},
+{
+"line": "pearl",
+"code": "BJ116",
+"ginga": true,
+"hex": "#d16a94",
+"file": "0526.jpg"
+},
+{
+"line": "pearl",
+"code": "BJ52",
+"ginga": true,
+"hex": "#825e97",
+"file": "0527.jpg"
+},
+{
+"line": "pearl",
+"code": "BJD90",
+"ginga": true,
+"hex": "#e9c64b",
+"file": "0528.jpg"
+},
+{
+"line": "pearl",
+"code": "BLACK",
+"ginga": false,
+"hex": "#1e1f1f",
+"file": "0529.jpg"
+},
+{
+"line": "pearl",
+"code": "D169",
+"ginga": false,
+"hex": "#6d7f82",
+"file": "0530.jpg"
+},
+{
+"line": "pearl",
+"code": "D209",
+"ginga": false,
+"hex": "#bf92bb",
+"file": "0531.jpg"
+},
+{
+"line": "pearl",
+"code": "D211",
+"ginga": false,
+"hex": "#d8c7d5",
+"file": "0532.jpg"
+},
+{
+"line": "pearl",
+"code": "D512",
+"ginga": false,
+"hex": "#bc3646",
+"file": "0533.jpg"
+},
+{
+"line": "pearl",
+"code": "D955",
+"ginga": false,
+"hex": "#c5dabf",
+"file": "0534.jpg"
+},
+{
+"line": "pearl",
+"code": "ECRU",
+"ginga": false,
+"hex": "#e7e1d0",
+"file": "0535.jpg"
+},
+{
+"line": "pearl",
+"code": "J002",
+"ginga": true,
+"hex": "#ce9f75",
+"file": "0536.jpg"
+},
+{
+"line": "pearl",
+"code": "J004",
+"ginga": true,
+"hex": "#313a5d",
+"file": "0537.jpg"
+},
+{
+"line": "pearl",
+"code": "J005",
+"ginga": true,
+"hex": "#673c28",
+"file": "0538.jpg"
+},
+{
+"line": "pearl",
+"code": "J006",
+"ginga": true,
+"hex": "#8ab8a7",
+"file": "0539.jpg"
+},
+{
+"line": "pearl",
+"code": "J007",
+"ginga": true,
+"hex": "#5e2c5a",
+"file": "0540.jpg"
+},
+{
+"line": "pearl",
+"code": "J115",
+"ginga": true,
+"hex": "#31395c",
+"file": "0541.jpg"
+},
+{
+"line": "pearl",
+"code": "JB505",
+"ginga": true,
+"hex": "#b0b55e",
+"file": "0542.jpg"
+},
+{
+"line": "pearl",
+"code": "JD111",
+"ginga": true,
+"hex": "#c29124",
+"file": "0543.jpg"
+},
+{
+"line": "pearl",
+"code": "JD121",
+"ginga": true,
+"hex": "#4c5ca5",
+"file": "0544.jpg"
+},
+{
+"line": "pearl",
+"code": "JD125",
+"ginga": true,
+"hex": "#73b391",
+"file": "0545.jpg"
+},
+{
+"line": "pearl",
+"code": "JD53",
+"ginga": true,
+"hex": "#52545a",
+"file": "0546.jpg"
+},
+{
+"line": "pearl",
+"code": "JD69",
+"ginga": true,
+"hex": "#af6350",
+"file": "0547.jpg"
+},
+{
+"line": "pearl",
+"code": "JD99",
+"ginga": true,
+"hex": "#9c4856",
+"file": "0548.jpg"
+},
+{
+"line": "pearl",
+"code": "JS003",
+"ginga": true,
+"hex": "#ec9b5c",
+"file": "0549.jpg"
+},
+{
+"line": "pearl",
+"code": "JS101",
+"ginga": true,
+"hex": "#694778",
+"file": "0550.jpg"
+},
+{
+"line": "pearl",
+"code": "JS105",
+"ginga": true,
+"hex": "#b92639",
+"file": "0551.jpg"
+},
+{
+"line": "pearl",
+"code": "M50",
+"ginga": false,
+"hex": "#036630",
+"file": "0552.jpg"
+},
+{
+"line": "pearl",
+"code": "M52",
+"ginga": false,
+"hex": "#26365e",
+"file": "0553.jpg"
+},
+{
+"line": "pearl",
+"code": "M53",
+"ginga": false,
+"hex": "#3b44a1",
+"file": "0554.jpg"
+},
+{
+"line": "pearl",
+"code": "M54",
+"ginga": false,
+"hex": "#3a72c1",
+"file": "0555.jpg"
+},
+{
+"line": "pearl",
+"code": "M55",
+"ginga": false,
+"hex": "#4d382f",
+"file": "0556.jpg"
+},
+{
+"line": "pearl",
+"code": "M56",
+"ginga": false,
+"hex": "#ee900a",
+"file": "0557.jpg"
+},
+{
+"line": "pearl",
+"code": "M57",
+"ginga": false,
+"hex": "#4f262b",
+"file": "0558.jpg"
+},
+{
+"line": "pearl",
+"code": "M58",
+"ginga": false,
+"hex": "#f0eac7",
+"file": "0559.jpg"
+},
+{
+"line": "pearl",
+"code": "M70",
+"ginga": false,
+"hex": "#0c7841",
+"file": "0560.jpg"
+},
+{
+"line": "pearl",
+"code": "S500",
+"ginga": false,
+"hex": "#d9b927",
+"file": "0561.jpg"
+},
+{
+"line": "pearl",
+"code": "S501",
+"ginga": false,
+"hex": "#edb46a",
+"file": "0562.jpg"
+},
+{
+"line": "pearl",
+"code": "S502",
+"ginga": false,
+"hex": "#bfda8e",
+"file": "0563.jpg"
+},
+{
+"line": "pearl",
+"code": "S503",
+"ginga": false,
+"hex": "#f6a2ad",
+"file": "0564.jpg"
+},
+{
+"line": "pearl",
+"code": "S504",
+"ginga": false,
+"hex": "#e33c69",
+"file": "0565.jpg"
+},
+{
+"line": "pearl",
+"code": "S505",
+"ginga": false,
+"hex": "#fde6ed",
+"file": "0566.jpg"
+},
+{
+"line": "pearl",
+"code": "S506",
+"ginga": false,
+"hex": "#efee95",
+"file": "0567.jpg"
+},
+{
+"line": "pearl",
+"code": "S507",
+"ginga": false,
+"hex": "#d4b486",
+"file": "0568.jpg"
+},
+{
+"line": "pearl",
+"code": "S508",
+"ginga": false,
+"hex": "#bd1d1e",
+"file": "0569.jpg"
+},
+{
+"line": "pearl",
+"code": "S509",
+"ginga": false,
+"hex": "#9c7f30",
+"file": "0570.jpg"
+},
+{
+"line": "pearl",
+"code": "S510",
+"ginga": false,
+"hex": "#9c9d9d",
+"file": "0571.jpg"
+},
+{
+"line": "pearl",
+"code": "S511",
+"ginga": false,
+"hex": "#d9dad8",
+"file": "0572.jpg"
+},
+{
+"line": "pearl",
+"code": "S513",
+"ginga": false,
+"hex": "#80b9d5",
+"file": "0573.jpg"
+},
+{
+"line": "pearl",
+"code": "S514",
+"ginga": false,
+"hex": "#449cc4",
+"file": "0574.jpg"
+},
+{
+"line": "pearl",
+"code": "S515",
+"ginga": false,
+"hex": "#e54937",
+"file": "0575.jpg"
+},
+{
+"line": "pearl",
+"code": "S516",
+"ginga": false,
+"hex": "#166f85",
+"file": "0576.jpg"
+},
+{
+"line": "pearl",
+"code": "S517",
+"ginga": false,
+"hex": "#86ca81",
+"file": "0577.jpg"
+},
+{
+"line": "pearl",
+"code": "S518",
+"ginga": false,
+"hex": "#bf82b3",
+"file": "0578.jpg"
+},
+{
+"line": "pearl",
+"code": "S519",
+"ginga": false,
+"hex": "#d02b34",
+"file": "0579.jpg"
+},
+{
+"line": "pearl",
+"code": "S520",
+"ginga": false,
+"hex": "#5a8cba",
+"file": "0580.jpg"
+},
+{
+"line": "pearl",
+"code": "S521",
+"ginga": false,
+"hex": "#314987",
+"file": "0581.jpg"
+},
+{
+"line": "pearl",
+"code": "S523",
+"ginga": false,
+"hex": "#4a6da2",
+"file": "0582.jpg"
+},
+{
+"line": "pearl",
+"code": "S524",
+"ginga": false,
+"hex": "#7a3e84",
+"file": "0583.jpg"
+},
+{
+"line": "pearl",
+"code": "S525",
+"ginga": false,
+"hex": "#653d7a",
+"file": "0584.jpg"
+},
+{
+"line": "pearl",
+"code": "S526",
+"ginga": false,
+"hex": "#683d80",
+"file": "0585.jpg"
+},
+{
+"line": "pearl",
+"code": "S527",
+"ginga": false,
+"hex": "#e4b5b8",
+"file": "0586.jpg"
+},
+{
+"line": "pearl",
+"code": "S528",
+"ginga": false,
+"hex": "#d384a9",
+"file": "0587.jpg"
+},
+{
+"line": "pearl",
+"code": "S529",
+"ginga": false,
+"hex": "#ce8b95",
+"file": "0588.jpg"
+},
+{
+"line": "pearl",
+"code": "S530",
+"ginga": false,
+"hex": "#a2cdc0",
+"file": "0589.jpg"
+},
+{
+"line": "pearl",
+"code": "S531",
+"ginga": false,
+"hex": "#e59e82",
+"file": "0590.jpg"
+},
+{
+"line": "pearl",
+"code": "S532",
+"ginga": false,
+"hex": "#be3368",
+"file": "0591.jpg"
+},
+{
+"line": "pearl",
+"code": "S556",
+"ginga": false,
+"hex": "#c36b90",
+"file": "0592.jpg"
+},
+{
+"line": "pearl",
+"code": "S557",
+"ginga": false,
+"hex": "#e8c0c2",
+"file": "0593.jpg"
+},
+{
+"line": "pearl",
+"code": "S562",
+"ginga": false,
+"hex": "#8f8676",
+"file": "0594.jpg"
+},
+{
+"line": "pearl",
+"code": "S563",
+"ginga": false,
+"hex": "#cca689",
+"file": "0595.jpg"
+},
+{
+"line": "pearl",
+"code": "S564",
+"ginga": false,
+"hex": "#c27d57",
+"file": "0596.jpg"
+},
+{
+"line": "pearl",
+"code": "S57",
+"ginga": false,
+"hex": "#6b262a",
+"file": "0597.jpg"
+},
+{
+"line": "pearl",
+"code": "S75",
+"ginga": false,
+"hex": "#e7cda0",
+"file": "0598.jpg"
+},
+{
+"line": "pearl",
+"code": "S775",
+"ginga": false,
+"hex": "#7a8b4f",
+"file": "0599.jpg"
+},
+{
+"line": "pearl",
+"code": "WHITE",
+"ginga": false,
+"hex": "#f4f2e9",
+"file": "0600.jpg"
+},
+{
+"line": "plus",
+"code": "021",
+"ginga": false,
+"hex": "#f1dab8",
+"file": "0601.jpg"
+},
+{
+"line": "plus",
+"code": "024",
+"ginga": false,
+"hex": "#d6cecf",
+"file": "0602.jpg"
+},
+{
+"line": "plus",
+"code": "026",
+"ginga": false,
+"hex": "#bcc5bf",
+"file": "0603.jpg"
+},
+{
+"line": "plus",
+"code": "035",
+"ginga": false,
+"hex": "#efecde",
+"file": "0604.jpg"
+},
+{
+"line": "plus",
+"code": "3000",
+"ginga": false,
+"hex": "#babfd1",
+"file": "0605.jpg"
+},
+{
+"line": "plus",
+"code": "490",
+"ginga": false,
+"hex": "#c1c0c1",
+"file": "0606.jpg"
+},
+{
+"line": "plus",
+"code": "645",
+"ginga": false,
+"hex": "#d9dce1",
+"file": "0607.jpg"
+},
+{
+"line": "plus",
+"code": "7000",
+"ginga": false,
+"hex": "#a6aa9b",
+"file": "0608.jpg"
+},
+{
+"line": "plus",
+"code": "A109",
+"ginga": false,
+"hex": "#d1ccc4",
+"file": "0609.jpg"
+},
+{
+"line": "plus",
+"code": "A122",
+"ginga": false,
+"hex": "#dbeae6",
+"file": "0610.jpg"
+},
+{
+"line": "plus",
+"code": "A123",
+"ginga": false,
+"hex": "#ede6b7",
+"file": "0611.jpg"
+},
+{
+"line": "plus",
+"code": "BLACK",
+"ginga": false,
+"hex": "#b7b5b2",
+"file": "0612.jpg"
+},
+{
+"line": "plus",
+"code": "D3836",
+"ginga": false,
+"hex": "#d3c5c3",
+"file": "0613.jpg"
+},
+{
+"line": "plus",
+"code": "D520",
+"ginga": false,
+"hex": "#b3b5a2",
+"file": "0614.jpg"
+},
+{
+"line": "plus",
+"code": "J1000",
+"ginga": true,
+"hex": "#e3e1d9",
+"file": "0615.jpg"
+},
+{
+"line": "plus",
+"code": "J1001",
+"ginga": true,
+"hex": "#c5ced8",
+"file": "0616.jpg"
+},
+{
+"line": "plus",
+"code": "J1002",
+"ginga": true,
+"hex": "#e1d4d5",
+"file": "0617.jpg"
+},
+{
+"line": "plus",
+"code": "J1003",
+"ginga": true,
+"hex": "#e4e0dc",
+"file": "0618.jpg"
+},
+{
+"line": "plus",
+"code": "J1004",
+"ginga": true,
+"hex": "#dbcabe",
+"file": "0619.jpg"
+},
+{
+"line": "plus",
+"code": "J1005",
+"ginga": true,
+"hex": "#dae1e0",
+"file": "0620.jpg"
+},
+{
+"line": "plus",
+"code": "J1006",
+"ginga": true,
+"hex": "#dfdbd9",
+"file": "0621.jpg"
+},
+{
+"line": "plus",
+"code": "J1007",
+"ginga": true,
+"hex": "#dad5d4",
+"file": "0622.jpg"
+},
+{
+"line": "plus",
+"code": "J1008",
+"ginga": true,
+"hex": "#cfd2d2",
+"file": "0623.jpg"
+},
+{
+"line": "plus",
+"code": "J1009",
+"ginga": true,
+"hex": "#ded8c0",
+"file": "0624.jpg"
+},
+{
+"line": "plus",
+"code": "J1010",
+"ginga": true,
+"hex": "#e4e2dd",
+"file": "0625.jpg"
+},
+{
+"line": "plus",
+"code": "J1011",
+"ginga": true,
+"hex": "#e0e3de",
+"file": "0626.jpg"
+},
+{
+"line": "plus",
+"code": "J1012",
+"ginga": true,
+"hex": "#cbc1b0",
+"file": "0627.jpg"
+},
+{
+"line": "plus",
+"code": "J1895",
+"ginga": true,
+"hex": "#d8c5c7",
+"file": "0628.jpg"
+},
+{
+"line": "plus",
+"code": "J1900",
+"ginga": true,
+"hex": "#cfcecb",
+"file": "0629.jpg"
+},
+{
+"line": "plus",
+"code": "J1988",
+"ginga": true,
+"hex": "#d0c9b9",
+"file": "0630.jpg"
+},
+{
+"line": "plus",
+"code": "J1996",
+"ginga": true,
+"hex": "#dad3bc",
+"file": "0631.jpg"
+},
+{
+"line": "plus",
+"code": "J1997",
+"ginga": true,
+"hex": "#cfceca",
+"file": "0632.jpg"
+},
+{
+"line": "plus",
+"code": "J2126",
+"ginga": true,
+"hex": "#dabdb6",
+"file": "0633.jpg"
+},
+{
+"line": "plus",
+"code": "J2167",
+"ginga": true,
+"hex": "#dae7e4",
+"file": "0634.jpg"
+},
+{
+"line": "plus",
+"code": "J2626",
+"ginga": true,
+"hex": "#cbc1bb",
+"file": "0635.jpg"
+},
+{
+"line": "plus",
+"code": "J2627",
+"ginga": true,
+"hex": "#ccc5ae",
+"file": "0636.jpg"
+},
+{
+"line": "plus",
+"code": "J3245",
+"ginga": true,
+"hex": "#bbafa9",
+"file": "0637.jpg"
+},
+{
+"line": "plus",
+"code": "J3346",
+"ginga": true,
+"hex": "#c7c2c3",
+"file": "0638.jpg"
+},
+{
+"line": "plus",
+"code": "J4200",
+"ginga": true,
+"hex": "#c3c6c7",
+"file": "0639.jpg"
+},
+{
+"line": "plus",
+"code": "J546",
+"ginga": true,
+"hex": "#d1bfc0",
+"file": "0640.jpg"
+},
+{
+"line": "plus",
+"code": "J6317",
+"ginga": true,
+"hex": "#dcd8e1",
+"file": "0641.jpg"
+},
+{
+"line": "plus",
+"code": "J6318",
+"ginga": true,
+"hex": "#eee9d6",
+"file": "0642.jpg"
+},
+{
+"line": "plus",
+"code": "J652",
+"ginga": true,
+"hex": "#dad1cb",
+"file": "0643.jpg"
+},
+{
+"line": "plus",
+"code": "M51",
+"ginga": false,
+"hex": "#ece0cd",
+"file": "0644.jpg"
+},
+{
+"line": "plus",
+"code": "M57",
+"ginga": false,
+"hex": "#bfb5b4",
+"file": "0645.jpg"
+},
+{
+"line": "plus",
+"code": "OFFWHITE",
+"ginga": false,
+"hex": "#edece8",
+"file": "0646.jpg"
+},
+{
+"line": "plus",
+"code": "S501",
+"ginga": false,
+"hex": "#eeddc7",
+"file": "0647.jpg"
+},
+{
+"line": "plus",
+"code": "S505",
+"ginga": false,
+"hex": "#ede2e5",
+"file": "0648.jpg"
+},
+{
+"line": "plus",
+"code": "S507",
+"ginga": false,
+"hex": "#e5d9c8",
+"file": "0649.jpg"
+},
+{
+"line": "plus",
+"code": "S516",
+"ginga": false,
+"hex": "#b6cbcd",
+"file": "0650.jpg"
+},
+{
+"line": "plus",
+"code": "S518",
+"ginga": false,
+"hex": "#dbc6d3",
+"file": "0651.jpg"
+},
+{
+"line": "plus",
+"code": "S525",
+"ginga": false,
+"hex": "#c4b9c7",
+"file": "0652.jpg"
+},
+{
+"line": "plus",
+"code": "S526",
+"ginga": false,
+"hex": "#ddc6cd",
+"file": "0653.jpg"
+},
+{
+"line": "plus",
+"code": "S527",
+"ginga": false,
+"hex": "#ebdadc",
+"file": "0654.jpg"
+},
+{
+"line": "plus",
+"code": "S529",
+"ginga": false,
+"hex": "#e7d2d2",
+"file": "0655.jpg"
+},
+{
+"line": "plus",
+"code": "S532",
+"ginga": false,
+"hex": "#efdccf",
+"file": "0656.jpg"
+},
+{
+"line": "plus",
+"code": "S541",
+"ginga": false,
+"hex": "#e3dde3",
+"file": "0657.jpg"
+},
+{
+"line": "plus",
+"code": "WHITE",
+"ginga": false,
+"hex": "#ecebe7",
+"file": "0658.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "ابيض",
+"ginga": false,
+"hex": "#d5d3cb",
+"file": "0659.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "بني وسط",
+"ginga": false,
+"hex": "#10100e",
+"file": "0660.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "تركواز غامق",
+"ginga": false,
+"hex": "#2f4a4f",
+"file": "0661.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "تركواز فاتح",
+"ginga": false,
+"hex": "#70aeba",
+"file": "0662.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "ذهبي غامق",
+"ginga": false,
+"hex": "#b6750e",
+"file": "0663.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "رمادي غامق",
+"ginga": false,
+"hex": "#454540",
+"file": "0664.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "روز فاتح",
+"ginga": false,
+"hex": "#c9b4ac",
+"file": "0665.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "زيتي فاتح",
+"ginga": false,
+"hex": "#22271a",
+"file": "0666.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "سماوي فاتح",
+"ginga": false,
+"hex": "#9faba6",
+"file": "0667.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "فضي فاتح",
+"ginga": false,
+"hex": "#adac97",
+"file": "0668.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "كافيه غامق",
+"ginga": false,
+"hex": "#796646",
+"file": "0669.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "مينت فاتح",
+"ginga": false,
+"hex": "#757a61",
+"file": "0670.jpg"
+},
+{
+"line": "poly_macrame",
+"code": "نحاسي غامق",
+"ginga": false,
+"hex": "#5e3412",
+"file": "0671.jpg"
+},
+{
+"line": "sewing",
+"code": "004",
+"ginga": false,
+"hex": "#a6a39d",
+"file": "0672.jpg"
+},
+{
+"line": "sewing",
+"code": "037",
+"ginga": false,
+"hex": "#b6b1b0",
+"file": "0673.jpg"
+},
+{
+"line": "sewing",
+"code": "046",
+"ginga": false,
+"hex": "#1f2123",
+"file": "0674.jpg"
+},
+{
+"line": "sewing",
+"code": "1016",
+"ginga": false,
+"hex": "#d3ba9c",
+"file": "0675.jpg"
+},
+{
+"line": "sewing",
+"code": "1021",
+"ginga": false,
+"hex": "#492a20",
+"file": "0676.jpg"
+},
+{
+"line": "sewing",
+"code": "1049",
+"ginga": false,
+"hex": "#a76720",
+"file": "0677.jpg"
+},
+{
+"line": "sewing",
+"code": "1080",
+"ginga": false,
+"hex": "#61605b",
+"file": "0678.jpg"
+},
+{
+"line": "sewing",
+"code": "1080-G2",
+"ginga": false,
+"hex": "#7f8095",
+"file": "0679.jpg"
+},
+{
+"line": "sewing",
+"code": "1093",
+"ginga": false,
+"hex": "#bdc0dd",
+"file": "0680.jpg"
+},
+{
+"line": "sewing",
+"code": "1095",
+"ginga": false,
+"hex": "#ebdbc4",
+"file": "0681.jpg"
+},
+{
+"line": "sewing",
+"code": "1101",
+"ginga": false,
+"hex": "#d64666",
+"file": "0682.jpg"
+},
+{
+"line": "sewing",
+"code": "1103",
+"ginga": false,
+"hex": "#2b2e3d",
+"file": "0683.jpg"
+},
+{
+"line": "sewing",
+"code": "1108",
+"ginga": false,
+"hex": "#eee9c9",
+"file": "0684.jpg"
+},
+{
+"line": "sewing",
+"code": "1113",
+"ginga": false,
+"hex": "#9b0f18",
+"file": "0685.jpg"
+},
+{
+"line": "sewing",
+"code": "1141",
+"ginga": false,
+"hex": "#bfb8b6",
+"file": "0686.jpg"
+},
+{
+"line": "sewing",
+"code": "1142",
+"ginga": false,
+"hex": "#d6d0cf",
+"file": "0687.jpg"
+},
+{
+"line": "sewing",
+"code": "1147",
+"ginga": false,
+"hex": "#f6f3e5",
+"file": "0688.jpg"
+},
+{
+"line": "sewing",
+"code": "1149",
+"ginga": false,
+"hex": "#d4ced0",
+"file": "0689.jpg"
+},
+{
+"line": "sewing",
+"code": "1150",
+"ginga": false,
+"hex": "#a39995",
+"file": "0690.jpg"
+},
+{
+"line": "sewing",
+"code": "1178",
+"ginga": false,
+"hex": "#875b57",
+"file": "0691.jpg"
+},
+{
+"line": "sewing",
+"code": "126",
+"ginga": false,
+"hex": "#554237",
+"file": "0692.jpg"
+},
+{
+"line": "sewing",
+"code": "136",
+"ginga": false,
+"hex": "#202125",
+"file": "0693.jpg"
+},
+{
+"line": "sewing",
+"code": "1706",
+"ginga": false,
+"hex": "#dab7f6",
+"file": "0694.jpg"
+},
+{
+"line": "sewing",
+"code": "185",
+"ginga": false,
+"hex": "#734c34",
+"file": "0695.jpg"
+},
+{
+"line": "sewing",
+"code": "186",
+"ginga": false,
+"hex": "#cd9cac",
+"file": "0696.jpg"
+},
+{
+"line": "sewing",
+"code": "1988",
+"ginga": false,
+"hex": "#bcaa9c",
+"file": "0697.jpg"
+},
+{
+"line": "sewing",
+"code": "2017",
+"ginga": false,
+"hex": "#ebe0cf",
+"file": "0698.jpg"
+},
+{
+"line": "sewing",
+"code": "2023",
+"ginga": false,
+"hex": "#dbc49b",
+"file": "0699.jpg"
+},
+{
+"line": "sewing",
+"code": "2023-G2",
+"ginga": false,
+"hex": "#cbbcb0",
+"file": "0700.jpg"
+},
+{
+"line": "sewing",
+"code": "2054",
+"ginga": false,
+"hex": "#dfb5be",
+"file": "0701.jpg"
+},
+{
+"line": "sewing",
+"code": "2058",
+"ginga": false,
+"hex": "#fbcbc8",
+"file": "0702.jpg"
+},
+{
+"line": "sewing",
+"code": "2075",
+"ginga": false,
+"hex": "#fbb2be",
+"file": "0703.jpg"
+},
+{
+"line": "sewing",
+"code": "2156",
+"ginga": false,
+"hex": "#cd5005",
+"file": "0704.jpg"
+},
+{
+"line": "sewing",
+"code": "2187",
+"ginga": false,
+"hex": "#764327",
+"file": "0705.jpg"
+},
+{
+"line": "sewing",
+"code": "2380",
+"ginga": false,
+"hex": "#c9aac3",
+"file": "0706.jpg"
+},
+{
+"line": "sewing",
+"code": "2421",
+"ginga": false,
+"hex": "#adc0de",
+"file": "0707.jpg"
+},
+{
+"line": "sewing",
+"code": "2678",
+"ginga": false,
+"hex": "#2f333f",
+"file": "0708.jpg"
+},
+{
+"line": "sewing",
+"code": "2743",
+"ginga": false,
+"hex": "#4f4f4e",
+"file": "0709.jpg"
+},
+{
+"line": "sewing",
+"code": "275",
+"ginga": false,
+"hex": "#dcc550",
+"file": "0710.jpg"
+},
+{
+"line": "sewing",
+"code": "2880",
+"ginga": false,
+"hex": "#d5c74e",
+"file": "0711.jpg"
+},
+{
+"line": "sewing",
+"code": "300",
+"ginga": false,
+"hex": "#a04f52",
+"file": "0712.jpg"
+},
+{
+"line": "sewing",
+"code": "3066",
+"ginga": false,
+"hex": "#a2a19e",
+"file": "0713.jpg"
+},
+{
+"line": "sewing",
+"code": "309",
+"ginga": false,
+"hex": "#a84864",
+"file": "0714.jpg"
+},
+{
+"line": "sewing",
+"code": "322",
+"ginga": false,
+"hex": "#c3b3a0",
+"file": "0715.jpg"
+},
+{
+"line": "sewing",
+"code": "352",
+"ginga": false,
+"hex": "#caca81",
+"file": "0716.jpg"
+},
+{
+"line": "sewing",
+"code": "354",
+"ginga": false,
+"hex": "#dbb716",
+"file": "0717.jpg"
+},
+{
+"line": "sewing",
+"code": "381",
+"ginga": false,
+"hex": "#2f417a",
+"file": "0718.jpg"
+},
+{
+"line": "sewing",
+"code": "386",
+"ginga": false,
+"hex": "#beb09f",
+"file": "0719.jpg"
+},
+{
+"line": "sewing",
+"code": "395",
+"ginga": false,
+"hex": "#b18868",
+"file": "0720.jpg"
+},
+{
+"line": "sewing",
+"code": "4",
+"ginga": false,
+"hex": "#2d3572",
+"file": "0721.jpg"
+},
+{
+"line": "sewing",
+"code": "410",
+"ginga": false,
+"hex": "#d3af09",
+"file": "0722.jpg"
+},
+{
+"line": "sewing",
+"code": "412",
+"ginga": false,
+"hex": "#a19d99",
+"file": "0723.jpg"
+},
+{
+"line": "sewing",
+"code": "412-G2",
+"ginga": false,
+"hex": "#a8a6bc",
+"file": "0724.jpg"
+},
+{
+"line": "sewing",
+"code": "418",
+"ginga": false,
+"hex": "#e73f64",
+"file": "0725.jpg"
+},
+{
+"line": "sewing",
+"code": "420",
+"ginga": false,
+"hex": "#2d2e34",
+"file": "0726.jpg"
+},
+{
+"line": "sewing",
+"code": "426",
+"ginga": false,
+"hex": "#ae5c17",
+"file": "0727.jpg"
+},
+{
+"line": "sewing",
+"code": "428",
+"ginga": false,
+"hex": "#92acfb",
+"file": "0728.jpg"
+},
+{
+"line": "sewing",
+"code": "433",
+"ginga": false,
+"hex": "#5c191d",
+"file": "0729.jpg"
+},
+{
+"line": "sewing",
+"code": "439",
+"ginga": false,
+"hex": "#d2c8b6",
+"file": "0730.jpg"
+},
+{
+"line": "sewing",
+"code": "449",
+"ginga": false,
+"hex": "#cec7bd",
+"file": "0731.jpg"
+},
+{
+"line": "sewing",
+"code": "45",
+"ginga": false,
+"hex": "#66401e",
+"file": "0732.jpg"
+},
+{
+"line": "sewing",
+"code": "451",
+"ginga": false,
+"hex": "#e7e4a2",
+"file": "0733.jpg"
+},
+{
+"line": "sewing",
+"code": "453",
+"ginga": false,
+"hex": "#afbbd6",
+"file": "0734.jpg"
+},
+{
+"line": "sewing",
+"code": "454",
+"ginga": false,
+"hex": "#e8c8cd",
+"file": "0735.jpg"
+},
+{
+"line": "sewing",
+"code": "459",
+"ginga": false,
+"hex": "#a32438",
+"file": "0736.jpg"
+},
+{
+"line": "sewing",
+"code": "463",
+"ginga": false,
+"hex": "#341f21",
+"file": "0737.jpg"
+},
+{
+"line": "sewing",
+"code": "470",
+"ginga": false,
+"hex": "#cbcbee",
+"file": "0738.jpg"
+},
+{
+"line": "sewing",
+"code": "471",
+"ginga": false,
+"hex": "#c0a4be",
+"file": "0739.jpg"
+},
+{
+"line": "sewing",
+"code": "481",
+"ginga": false,
+"hex": "#292b30",
+"file": "0740.jpg"
+},
+{
+"line": "sewing",
+"code": "485",
+"ginga": false,
+"hex": "#f3f2e5",
+"file": "0741.jpg"
+},
+{
+"line": "sewing",
+"code": "487",
+"ginga": false,
+"hex": "#e3e0b8",
+"file": "0742.jpg"
+},
+{
+"line": "sewing",
+"code": "490",
+"ginga": false,
+"hex": "#d9ce5b",
+"file": "0743.jpg"
+},
+{
+"line": "sewing",
+"code": "515",
+"ginga": false,
+"hex": "#217343",
+"file": "0744.jpg"
+},
+{
+"line": "sewing",
+"code": "531",
+"ginga": false,
+"hex": "#d8cad7",
+"file": "0745.jpg"
+},
+{
+"line": "sewing",
+"code": "534",
+"ginga": false,
+"hex": "#2b2221",
+"file": "0746.jpg"
+},
+{
+"line": "sewing",
+"code": "536",
+"ginga": false,
+"hex": "#f67d6d",
+"file": "0747.jpg"
+},
+{
+"line": "sewing",
+"code": "544",
+"ginga": false,
+"hex": "#e4dbe5",
+"file": "0748.jpg"
+},
+{
+"line": "sewing",
+"code": "548",
+"ginga": false,
+"hex": "#bdad8f",
+"file": "0749.jpg"
+},
+{
+"line": "sewing",
+"code": "551",
+"ginga": false,
+"hex": "#61243c",
+"file": "0750.jpg"
+},
+{
+"line": "sewing",
+"code": "574",
+"ginga": false,
+"hex": "#9a8ab7",
+"file": "0751.jpg"
+},
+{
+"line": "sewing",
+"code": "575",
+"ginga": false,
+"hex": "#272b30",
+"file": "0752.jpg"
+},
+{
+"line": "sewing",
+"code": "578",
+"ginga": false,
+"hex": "#77141c",
+"file": "0753.jpg"
+},
+{
+"line": "sewing",
+"code": "590",
+"ginga": false,
+"hex": "#dda107",
+"file": "0754.jpg"
+},
+{
+"line": "sewing",
+"code": "591",
+"ginga": false,
+"hex": "#fe7949",
+"file": "0755.jpg"
+},
+{
+"line": "sewing",
+"code": "601",
+"ginga": false,
+"hex": "#c7776f",
+"file": "0756.jpg"
+},
+{
+"line": "sewing",
+"code": "605",
+"ginga": false,
+"hex": "#dfdadf",
+"file": "0757.jpg"
+},
+{
+"line": "sewing",
+"code": "619",
+"ginga": false,
+"hex": "#ac8f81",
+"file": "0758.jpg"
+},
+{
+"line": "sewing",
+"code": "653",
+"ginga": false,
+"hex": "#972436",
+"file": "0759.jpg"
+},
+{
+"line": "sewing",
+"code": "653-G2",
+"ginga": false,
+"hex": "#ad2c67",
+"file": "0760.jpg"
+},
+{
+"line": "sewing",
+"code": "666",
+"ginga": false,
+"hex": "#f2a5b5",
+"file": "0761.jpg"
+},
+{
+"line": "sewing",
+"code": "674",
+"ginga": false,
+"hex": "#a27252",
+"file": "0762.jpg"
+},
+{
+"line": "sewing",
+"code": "675",
+"ginga": false,
+"hex": "#d77c54",
+"file": "0763.jpg"
+},
+{
+"line": "sewing",
+"code": "683",
+"ginga": false,
+"hex": "#f7bba5",
+"file": "0764.jpg"
+},
+{
+"line": "sewing",
+"code": "694",
+"ginga": false,
+"hex": "#879b8e",
+"file": "0765.jpg"
+},
+{
+"line": "sewing",
+"code": "7017",
+"ginga": false,
+"hex": "#e3e1d0",
+"file": "0766.jpg"
+},
+{
+"line": "sewing",
+"code": "704",
+"ginga": false,
+"hex": "#93675e",
+"file": "0767.jpg"
+},
+{
+"line": "sewing",
+"code": "704-G2",
+"ginga": false,
+"hex": "#b5808d",
+"file": "0768.jpg"
+},
+{
+"line": "sewing",
+"code": "706",
+"ginga": false,
+"hex": "#dda7ba",
+"file": "0769.jpg"
+},
+{
+"line": "sewing",
+"code": "71",
+"ginga": false,
+"hex": "#8a9eac",
+"file": "0770.jpg"
+},
+{
+"line": "sewing",
+"code": "712",
+"ginga": false,
+"hex": "#c4af91",
+"file": "0771.jpg"
+},
+{
+"line": "sewing",
+"code": "725",
+"ginga": false,
+"hex": "#575439",
+"file": "0772.jpg"
+},
+{
+"line": "sewing",
+"code": "753",
+"ginga": false,
+"hex": "#414132",
+"file": "0773.jpg"
+},
+{
+"line": "sewing",
+"code": "764",
+"ginga": false,
+"hex": "#d4d2f7",
+"file": "0774.jpg"
+},
+{
+"line": "sewing",
+"code": "775",
+"ginga": false,
+"hex": "#c73554",
+"file": "0775.jpg"
+},
+{
+"line": "sewing",
+"code": "777",
+"ginga": false,
+"hex": "#3c4f6d",
+"file": "0776.jpg"
+},
+{
+"line": "sewing",
+"code": "780",
+"ginga": false,
+"hex": "#69b087",
+"file": "0777.jpg"
+},
+{
+"line": "sewing",
+"code": "787",
+"ginga": false,
+"hex": "#b47e2c",
+"file": "0778.jpg"
+},
+{
+"line": "sewing",
+"code": "796",
+"ginga": false,
+"hex": "#1f6e5a",
+"file": "0779.jpg"
+},
+{
+"line": "sewing",
+"code": "812",
+"ginga": false,
+"hex": "#b71c1c",
+"file": "0780.jpg"
+},
+{
+"line": "sewing",
+"code": "821",
+"ginga": false,
+"hex": "#d7c2b9",
+"file": "0781.jpg"
+},
+{
+"line": "sewing",
+"code": "844",
+"ginga": false,
+"hex": "#292d2e",
+"file": "0782.jpg"
+},
+{
+"line": "sewing",
+"code": "848",
+"ginga": false,
+"hex": "#cd9894",
+"file": "0783.jpg"
+},
+{
+"line": "sewing",
+"code": "850",
+"ginga": false,
+"hex": "#444340",
+"file": "0784.jpg"
+},
+{
+"line": "sewing",
+"code": "8515",
+"ginga": false,
+"hex": "#762629",
+"file": "0785.jpg"
+},
+{
+"line": "sewing",
+"code": "859",
+"ginga": false,
+"hex": "#1f2027",
+"file": "0786.jpg"
+},
+{
+"line": "sewing",
+"code": "859-G2",
+"ginga": false,
+"hex": "#393b67",
+"file": "0787.jpg"
+},
+{
+"line": "sewing",
+"code": "862",
+"ginga": false,
+"hex": "#253984",
+"file": "0788.jpg"
+},
+{
+"line": "sewing",
+"code": "886",
+"ginga": false,
+"hex": "#2e386d",
+"file": "0789.jpg"
+},
+{
+"line": "sewing",
+"code": "922",
+"ginga": false,
+"hex": "#41413f",
+"file": "0790.jpg"
+},
+{
+"line": "sewing",
+"code": "923",
+"ginga": false,
+"hex": "#a2171d",
+"file": "0791.jpg"
+},
+{
+"line": "sewing",
+"code": "929",
+"ginga": false,
+"hex": "#e2b8a3",
+"file": "0792.jpg"
+},
+{
+"line": "sewing",
+"code": "932",
+"ginga": false,
+"hex": "#9d9c98",
+"file": "0793.jpg"
+},
+{
+"line": "sewing",
+"code": "934",
+"ginga": false,
+"hex": "#514e2b",
+"file": "0794.jpg"
+},
+{
+"line": "sewing",
+"code": "960",
+"ginga": false,
+"hex": "#efe2d0",
+"file": "0795.jpg"
+},
+{
+"line": "sewing",
+"code": "975",
+"ginga": false,
+"hex": "#e1d2b9",
+"file": "0796.jpg"
+},
+{
+"line": "sewing",
+"code": "BLACK",
+"ginga": false,
+"hex": "#262626",
+"file": "0797.jpg"
+},
+{
+"line": "sewing",
+"code": "EKRU",
+"ginga": false,
+"hex": "#baa470",
+"file": "0798.jpg"
+},
+{
+"line": "super_plus",
+"code": "012",
+"ginga": false,
+"hex": "#eed9b9",
+"file": "0799.jpg"
+},
+{
+"line": "super_plus",
+"code": "013",
+"ginga": false,
+"hex": "#c9bcb4",
+"file": "0800.jpg"
+},
+{
+"line": "super_plus",
+"code": "014",
+"ginga": false,
+"hex": "#b5adb5",
+"file": "0801.jpg"
+},
+{
+"line": "super_plus",
+"code": "017",
+"ginga": false,
+"hex": "#b2b3a7",
+"file": "0802.jpg"
+},
+{
+"line": "super_plus",
+"code": "021",
+"ginga": false,
+"hex": "#bfbab4",
+"file": "0803.jpg"
+},
+{
+"line": "super_plus",
+"code": "024",
+"ginga": false,
+"hex": "#d8d1d3",
+"file": "0804.jpg"
+},
+{
+"line": "super_plus",
+"code": "025",
+"ginga": false,
+"hex": "#b9cec6",
+"file": "0805.jpg"
+},
+{
+"line": "super_plus",
+"code": "026",
+"ginga": false,
+"hex": "#cbd4d0",
+"file": "0806.jpg"
+},
+{
+"line": "super_plus",
+"code": "028",
+"ginga": false,
+"hex": "#e1d1c2",
+"file": "0807.jpg"
+},
+{
+"line": "super_plus",
+"code": "035",
+"ginga": false,
+"hex": "#efeada",
+"file": "0808.jpg"
+},
+{
+"line": "super_plus",
+"code": "037",
+"ginga": false,
+"hex": "#bfd1dc",
+"file": "0809.jpg"
+},
+{
+"line": "super_plus",
+"code": "038",
+"ginga": false,
+"hex": "#d4cbbd",
+"file": "0810.jpg"
+},
+{
+"line": "super_plus",
+"code": "039",
+"ginga": false,
+"hex": "#b4b3b4",
+"file": "0811.jpg"
+},
+{
+"line": "super_plus",
+"code": "104",
+"ginga": false,
+"hex": "#eee5bb",
+"file": "0812.jpg"
+},
+{
+"line": "super_plus",
+"code": "205",
+"ginga": false,
+"hex": "#d9d7cf",
+"file": "0813.jpg"
+},
+{
+"line": "super_plus",
+"code": "215",
+"ginga": false,
+"hex": "#dbd6cb",
+"file": "0814.jpg"
+},
+{
+"line": "super_plus",
+"code": "230",
+"ginga": false,
+"hex": "#d2cbbf",
+"file": "0815.jpg"
+},
+{
+"line": "super_plus",
+"code": "236",
+"ginga": false,
+"hex": "#dcdbd1",
+"file": "0816.jpg"
+},
+{
+"line": "super_plus",
+"code": "3000",
+"ginga": false,
+"hex": "#bdbfd1",
+"file": "0817.jpg"
+},
+{
+"line": "super_plus",
+"code": "315",
+"ginga": false,
+"hex": "#cec7b9",
+"file": "0818.jpg"
+},
+{
+"line": "super_plus",
+"code": "316",
+"ginga": false,
+"hex": "#dad3c4",
+"file": "0819.jpg"
+},
+{
+"line": "super_plus",
+"code": "320",
+"ginga": false,
+"hex": "#e7dad1",
+"file": "0820.jpg"
+},
+{
+"line": "super_plus",
+"code": "330",
+"ginga": false,
+"hex": "#cfcac0",
+"file": "0821.jpg"
+},
+{
+"line": "super_plus",
+"code": "4000",
+"ginga": false,
+"hex": "#bdb1b1",
+"file": "0822.jpg"
+},
+{
+"line": "super_plus",
+"code": "425",
+"ginga": false,
+"hex": "#dedddb",
+"file": "0823.jpg"
+},
+{
+"line": "super_plus",
+"code": "460",
+"ginga": false,
+"hex": "#cdcece",
+"file": "0824.jpg"
+},
+{
+"line": "super_plus",
+"code": "490",
+"ginga": false,
+"hex": "#bdbbba",
+"file": "0825.jpg"
+},
+{
+"line": "super_plus",
+"code": "6000",
+"ginga": false,
+"hex": "#d4bdb3",
+"file": "0826.jpg"
+},
+{
+"line": "super_plus",
+"code": "645",
+"ginga": false,
+"hex": "#d6d9e0",
+"file": "0827.jpg"
+},
+{
+"line": "super_plus",
+"code": "720",
+"ginga": false,
+"hex": "#dde0d7",
+"file": "0828.jpg"
+},
+{
+"line": "super_plus",
+"code": "A104",
+"ginga": false,
+"hex": "#ebe2cb",
+"file": "0829.jpg"
+},
+{
+"line": "super_plus",
+"code": "A105",
+"ginga": false,
+"hex": "#ebcfab",
+"file": "0830.jpg"
+},
+{
+"line": "super_plus",
+"code": "A108",
+"ginga": false,
+"hex": "#b6b5b5",
+"file": "0831.jpg"
+},
+{
+"line": "super_plus",
+"code": "A109",
+"ginga": false,
+"hex": "#c2bdb4",
+"file": "0832.jpg"
+},
+{
+"line": "super_plus",
+"code": "A121",
+"ginga": false,
+"hex": "#dfddd8",
+"file": "0833.jpg"
+},
+{
+"line": "super_plus",
+"code": "A122",
+"ginga": false,
+"hex": "#cad7d2",
+"file": "0834.jpg"
+},
+{
+"line": "super_plus",
+"code": "A123",
+"ginga": false,
+"hex": "#e0d7a8",
+"file": "0835.jpg"
+},
+{
+"line": "super_plus",
+"code": "B165",
+"ginga": false,
+"hex": "#e0ddc2",
+"file": "0836.jpg"
+},
+{
+"line": "super_plus",
+"code": "B316",
+"ginga": false,
+"hex": "#cfc2ba",
+"file": "0837.jpg"
+},
+{
+"line": "super_plus",
+"code": "B3821",
+"ginga": false,
+"hex": "#d4cba5",
+"file": "0838.jpg"
+},
+{
+"line": "super_plus",
+"code": "B4022",
+"ginga": false,
+"hex": "#cdcbca",
+"file": "0839.jpg"
+},
+{
+"line": "super_plus",
+"code": "B967",
+"ginga": false,
+"hex": "#e1cbb1",
+"file": "0840.jpg"
+},
+{
+"line": "super_plus",
+"code": "BLACK",
+"ginga": false,
+"hex": "#a5a4a1",
+"file": "0841.jpg"
+},
+{
+"line": "super_plus",
+"code": "D211",
+"ginga": false,
+"hex": "#e7dee1",
+"file": "0842.jpg"
+},
+{
+"line": "super_plus",
+"code": "M-50",
+"ginga": false,
+"hex": "#b1c5b7",
+"file": "0843.jpg"
+},
+{
+"line": "super_plus",
+"code": "M-51",
+"ginga": false,
+"hex": "#dccfbd",
+"file": "0844.jpg"
+},
+{
+"line": "super_plus",
+"code": "M-55",
+"ginga": false,
+"hex": "#b8b2af",
+"file": "0845.jpg"
+},
+{
+"line": "super_plus",
+"code": "M-57",
+"ginga": false,
+"hex": "#beb5b4",
+"file": "0846.jpg"
+},
+{
+"line": "super_plus",
+"code": "M-58",
+"ginga": false,
+"hex": "#eae4d6",
+"file": "0847.jpg"
+},
+{
+"line": "super_plus",
+"code": "M53",
+"ginga": false,
+"hex": "#b5b6c9",
+"file": "0848.jpg"
+},
+{
+"line": "super_plus",
+"code": "OFFWHITE",
+"ginga": false,
+"hex": "#dad9d5",
+"file": "0849.jpg"
+},
+{
+"line": "super_plus",
+"code": "S006",
+"ginga": false,
+"hex": "#d4c5a3",
+"file": "0850.jpg"
+},
+{
+"line": "super_plus",
+"code": "S500",
+"ginga": false,
+"hex": "#efebd1",
+"file": "0851.jpg"
+},
+{
+"line": "super_plus",
+"code": "S5002",
+"ginga": false,
+"hex": "#cfdac2",
+"file": "0852.jpg"
+},
+{
+"line": "super_plus",
+"code": "S502",
+"ginga": false,
+"hex": "#e0e6d3",
+"file": "0853.jpg"
+},
+{
+"line": "super_plus",
+"code": "S503",
+"ginga": false,
+"hex": "#edd0d2",
+"file": "0854.jpg"
+},
+{
+"line": "super_plus",
+"code": "S504",
+"ginga": false,
+"hex": "#e3b5bc",
+"file": "0855.jpg"
+},
+{
+"line": "super_plus",
+"code": "S505",
+"ginga": false,
+"hex": "#ede2e2",
+"file": "0856.jpg"
+},
+{
+"line": "super_plus",
+"code": "S507",
+"ginga": false,
+"hex": "#e4d6c7",
+"file": "0857.jpg"
+},
+{
+"line": "super_plus",
+"code": "S508",
+"ginga": false,
+"hex": "#e0b4b3",
+"file": "0858.jpg"
+},
+{
+"line": "super_plus",
+"code": "S511",
+"ginga": false,
+"hex": "#e3e3df",
+"file": "0859.jpg"
+},
+{
+"line": "super_plus",
+"code": "S512",
+"ginga": false,
+"hex": "#ceafb0",
+"file": "0860.jpg"
+},
+{
+"line": "super_plus",
+"code": "S513",
+"ginga": false,
+"hex": "#c8dce4",
+"file": "0861.jpg"
+},
+{
+"line": "super_plus",
+"code": "S516",
+"ginga": false,
+"hex": "#b3c4c7",
+"file": "0862.jpg"
+},
+{
+"line": "super_plus",
+"code": "S518",
+"ginga": false,
+"hex": "#ddcad6",
+"file": "0863.jpg"
+},
+{
+"line": "super_plus",
+"code": "S519",
+"ginga": false,
+"hex": "#d8afaf",
+"file": "0864.jpg"
+},
+{
+"line": "super_plus",
+"code": "S522",
+"ginga": false,
+"hex": "#bfc0d2",
+"file": "0865.jpg"
+},
+{
+"line": "super_plus",
+"code": "S524",
+"ginga": false,
+"hex": "#cab6c9",
+"file": "0866.jpg"
+},
+{
+"line": "super_plus",
+"code": "S525",
+"ginga": false,
+"hex": "#cbc0cc",
+"file": "0867.jpg"
+},
+{
+"line": "super_plus",
+"code": "S526",
+"ginga": false,
+"hex": "#bab2bb",
+"file": "0868.jpg"
+},
+{
+"line": "super_plus",
+"code": "S527",
+"ginga": false,
+"hex": "#ecdddb",
+"file": "0869.jpg"
+},
+{
+"line": "super_plus",
+"code": "S528",
+"ginga": false,
+"hex": "#e5cdd4",
+"file": "0870.jpg"
+},
+{
+"line": "super_plus",
+"code": "S529",
+"ginga": false,
+"hex": "#e3cccd",
+"file": "0871.jpg"
+},
+{
+"line": "super_plus",
+"code": "S531",
+"ginga": false,
+"hex": "#e8cec3",
+"file": "0872.jpg"
+},
+{
+"line": "super_plus",
+"code": "S532",
+"ginga": false,
+"hex": "#ccafb8",
+"file": "0873.jpg"
+},
+{
+"line": "super_plus",
+"code": "S533",
+"ginga": false,
+"hex": "#c1c3cb",
+"file": "0874.jpg"
+},
+{
+"line": "super_plus",
+"code": "S534",
+"ginga": false,
+"hex": "#e0d8db",
+"file": "0875.jpg"
+},
+{
+"line": "super_plus",
+"code": "S535",
+"ginga": false,
+"hex": "#efdacd",
+"file": "0876.jpg"
+},
+{
+"line": "super_plus",
+"code": "S537",
+"ginga": false,
+"hex": "#e1e8de",
+"file": "0877.jpg"
+},
+{
+"line": "super_plus",
+"code": "S541",
+"ginga": false,
+"hex": "#dfd6dd",
+"file": "0878.jpg"
+},
+{
+"line": "super_plus",
+"code": "S542",
+"ginga": false,
+"hex": "#d7d2ca",
+"file": "0879.jpg"
+},
+{
+"line": "super_plus",
+"code": "S543",
+"ginga": false,
+"hex": "#dddbd2",
+"file": "0880.jpg"
+},
+{
+"line": "super_plus",
+"code": "S544",
+"ginga": false,
+"hex": "#d6d3ca",
+"file": "0881.jpg"
+},
+{
+"line": "super_plus",
+"code": "S545",
+"ginga": false,
+"hex": "#dad2c8",
+"file": "0882.jpg"
+},
+{
+"line": "super_plus",
+"code": "S775",
+"ginga": false,
+"hex": "#cccebb",
+"file": "0883.jpg"
+},
+{
+"line": "super_plus",
+"code": "S800",
+"ginga": false,
+"hex": "#b6c4c5",
+"file": "0884.jpg"
+}
+],
+"links": [
+{
+"product": "علبة برايت كوتن بارليه - لون واحد",
+"line": "pearl",
+"ginga": false
+},
+{
+"product": "كوتن بارليه عادي - بالكيلو",
+"line": "pearl",
+"ginga": false
+},
+{
+"product": "علبة برايت كوتن بارليه - متعدد الدرجات",
+"line": "pearl",
+"ginga": true
+},
+{
+"product": "كوتن بارليه متعدد الدرجات - بالكيلو",
+"line": "pearl",
+"ginga": true
+},
+{
+"product": "علبة الأهرام سوبر بارليه - لون واحد",
+"line": "fine_pearl",
+"ginga": false
+},
+{
+"product": "علبة الأهرام سوبر بارليه - متعدد الدرجات",
+"line": "fine_pearl",
+"ginga": true
+},
+{
+"product": "علبة شلات مالونيه (خيوط تطريز)",
+"line": "floss",
+"ginga": false
+},
+{
+"product": "شلات كروشيه بلس 100 جم",
+"line": "plus",
+"ginga": false
+},
+{
+"product": "شلات كروشيه 100 جم - متعدد الدرجات",
+"line": "plus",
+"ginga": true
+},
+{
+"product": "شلات كروشيه سوبر بلس 100 جم",
+"line": "super_plus",
+"ginga": false
+},
+{
+"product": "بكر كروشيه 50 جم",
+"line": "crochet",
+"ginga": false
+},
+{
+"product": "شلات أكريليك فلافي 100 جم",
+"line": "acrylic",
+"ginga": false
+},
+{
+"product": "شلات كتان (خيش) ألوان - بالكيلو",
+"line": "linen",
+"ginga": false
+},
+{
+"product": "مكرمية قطن ألوان مبروم - بالكيلو",
+"line": "macrame",
+"ginga": false
+},
+{
+"product": "مكرمية قطن ألوان محلول - بالكيلو",
+"line": "macrame",
+"ginga": false
+},
+{
+"product": "خيوط السلسلة (بوليستر) - بالكيلو",
+"line": "poly_macrame",
+"ginga": false
+},
+{
+"product": "علبة حياكة منزلية 500 متر - ألوان",
+"line": "sewing",
+"ginga": false
+},
+{
+"product": "كون حياكة 145 جم - ألوان",
+"line": "sewing",
+"ginga": false
+}
+]
+}

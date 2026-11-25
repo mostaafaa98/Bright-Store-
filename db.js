@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 const db = new Database(process.env.DB_FILE || 'store.db');
 db.pragma('journal_mode = WAL');
 db.pragma('foreign_keys = ON');
+// ترحيل: جدول الألوان القديم (كود فريد عام، بدون صور) إلى ألوان لكل خط إنتاج مع صورة
+if (db.prepare("SELECT 1 FROM sqlite_master WHERE type='table' AND name='colors'").get() && !db.prepare("SELECT 1 FROM pragma_table_info('colors') WHERE name='line'").get()) {
+  db.transaction(() => { db.exec('DELETE FROM product_colors; DROP TABLE colors;'); })();
+}
 db.exec(`
 CREATE TABLE IF NOT EXISTS users(
   id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL,
@@ -14,7 +18,8 @@ CREATE TABLE IF NOT EXISTS products(
   stock INTEGER CHECK(stock IS NULL OR stock>=0),           -- NULL = غير محدود
   has_colors INTEGER NOT NULL DEFAULT 0, sort INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1);
 CREATE TABLE IF NOT EXISTS colors(
-  id INTEGER PRIMARY KEY, code TEXT UNIQUE NOT NULL, name TEXT NOT NULL, hex TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1);
+  id INTEGER PRIMARY KEY, code TEXT NOT NULL, line TEXT NOT NULL DEFAULT '', name TEXT NOT NULL DEFAULT '', hex TEXT NOT NULL DEFAULT '#cccccc',
+  active INTEGER NOT NULL DEFAULT 1, image BLOB, thumb BLOB, UNIQUE(line, code));
 CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '');
 CREATE TABLE IF NOT EXISTS orders(
   id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id), total_cents INTEGER NOT NULL,
@@ -82,23 +87,29 @@ if (!db.prepare('SELECT 1 FROM products LIMIT 1').get() && process.env.SEED !== 
   const ins = db.prepare('INSERT INTO products(name,name_en,category,unit,description,image_url,p_retail,p_half,p_whole,has_colors,sort) VALUES(?,?,?,?,?,?,?,?,?,?,?)');
   P.forEach((p, i) => ins.run(p[0], p[1], p[2], p[3], p[4], p[5], p[6] * 100, p[7] * 100, p[8] * 100, p[9], i));
 }
-if (!db.prepare('SELECT 1 FROM colors LIMIT 1').get() && process.env.SEED !== 'false') {
-  const C = ['أبيض #ffffff', 'أوف وايت #f5efe0', 'بيج #e6d3b3', 'كريمي #f3e5ab', 'أصفر ليموني #f7e463', 'أصفر #f5c518', 'برتقالي #f08a24', 'مشمشي #f6b48a',
-    'سلمون #f28b82', 'وردي فاتح #f8c8dc', 'وردي #ee7fa6', 'فوشيا #d6246e', 'أحمر #d62828', 'قرمزي #a4161a', 'عنابي #7b1e3a', 'بوردو #5a1020',
-    'بنفسجي فاتح #c5a8e0', 'بنفسجي #8e5bbf', 'موف #6a3d9a', 'أزرق سماوي #a6d8f0', 'أزرق فاتح #5aa9e6', 'أزرق #1f6fb2', 'كحلي #14284b', 'تركواز #2bb5b0',
-    'أخضر نعناعي #a8e0c5', 'أخضر فاتح #8fd16a', 'أخضر #2f9e44', 'أخضر زيتي #6b7d2f', 'أخضر غامق #14532d', 'بني فاتح #c19a6b', 'بني #8b5a2b', 'شوكولاتة #4a2c1a',
-    'رمادي فاتح #cfd4da', 'رمادي #8a8f98', 'فحمي #3a3f47', 'أسود #111111'];
-  const ins = db.prepare('INSERT INTO colors(code,name,hex) VALUES(?,?,?)');
-  C.forEach((c, i) => { const m = c.match(/^(.*) (#[0-9a-f]{6})$/i); ins.run(String(101 + i), m[1], m[2]); });
-}
-
 // حساب نظام للطلبات التي تتم بدون تسجيل (لا يمكن الدخول به)
 if (!db.prepare("SELECT 1 FROM users WHERE email='guest@system.local'").get())
   db.prepare("INSERT INTO users(name,email,password,role) VALUES('زائر','guest@system.local',?,'guest')").run(bcrypt.hashSync(require('crypto').randomBytes(24).toString('hex'), 10));
 
 const flag = (k, fn) => { if (!db.prepare('SELECT 1 FROM settings WHERE key=?').get(k)) { db.transaction(fn)(); db.prepare('INSERT INTO settings(key,value) VALUES(?,?)').run(k, '1'); } };
-// ألوان كل منتج: في أول ترحيل نمنح كل منتج له ألوان كل الألوان الحالية، ثم يضبطها المدير
-flag('mig_product_colors', () => db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) SELECT p.id,c.id FROM products p, colors c WHERE p.has_colors=1 AND c.active=1').run());
+// ألوان المنتجات الحقيقية: كل لون = كود + صورة، لكل خط إنتاج (seed/colors.json و seed/img و seed/thumb)
+flag('seed_real_colors', () => {
+  const fs = require('fs'), path = require('path'), dir = path.join(__dirname, 'seed');
+  if (process.env.SEED === 'false' || !fs.existsSync(path.join(dir, 'colors.json'))) return;
+  const M = JSON.parse(fs.readFileSync(path.join(dir, 'colors.json'), 'utf8'));
+  const ins = db.prepare('INSERT OR IGNORE INTO colors(code,line,name,hex,image,thumb) VALUES(?,?,?,?,?,?)');
+  const ids = {};
+  for (const c of M.colors) {
+    ins.run(c.code, c.line, '', c.hex, fs.readFileSync(path.join(dir, 'img', c.file)), fs.readFileSync(path.join(dir, 'thumb', c.file)));
+    ids[c.line + '|' + c.code] = { id: db.prepare('SELECT id FROM colors WHERE line=? AND code=?').get(c.line, c.code).id, g: c.ginga };
+  }
+  const link = db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) VALUES(?,?)');
+  for (const l of M.links) {
+    const p = db.prepare('SELECT id FROM products WHERE name=?').get(l.product);
+    if (!p) continue;
+    for (const k of Object.keys(ids)) if (k.startsWith(l.line + '|') && ids[k].g === l.ginga) link.run(p.id, ids[k].id);
+  }
+});
 // مواصفات المنتجات من كتالوج برايت
 flag('mig_specs', () => {
   const S = { // الوزن | العدد | الطول | الخامة | المقاس | الاستخدام
