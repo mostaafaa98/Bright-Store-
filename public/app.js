@@ -134,7 +134,7 @@
     if (cres.length) cres.sort(function (x, y) { return (x.code.toLowerCase() === q ? 0 : x.code.toLowerCase().indexOf(q) === 0 ? 1 : 2) - (y.code.toLowerCase() === q ? 0 : y.code.toLowerCase().indexOf(q) === 0 ? 1 : 2); });
     if (!filtering) {
       var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
-      h += '<section class="hero"><div class="hero-t"><h1>خيوط برايت</h1><p class="lead">قطن مصري بمئات الألوان، بالقطعة أو بالجملة.</p>' + socials() + '<div class="ctas"><button class="g" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
+      h += '<section class="hero"><div class="hero-t"><h1>خيوط برايت</h1><p class="lead">برايت شركة مصرية رائدة تقدّم مجموعات متميّزة من خيوط الحياكة اليدوية والخيوط، ونفخر بحصولنا على شهادة الأيزو (ISO).</p>' + socials() + '<div class="ctas"><button class="g" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
         '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>نوصّل لكل المحافظات</b><span>نتواصل معك لتأكيد الطلب</span></p></div></section>';
     }
     if (S.colors.length && S.colors.length < 80) {
