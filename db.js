@@ -27,8 +27,25 @@ CREATE TABLE IF NOT EXISTS order_items(
 CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
 `);
 
+db.exec(`
+CREATE TABLE IF NOT EXISTS product_colors(product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE, color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE, PRIMARY KEY(product_id,color_id));
+CREATE TABLE IF NOT EXISTS product_images(id INTEGER PRIMARY KEY, product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE, mime TEXT NOT NULL, data BLOB NOT NULL, sort INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS zones(name TEXT PRIMARY KEY, fee_cents INTEGER NOT NULL DEFAULT 0, active INTEGER NOT NULL DEFAULT 1, sort INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY, at TEXT DEFAULT CURRENT_TIMESTAMP, who TEXT, action TEXT, product_id INTEGER, product TEXT, detail TEXT);
+CREATE INDEX IF NOT EXISTS idx_audit_at ON audit_log(id DESC);
+`);
+const hasCol = (t, c) => db.prepare(`PRAGMA table_info(${t})`).all().some(x => x.name === c);
+const addCol = (t, c, d) => { if (!hasCol(t, c)) db.exec(`ALTER TABLE ${t} ADD COLUMN ${c} ${d}`); };
+['spec_weight', 'spec_count', 'spec_length', 'spec_material', 'spec_size', 'spec_usage'].forEach(c => addCol('products', c, "TEXT NOT NULL DEFAULT ''"));
+addCol('products', 'hidden', 'INTEGER NOT NULL DEFAULT 0');
+addCol('orders', 'governorate', "TEXT NOT NULL DEFAULT ''");
+addCol('orders', 'area', "TEXT NOT NULL DEFAULT ''");
+addCol('orders', 'shipping_cents', 'INTEGER NOT NULL DEFAULT 0');
+addCol('orders', 'token', "TEXT NOT NULL DEFAULT ''");
+
 const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '', wallet_name: '',
-  instapay_number: '', instapay_handle: '', instapay_qr: '', shipping_note: 'الشحن يُحدَّد عند تأكيد الطلب.' };
+  instapay_number: '', instapay_handle: '', instapay_qr: '', shipping_note: 'الشحن يُحسب حسب المحافظة قبل تأكيد الطلب.',
+  whatsapp_number: '', telegram_token: '', telegram_chat: '', free_shipping_over: '0' };
 for (const [k, v] of Object.entries(defaults)) db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)').run(k, v);
 
 const { ADMIN_EMAIL, ADMIN_PASSWORD } = process.env;
@@ -73,5 +90,43 @@ if (!db.prepare('SELECT 1 FROM colors LIMIT 1').get() && process.env.SEED !== 'f
     'رمادي فاتح #cfd4da', 'رمادي #8a8f98', 'فحمي #3a3f47', 'أسود #111111'];
   const ins = db.prepare('INSERT INTO colors(code,name,hex) VALUES(?,?,?)');
   C.forEach((c, i) => { const m = c.match(/^(.*) (#[0-9a-f]{6})$/i); ins.run(String(101 + i), m[1], m[2]); });
+}
+
+// حساب نظام للطلبات التي تتم بدون تسجيل (لا يمكن الدخول به)
+if (!db.prepare("SELECT 1 FROM users WHERE email='guest@system.local'").get())
+  db.prepare("INSERT INTO users(name,email,password,role) VALUES('زائر','guest@system.local',?,'guest')").run(bcrypt.hashSync(require('crypto').randomBytes(24).toString('hex'), 10));
+
+const flag = (k, fn) => { if (!db.prepare('SELECT 1 FROM settings WHERE key=?').get(k)) { db.transaction(fn)(); db.prepare('INSERT INTO settings(key,value) VALUES(?,?)').run(k, '1'); } };
+// ألوان كل منتج: في أول ترحيل نمنح كل منتج له ألوان كل الألوان الحالية، ثم يضبطها المدير
+flag('mig_product_colors', () => db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) SELECT p.id,c.id FROM products p, colors c WHERE p.has_colors=1 AND c.active=1').run());
+// مواصفات المنتجات من كتالوج برايت
+flag('mig_specs', () => {
+  const S = { // الوزن | العدد | الطول | الخامة | المقاس | الاستخدام
+    'علبة برايت كوتن بارليه': ['10 جم للبكرة', '10 بكرات في العلبة', '80 متر للبكرة', 'قطن مصري 100% طبقتين، محرر', '', 'كروشيه رفيع، تطريز، دانتيل ومفارش'],
+    'علبة الأهرام سوبر بارليه': ['10 جم للبكرة', '10 بكرات في العلبة', 'أكثر من 80 متر للبكرة', 'قطن مصري 100% طبقتين، محرر مرتين', '', 'أدق من برايت الأساسية: دانتيل وأعمال دقيقة'],
+    'علبة شلات مالونيه': ['2 جم للشلة', '12 شلة في العلبة', '8 متر للشلة', 'قطن مصري طويل التيلة 100%، قابل للتقسيم إلى 6 خيوط', '250 لون', 'التطريز اليدوي بأنواعه'],
+    'شلات كروشيه بلس': ['100 جم', 'شلة', '250 متر', 'قطن مصري 100% أربعة طبقات، محرر', 'إبر 1.5 – 3 مم', 'كروشيه: شنط، ملابس، دمى أميجورومي'],
+    'شلات كروشيه سوبر بلس': ['100 جم', 'شلة', '200 متر', 'قطن مصري 100% أربعة طبقات، أسمك من بلس', 'إبر 3 – 4 مم', 'كروشيه: شنط، ملابس، دمى أميجورومي'],
+    'شلات كروشيه 100 جم': ['100 جم', 'شلة', '250 متر', 'قطن مصري 100% أربعة طبقات، ألوان متدرجة', 'إبر 1.5 – 3 مم', 'كروشيه: شنط، ملابس، إكسسوارات'],
+    'بكر كروشيه 50 جم': ['50 جم', 'بكرة', '230 متر', 'قطن مصري 100% ثلاث طبقات، محرر', 'إبر 1 – 2.5 مم', 'كروشيه دقيق: مفارش، دانتيل، ملابس خفيفة'],
+    'شلات أكريليك فلافي': ['100 جم', 'شلة', '180 متر', 'أكريليك 100%', 'إبر كروشيه 3.5 – 5 مم / تطريز يدوي 4 – 6 مم', 'طواقي، شالات، ملابس شتوية، تافتنج'],
+    'شلات كتان': ['100 جم للشلة (يُباع بالكيلو)', '', '', 'كتان مصري 100%', '', 'شنط، قبعات، إكسسوارات'],
+    'مكرمية قطن': ['يُباع بالكيلو', '', '', 'قطن مصري 100%', 'مقاسات 2 – 3 – 4 – 5 مم', 'تعليقات حائط، شنط، شباشب، ديكور'],
+    'خيوط السلسلة': ['يُباع بالكيلو', '', '', 'بوليستر 100%', '', 'شنط وإكسسوارات كروشيه'],
+    'علبة حياكة منزلية': ['', '12 بكرة في العلبة', '500 متر للبكرة', 'بوليستر مغزول 100%', 'أرقام 2/40 – 2/20 – 3/20 – 2/60', 'خياطة وحياكة منزلية'],
+    'كون حياكة': ['145 جم', 'كون', '', 'بوليستر مغزول 100%', 'أرقام 2/40 – 2/20 – 3/20 – 2/60', 'خياطة وحياكة'],
+  };
+  const up = db.prepare('UPDATE products SET spec_weight=?,spec_count=?,spec_length=?,spec_material=?,spec_size=?,spec_usage=? WHERE id=? AND spec_material=\'\'');
+  for (const p of db.prepare('SELECT id,name FROM products').all()) {
+    const k = Object.keys(S).filter(n => p.name.startsWith(n)).sort((a, b) => b.length - a.length)[0];
+    if (k) up.run(...S[k], p.id);
+  }
+});
+// المحافظات وتكلفة الشحن (قيم مبدئية — يعدّلها المدير من الإعدادات)
+if (!db.prepare('SELECT 1 FROM zones LIMIT 1').get()) {
+  const Z = [[50, 'القاهرة', 'الجيزة'], [60, 'الإسكندرية', 'القليوبية'], [70, 'الغربية', 'الدقهلية', 'الشرقية', 'المنوفية', 'كفر الشيخ', 'البحيرة', 'دمياط', 'بورسعيد', 'الإسماعيلية', 'السويس'],
+    [80, 'الفيوم', 'بني سويف', 'المنيا'], [100, 'أسيوط', 'سوهاج', 'قنا', 'الأقصر', 'أسوان'], [130, 'مطروح', 'البحر الأحمر', 'الوادي الجديد', 'شمال سيناء', 'جنوب سيناء']];
+  const ins = db.prepare('INSERT INTO zones(name,fee_cents,sort) VALUES(?,?,?)'); let i = 0;
+  Z.forEach(([fee, ...names]) => names.forEach(n => ins.run(n, fee * 100, i++)));
 }
 module.exports = db;

@@ -1,0 +1,5 @@
+# غيّر الدومين لدومينك (لازم يكون موجّهاً بـ A record إلى IP السيرفر)
+shop.example.com {
+	encode gzip
+	reverse_proxy app:3000
+}
