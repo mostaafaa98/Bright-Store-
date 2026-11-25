@@ -48,8 +48,8 @@ addCol('orders', 'area', "TEXT NOT NULL DEFAULT ''");
 addCol('orders', 'shipping_cents', 'INTEGER NOT NULL DEFAULT 0');
 addCol('orders', 'token', "TEXT NOT NULL DEFAULT ''");
 
-const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '', wallet_name: '',
-  instapay_number: '', instapay_handle: '', instapay_qr: '', shipping_note: 'الشحن يُحسب حسب المحافظة قبل تأكيد الطلب.',
+const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '01030869840', wallet_name: '',
+  instapay_number: '01030869840', instapay_handle: 'mustafatelda98@instapay', instapay_qr: '/img/instapay-qr.jpg', instapay_link: 'https://ipn.eg/S/mustafatelda98/instapay/8g0p46', shipping_note: 'الشحن يُحسب حسب المحافظة قبل تأكيد الطلب.',
   whatsapp_number: '201034497729', telegram_token: '', telegram_chat: '', free_shipping_over: '0' };
 for (const [k, v] of Object.entries(defaults)) db.prepare('INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)').run(k, v);
 

@@ -82,7 +82,7 @@ app.get('/api/config', (req, res) => {
   const s = settings();
   res.json({ shop: s.shop_name, halfMin: +s.half_min, wholeMin: +s.whole_min, whatsapp: s.whatsapp_number,
     zones: db.prepare('SELECT name FROM zones WHERE active=1 ORDER BY sort').all(),
-    wallet: { number: s.wallet_number, name: s.wallet_name }, instapay: { number: s.instapay_number, handle: s.instapay_handle, qr: s.instapay_qr } });
+    wallet: { number: s.wallet_number, name: s.wallet_name }, instapay: { number: s.instapay_number, handle: s.instapay_handle, qr: s.instapay_qr, link: /^https:\/\/ipn\.eg\//.test(s.instapay_link || '') ? s.instapay_link : '' } });
 });
 app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
 app.get('/api/colors', (req, res) => {
@@ -202,14 +202,14 @@ app.post('/api/admin/colors/bulk', auth, admin, wrap((req, res) => {
   res.json({ imported: n });
 }));
 app.delete('/api/admin/colors/:id', auth, admin, (req, res) => { db.prepare('UPDATE colors SET active=0 WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
-const SKEYS = ['shop_name', 'half_min', 'whole_min', 'wallet_number', 'wallet_name', 'instapay_number', 'instapay_handle', 'instapay_qr', 'whatsapp_number', 'telegram_token', 'telegram_chat'];
+const SKEYS = ['shop_name', 'half_min', 'whole_min', 'wallet_number', 'wallet_name', 'instapay_number', 'instapay_handle', 'instapay_qr', 'instapay_link', 'whatsapp_number', 'telegram_token', 'telegram_chat'];
 app.get('/api/admin/settings', auth, admin, (req, res) => res.json({ ...settings(), zones: db.prepare('SELECT name,fee_cents,active FROM zones ORDER BY sort').all() }));
 app.put('/api/admin/settings', auth, admin, wrap((req, res) => {
   const b = req.body, h = parseInt(b.half_min, 10), w = parseInt(b.whole_min, 10), wa = phoneOf(b.whatsapp_number).replace(/^\+/, '');
   if (!(h >= 1 && w > h)) return fail(res, 400, 'حدّ الجملة يجب أن يكون أكبر من حدّ نصف الجملة');
   if (wa && !/^\d{10,15}$/.test(wa)) return fail(res, 400, 'رقم واتساب (بالصيغة الدولية 2010xxxxxxxx) غير صحيح');
   const set = db.prepare('INSERT INTO settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
-  const val = { half_min: String(h), whole_min: String(w), whatsapp_number: wa, instapay_qr: okData(b.instapay_qr) };
+  const val = { half_min: String(h), whole_min: String(w), whatsapp_number: wa, instapay_qr: okData(b.instapay_qr) || okUrl(b.instapay_qr) };
   db.transaction(() => SKEYS.forEach(k => set.run(k, k in val ? val[k] : str(b[k], 300))))();
   res.json({ ok: true });
 }));

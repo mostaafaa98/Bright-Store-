@@ -4,7 +4,7 @@
   try { S.cart = JSON.parse(localStorage.getItem('cart') || '{}'); S.my = JSON.parse(localStorage.getItem('myorders') || '[]'); } catch (e) {}
   var ST = { new: 'جديد', processing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي' };
   var PS = { pending: 'غير مدفوع', review: 'بانتظار المراجعة', paid: 'مدفوع' };
-  var PM = { cod: 'عند الاستلام', wallet: 'محفظة إلكترونية', instapay: 'إنستا باي' };
+  var PM = { cod: 'عند الاستلام', wallet: 'فودافون كاش', instapay: 'إنستا باي' };
   var SPECS = [['spec_weight', 'الوزن'], ['spec_count', 'عدد البكر / القطع'], ['spec_length', 'الطول'], ['spec_material', 'الخامة'], ['spec_size', 'المقاس / الإبر المناسبة'], ['spec_usage', 'الاستخدام']];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -218,7 +218,7 @@
       '<div class="row"><div><label for="f3">المحافظة</label><select id="f3" name="governorate" required><option value="">اختر المحافظة</option>' + S.cfg.zones.map(function (z) { return '<option value="' + esc(z.name) + '">' + esc(z.name) + '</option>'; }).join('') + '</select></div><div><label for="f4">المنطقة / الحي</label><input id="f4" name="area"></div></div>' +
       '<label for="f5">العنوان بالتفصيل</label><textarea id="f5" name="address" required placeholder="الشارع، رقم العقار، علامة مميزة"></textarea><label for="f6" style="margin-top:8px">ملاحظات (اختياري)</label><input id="f6" name="note">' +
       '<h3 style="margin-top:18px">طريقة الدفع</h3><div class="pay"><label class="o"><input type="radio" name="payment" value="cod" checked> الدفع عند الاستلام</label>' +
-      (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet"> محفظة إلكترونية (تحوّل ثم تؤكد التحويل)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"> إنستا باي (QR أو رقم)</label>' : '') + '</div></form></div>' +
+      (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet"> فودافون كاش (تحوّل ثم تؤكد التحويل)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"> إنستا باي (QR أو رقم)</label>' : '') + '</div></form></div>' +
       '<aside class="sticky"><div class="panel" style="margin-top:0"><h3>ملخص الطلب</h3><div class="sum" id="sum"></div><button class="blk lg" type="submit" form="co">تأكيد الطلب</button><p id="m"></p></div></aside></div>';
     app.innerHTML = h; coSummary();
   }
@@ -227,7 +227,7 @@
     if (o.payment_status === 'paid') return '<p class="ok"><b>تم تأكيد الدفع.</b></p>';
     var w = S.cfg.wallet, i = S.cfg.instapay, h = '<div class="panel" style="background:var(--mist);border-style:dashed"><b>حوّل مبلغ ' + egp(o.total_cents) + ' ثم أرسل رقم العملية</b>';
     if (o.payment_method === 'wallet') h += '<p>رقم المحفظة: <span class="big">' + esc(w.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(w.number) + '">نسخ</button><br><span class="mut">' + esc(w.name) + '</span></p>';
-    else h += (i.qr ? '<p><img class="qr" alt="QR إنستا باي" src="' + esc(i.qr) + '"></p>' : '') + (i.number ? '<p>رقم إنستا باي: <span class="big">' + esc(i.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(i.number) + '">نسخ</button></p>' : '') + (i.handle ? '<p>العنوان: <b>' + esc(i.handle) + '</b></p>' : '');
+    else h += (i.qr ? '<p><img class="qr" alt="QR إنستا باي" src="' + esc(i.qr) + '"></p>' : '') + (i.number ? '<p>رقم إنستا باي: <span class="big">' + esc(i.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(i.number) + '">نسخ</button></p>' : '') + (i.handle ? '<p>العنوان: <b>' + esc(i.handle) + '</b></p>' : '') + (i.link ? '<p><a class="btn" target="_blank" rel="noopener" href="' + esc(i.link) + '">الدفع عبر رابط إنستا باي</a></p>' : '');
     if (o.payment_status === 'review') h += '<p class="ok">استلمنا بيانات التحويل (' + esc(o.payment_ref) + ') وهي قيد المراجعة.</p>';
     return h + '<form data-proof="' + o.id + '" data-token="' + esc(token || '') + '" class="row"><input name="ref" placeholder="رقم العملية أو الرقم المحوَّل منه" required aria-label="رقم العملية"><button>تأكيد التحويل</button></form><p id="m' + o.id + '" class="mut"></p></div>';
   }
@@ -339,7 +339,7 @@
     api('/admin/settings').then(function (s) {
       S.qr = s.instapay_qr; var g = function (n, l, t) { return f(n, l, t, s[n]); };
       b.innerHTML = '<form class="panel" id="sf"><h3>إعدادات المتجر</h3><div class="row">' + g('shop_name', 'اسم المتجر') + g('half_min', 'بداية نصف الجملة (وحدة)', 'number') + g('whole_min', 'بداية الجملة (وحدة)', 'number') + '</div><div class="row">' + g('whatsapp_number', 'واتساب برايت (دولي: 2010xxxxxxxx)') + '</div>' +
-        '<h3>الدفع</h3><div class="row">' + g('wallet_number', 'رقم المحفظة الإلكترونية') + g('wallet_name', 'اسم صاحب المحفظة') + '</div><div class="row">' + g('instapay_number', 'رقم إنستا باي') + g('instapay_handle', 'عنوان إنستا باي (name@instapay)') + '</div><div class="row"><div><label>QR إنستا باي (صورة)</label><input type="file" accept="image/*" data-act="qrfile"></div><img id="qrp" class="qr" style="max-width:120px;' + (s.instapay_qr ? '' : 'display:none') + '" src="' + esc(s.instapay_qr) + '"></div>' +
+        '<h3>الدفع</h3><div class="row">' + g('wallet_number', 'رقم المحفظة الإلكترونية') + g('wallet_name', 'اسم صاحب المحفظة') + '</div><div class="row">' + g('instapay_number', 'رقم إنستا باي') + g('instapay_handle', 'عنوان إنستا باي (name@instapay)') + g('instapay_link', 'رابط دفع إنستا باي (ipn.eg)') + '</div><div class="row"><div><label>QR إنستا باي (صورة)</label><input type="file" accept="image/*" data-act="qrfile"></div><img id="qrp" class="qr" style="max-width:120px;' + (s.instapay_qr ? '' : 'display:none') + '" src="' + esc(s.instapay_qr) + '"></div>' +
         '<h3>إشعارات الطلبات على تيليجرام</h3><p class="mut">أنشئ بوتاً من @BotFather وخذ التوكن، ثم أرسل له رسالة وخذ معرّف المحادثة (Chat ID) من @userinfobot، أو أضف البوت لجروب واستخدم معرّفه.</p><div class="row">' + g('telegram_token', 'Bot Token') + g('telegram_chat', 'Chat ID') + '</div><p id="m"></p><button>حفظ الإعدادات</button> <button type="button" class="g" data-act="tgtest">إرسال رسالة اختبار</button></form>' +
         '<div class="panel"><h3>نسخة احتياطية</h3><p class="mut">حمّل نسخة من قاعدة البيانات (طلبات، منتجات، حسابات) واحتفظ بها بعيداً عن السيرفر.</p><button data-act="backup" class="g">تنزيل نسخة احتياطية</button></div>';
     });
@@ -505,7 +505,7 @@
   window.addEventListener('hashchange', route);
 
   function footer() {
-    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع عند الاستلام، أو بمحفظة إلكترونية، أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: ' + esc(c.whatsapp) + '</a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع عند الاستلام، أو بفودافون كاش، أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: ' + esc(c.whatsapp) + '</a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
