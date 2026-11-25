@@ -73,8 +73,8 @@ function catalog(where) {
 }
 app.get('/api/config', (req, res) => {
   const s = settings();
-  res.json({ shop: s.shop_name, halfMin: +s.half_min, wholeMin: +s.whole_min, note: s.shipping_note, whatsapp: s.whatsapp_number, freeOver: +s.free_shipping_over * 100 || 0,
-    zones: db.prepare('SELECT name,fee_cents FROM zones WHERE active=1 ORDER BY sort').all(),
+  res.json({ shop: s.shop_name, halfMin: +s.half_min, wholeMin: +s.whole_min, whatsapp: s.whatsapp_number,
+    zones: db.prepare('SELECT name FROM zones WHERE active=1 ORDER BY sort').all(),
     wallet: { number: s.wallet_number, name: s.wallet_name }, instapay: { number: s.instapay_number, handle: s.instapay_handle, qr: s.instapay_qr } });
 });
 app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
@@ -195,14 +195,14 @@ app.post('/api/admin/colors/bulk', auth, admin, wrap((req, res) => {
   res.json({ imported: n });
 }));
 app.delete('/api/admin/colors/:id', auth, admin, (req, res) => { db.prepare('UPDATE colors SET active=0 WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
-const SKEYS = ['shop_name', 'half_min', 'whole_min', 'wallet_number', 'wallet_name', 'instapay_number', 'instapay_handle', 'instapay_qr', 'shipping_note', 'whatsapp_number', 'telegram_token', 'telegram_chat', 'free_shipping_over'];
+const SKEYS = ['shop_name', 'half_min', 'whole_min', 'wallet_number', 'wallet_name', 'instapay_number', 'instapay_handle', 'instapay_qr', 'whatsapp_number', 'telegram_token', 'telegram_chat'];
 app.get('/api/admin/settings', auth, admin, (req, res) => res.json({ ...settings(), zones: db.prepare('SELECT name,fee_cents,active FROM zones ORDER BY sort').all() }));
 app.put('/api/admin/settings', auth, admin, wrap((req, res) => {
-  const b = req.body, h = parseInt(b.half_min, 10), w = parseInt(b.whole_min, 10), free = Number(b.free_shipping_over || 0), wa = phoneOf(b.whatsapp_number).replace(/^\+/, '');
+  const b = req.body, h = parseInt(b.half_min, 10), w = parseInt(b.whole_min, 10), wa = phoneOf(b.whatsapp_number).replace(/^\+/, '');
   if (!(h >= 1 && w > h)) return fail(res, 400, 'حدّ الجملة يجب أن يكون أكبر من حدّ نصف الجملة');
-  if (!(free >= 0) || (wa && !/^\d{10,15}$/.test(wa))) return fail(res, 400, 'رقم واتساب (بالصيغة الدولية 2010xxxxxxxx) أو حد الشحن المجاني غير صحيح');
+  if (wa && !/^\d{10,15}$/.test(wa)) return fail(res, 400, 'رقم واتساب (بالصيغة الدولية 2010xxxxxxxx) غير صحيح');
   const set = db.prepare('INSERT INTO settings(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value');
-  const val = { half_min: String(h), whole_min: String(w), whatsapp_number: wa, free_shipping_over: String(free), instapay_qr: okData(b.instapay_qr) };
+  const val = { half_min: String(h), whole_min: String(w), whatsapp_number: wa, instapay_qr: okData(b.instapay_qr) };
   db.transaction(() => SKEYS.forEach(k => set.run(k, k in val ? val[k] : str(b[k], 300))))();
   res.json({ ok: true });
 }));
@@ -254,9 +254,9 @@ const createOrder = db.transaction((uid, lines, info, method) => {
     }
     const u = tier(p, q, s); sub += u * q; items.forEach(([c, n]) => rows.push([p, c, n, u]));
   }
-  const zone = db.prepare('SELECT fee_cents FROM zones WHERE name=? AND active=1').get(info.governorate);
+  const zone = db.prepare('SELECT name FROM zones WHERE name=? AND active=1').get(info.governorate);
   if (!zone) throw new Error('اختر المحافظة');
-  const free = +s.free_shipping_over * 100, ship = free > 0 && sub >= free ? 0 : zone.fee_cents, token = crypto.randomBytes(12).toString('hex');
+  const ship = 0, token = crypto.randomBytes(12).toString('hex');
   const oid = Number(db.prepare('INSERT INTO orders(user_id,total_cents,shipping_cents,payment_method,name,phone,governorate,area,address,note,token) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
     .run(uid, sub + ship, ship, method, info.name, info.phone, info.governorate, info.area, info.address, info.note, token).lastInsertRowid);
   rows.forEach(([p, c, n, u]) => db.prepare('INSERT INTO order_items(order_id,product_id,name,color,qty,price_cents) VALUES(?,?,?,?,?,?)').run(oid, p.id, p.name, c, n, u));
@@ -272,7 +272,7 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   if (!lines.length || !info.name || !/^\+?\d{10,15}$/.test(info.phone) || !info.address) return fail(res, 400, 'أكمل بيانات الطلب (الاسم، رقم موبايل صحيح، العنوان)');
   let r; try { r = createOrder(req.user ? req.user.id : GUEST, lines, info, method); } catch (e) { return fail(res, 409, e.message); }
   const items = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=?').all(r.id).map(i => `• ${i.name}${i.color ? ' [' + i.color + ']' : ''} × ${i.qty}`).join('\n');
-  notify(`🛒 طلب جديد #${r.id}\n${info.name} — ${info.phone}\n${info.governorate}${info.area ? ' / ' + info.area : ''}\n${info.address}\n\n${items}\n\nالمنتجات: ${egp(r.sub)}\nالشحن: ${egp(r.ship)}\nالإجمالي: ${egp(r.total)}\nالدفع: ${{ cod: 'عند الاستلام', wallet: 'محفظة', instapay: 'إنستا باي' }[method]}${info.note ? '\nملاحظة: ' + info.note : ''}`);
+  notify(`🛒 طلب جديد #${r.id}\n${info.name} — ${info.phone}\n${info.governorate}${info.area ? ' / ' + info.area : ''}\n${info.address}\n\n${items}\n\nالمنتجات: ${egp(r.sub)}\nالإجمالي: ${egp(r.total)}\nالدفع: ${{ cod: 'عند الاستلام', wallet: 'محفظة', instapay: 'إنستا باي' }[method]}${info.note ? '\nملاحظة: ' + info.note : ''}`);
   res.json({ orderId: r.id, sub: r.sub, shipping: r.ship, total: r.total, payment: method, token: r.token });
 }));
 app.get('/api/orders', auth, (req, res) =>
@@ -348,6 +348,12 @@ app.get('/api/admin/reports', auth, admin, wrap(async (req, res) => {
   await sendXlsx(res, 'report-' + by, 'تقرير', [[Q[1][0], 28], [Q[1][1] || '-', 16], [Q[2][0], 14], [Q[2][1] || '-', 14], ['الإجمالي ج.م', 16]], rows.map(r => [r.k1, r.k2, r.c1, r.c2, r.tot / 100]));
 }));
 
+const INDEX = fs.readFileSync(path.join(__dirname, 'public', 'index.html'), 'utf8');
+const sendIndex = (req, res) => {
+  const base = (req.protocol + '://' + req.get('host')).replace(/[<>"']/g, '');
+  res.set('Cache-Control', 'no-cache').type('html').send(INDEX.split('__BASE__').join(base));
+};
+app.get(['/', '/index.html'], sendIndex);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, setHeaders: (res, p) => { if (/\.(jpg|png|webp)$/i.test(p)) res.setHeader('Cache-Control', 'public, max-age=86400'); else res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => fail(res, 404, 'غير موجود'));
 app.use((err, req, res, next) => { console.error(err); fail(res, 500, 'خطأ في الخادم'); });

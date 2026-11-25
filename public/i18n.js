@@ -3,9 +3,11 @@
   if (document.documentElement.lang !== 'en') return;
   var D = {
     'تخطَّ إلى المحتوى': 'Skip to content', 'برايت للخيوط': 'Bright Threads', 'بحث': 'Search',
-    'ابحث عن منتج: كوتن بارليه، كروشيه، مكرمية…': 'Search products: pearl cotton, crochet, macrame…',
+    'ابحث عن منتج أو كود لون: W001، كروشيه…': 'Search a product or color code: W001, crochet…',
     'برايت للخيوط — متجر الجملة والقطاعي': 'Bright Threads — wholesale & retail store',
     'طلباتي': 'My orders', 'دخول': 'Sign in', 'خروج': 'Sign out', 'لوحة التحكم': 'Dashboard', 'السلة': 'Cart',
+    'نتائج الألوان': 'Color results', 'نوصّل لكل المحافظات': 'Delivery to all governorates', 'نتواصل معك لتأكيد الطلب': 'We contact you to confirm your order', 'بيانات التوصيل': 'Delivery details',
+    'المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.': 'Total excludes shipping. The shipping company will contact you with the cost.',
     'خيوط قطن مصري، بمئات الألوان': 'Egyptian cotton thread, in hundreds of colors',
     'كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.': 'Pearl cotton, crochet yarn, embroidery floss, macrame and sewing thread from the Bright factory. Order by the piece or in bulk, and the price adjusts automatically to your quantity.',
     'تصفّح المنتجات': 'Browse products', 'تسوّق بحسب اللون': 'Shop by color',
@@ -52,7 +54,7 @@
     [/^أقل من (\d+) (.+)$/, function (m, n, u) { return 'Under ' + n + ' ' + tr(u); }], [/^من (\d+) إلى (\d+) (.+)$/, function (m, a, b, u) { return a + ' to ' + b + ' ' + tr(u); }], [/^من (\d+) فأكثر (.+)$/, function (m, n, u) { return n + '+ ' + tr(u); }],
     [/^(.+) — (\d+) (?:ج\.م|EGP)$/, function (m, g, f) { return tr(g) + ' — ' + f + ' EGP'; }], [/^(.+) \+ الشحن$/, '$1 + shipping'], [/^\(سعر (القطاعي|نصف الجملة|الجملة)\)$/, function (m, k) { return '(' + tr(k === 'القطاعي' ? 'قطاعي' : k === 'الجملة' ? 'جملة' : 'نصف جملة').toLowerCase() + ' price)'; }],
     [/^(\d+) (\S+) × (.+) \(سعر (القطاعي|نصف الجملة|الجملة)\)$/, function (m, n, u, p, k) { return n + ' ' + tr(u) + ' × ' + p + ' (' + (k === 'القطاعي' ? 'retail' : k === 'الجملة' ? 'wholesale' : 'half-wholesale') + ' price)'; }],
-    [/^من (\d+)$/, 'From $1'], [/^من (\d+) وحدة$/, 'From $1 units'], [/^أقل من (\d+)$/, 'Under $1'], [/^(\d+) فأكثر$/, '$1 or more'], [/^(\d+) منتج$/, '$1 products'],
+    [/^من (\d+)$/, 'From $1'], [/^من (\d+) وحدة$/, 'From $1 units'], [/^أقل من (\d+)$/, 'Under $1'], [/^(\d+) فأكثر$/, '$1 or more'], [/^(\d+) منتج$/, '$1 products'], [/^(\d+) لون$/, '$1 colors'], [/^(\d+) لون \(أول 48\)$/, '$1 colors (first 48)'],
     [/^السلة \((\d+)\)$/, 'Cart ($1)'], [/^طلب #(\d+)$/, 'Order #$1'], [/^رقم الطلب #?(\d+)$/, 'Order number #$1'],
     [/^نصف جملة من (\d+)، جملة من (\d+)$/, 'Half-wholesale from $1, wholesale from $2'],
     [/^الكمية \((.+)\)$/, 'Quantity ($1)'],

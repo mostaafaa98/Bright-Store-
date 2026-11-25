@@ -170,3 +170,10 @@ footer{background:var(--inkbg)}
 @media(max-width:600px){.logo img{height:46px}.logo b{font-size:16px}.top-in{gap:8px}.wall{grid-template-columns:repeat(5,1fr);gap:5px}.hero{padding:22px 18px}.wall i:nth-child(n+11){display:none}.mos{display:none}}
 .lbt .mut{direction:ltr;text-align:start}
 .eyebrow{letter-spacing:.1em;font-size:11.5px}
+
+.img.col{background-size:cover;background-position:center;transition:background-image .2s}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.ct{display:flex;flex-direction:column;gap:6px;align-items:stretch;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+.ct .cimg{aspect-ratio:1/1;border-radius:8px;border:1px solid var(--line);padding:0;background-size:cover!important;background-position:center!important;min-height:0}
+.ct b{text-align:center;font-size:15px;direction:ltr}
+.ct .g.sm{font-size:11px;padding:4px 6px;white-space:normal;line-height:1.3}
