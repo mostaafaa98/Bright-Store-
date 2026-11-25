@@ -348,7 +348,7 @@ app.get('/api/admin/reports', auth, admin, wrap(async (req, res) => {
   await sendXlsx(res, 'report-' + by, 'تقرير', [[Q[1][0], 28], [Q[1][1] || '-', 16], [Q[2][0], 14], [Q[2][1] || '-', 14], ['الإجمالي ج.م', 16]], rows.map(r => [r.k1, r.k2, r.c1, r.c2, r.tot / 100]));
 }));
 
-app.use(express.static(path.join(__dirname, 'public'), { maxAge: prod ? '1d' : 0 }));
+app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, setHeaders: (res, p) => { if (/\.(jpg|png|webp)$/i.test(p)) res.setHeader('Cache-Control', 'public, max-age=86400'); else res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => fail(res, 404, 'غير موجود'));
 app.use((err, req, res, next) => { console.error(err); fail(res, 500, 'خطأ في الخادم'); });
 app.listen(process.env.PORT || 3000, () => console.log('Bright Store on :' + (process.env.PORT || 3000)));
