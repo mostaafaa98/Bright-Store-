@@ -1,6 +1,6 @@
 (function () {
   var $ = function (s, r) { return (r || document).querySelector(s); };
-  var app = $('#app'), S = { user: null, token: localStorage.getItem('token'), cfg: { zones: [], wallet: {}, instapay: {} }, products: [], colors: [], cart: {}, cat: '', A: { tab: 'home', f: {}, rep: { by: 'product' }, aq: '' }, edit: null, pc: {}, qr: '', my: [] };
+  var app = $('#app'), S = { user: null, token: localStorage.getItem('token'), cfg: { zones: [], wallet: {}, instapay: {} }, products: [], colors: [], cart: {}, cat: '', colorF: null, A: { tab: 'home', f: {}, rep: { by: 'product' }, aq: '' }, edit: null, pc: {}, qr: '', my: [] };
   try { S.cart = JSON.parse(localStorage.getItem('cart') || '{}'); S.my = JSON.parse(localStorage.getItem('myorders') || '[]'); } catch (e) {}
   var ST = { new: 'جديد', processing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي' };
   var PS = { pending: 'غير مدفوع', review: 'بانتظار المراجعة', paid: 'مدفوع' };
@@ -40,17 +40,13 @@
   function cartCount() { return Object.keys(S.cart).reduce(function (n, k) { return n + S.cart[k]; }, 0); }
   function logout(silent) { localStorage.removeItem('token'); S.token = null; S.user = null; nav(); if (!silent) location.hash = '#/'; }
   function nav() {
-    var h = '<a class="btn g sm" href="#/orders">طلباتي</a>';
-    if (S.user && S.user.role === 'admin') h += '<a class="btn g sm" href="#/admin">لوحة التحكم</a>';
-    h += S.user ? '<button class="g sm" data-act="logout">خروج</button>' : '<a class="btn g sm" href="#/login">دخول</a>';
-    h += '<a class="btn" href="#/cart">🛒 <span class="badge">' + cartCount() + '</span></a>';
-    $('#nav').innerHTML = h;
+    var n = cartCount(), h = '<a class="nl" href="#/orders">' + ic('box') + '<span>طلباتي</span></a>';
+    if (S.user && S.user.role === 'admin') h += '<a class="nl" href="#/admin">' + ic('gear') + '<span>لوحة التحكم</span></a>';
+    h += S.user ? '<button class="nl" data-act="logout">' + ic('user') + '<span>خروج</span></button>' : '<a class="nl" href="#/login">' + ic('user') + '<span>دخول</span></a>';
+    h += '<a class="cartbtn" href="#/cart" aria-label="السلة">' + ic('cart') + '<span class="cnt' + (n ? '' : ' z') + '" id="cnt">' + n + '</span></a>';
+    $('#nav').innerHTML = h; cartbar();
   }
   function msg(t, ok) { var e = $('#m'); if (e) { e.className = ok ? 'ok' : 'err'; e.textContent = t; } }
-  function priceChips(p) {
-    if (p.p_retail === p.p_half && p.p_half === p.p_whole) return '<div class="price">' + egp(p.p_retail) + ' <small>/ ' + esc(p.unit) + '</small></div>';
-    return '<div class="price">' + egp(p.p_retail) + ' <small>/ ' + esc(p.unit) + '</small></div><div class="chips"><span class="chip">نصف جملة ' + egp(p.p_half) + ' (من ' + S.cfg.halfMin + ')</span><span class="chip">جملة ' + egp(p.p_whole) + ' (من ' + S.cfg.wholeMin + ')</span></div>';
-  }
   function nudge(g) {
     var u = unitPrice(g.p, g.q), c = S.cfg;
     if (g.q < c.halfMin && g.p.p_half < u) return 'أضف ' + (c.halfMin - g.q) + ' ' + g.p.unit + ' لتحصل على سعر نصف الجملة ' + egp(g.p.p_half);
@@ -59,27 +55,82 @@
   }
   function bg(u) { return u ? "background-image:url('" + esc(u) + "')" : ''; }
 
-  // ---------- Shop + product sheet ----------
+  // ---------- أيقونات ----------
+  var ICONS = {
+    cart: '<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.7a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/>',
+    user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+    box: '<path d="m3 7 9-4 9 4v10l-9 4-9-4z"/><path d="m3 7 9 4 9-4M12 11v10"/>',
+    leaf: '<path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15z"/><path d="M5 19 14 10"/>',
+    drop: '<path d="M12 3c4 4.5 6 7.5 6 10a6 6 0 0 1-12 0c0-2.5 2-5.5 6-10z"/>',
+    tag: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
+    truck: '<path d="M2 6h11v10H2z"/><path d="M13 9h5l3 3v4h-8"/><circle cx="6" cy="18" r="1.8"/><circle cx="17" cy="18" r="1.8"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7"/>',
+    grid: '<rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/>',
+    list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+    chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+    palette: '<circle cx="12" cy="12" r="9"/><circle cx="8" cy="10" r="1.2"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="16" cy="10" r="1.2"/>',
+    chat: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/>',
+    money: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>',
+    bell: '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+    alert: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>'
+  };
+  function ic(n) { return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[n] + '</svg>'; }
+  function num(c) { return (c / 100).toLocaleString('ar-EG'); }
+  function cartbar() {
+    var b = $('#cartbar'), n = cartCount();
+    b.hidden = !n || /^#\/(cart|admin|login|register)/.test(location.hash);
+    if (n) b.innerHTML = '<a href="#/cart">' + ic('cart') + '<span>السلة (' + n + ')</span><b>' + egp(cartTotal()) + '</b><em>إتمام الطلب</em></a>';
+  }
+  function same(p) { return p.p_retail === p.p_half && p.p_half === p.p_whole; }
+  function ladder(p) {
+    if (same(p)) return '';
+    return '<div class="ladder"><div><small>قطاعي</small><b>' + num(p.p_retail) + '</b></div><div><small>من ' + S.cfg.halfMin + '</small><b>' + num(p.p_half) + '</b></div><div class="best"><small>من ' + S.cfg.wholeMin + '</small><b>' + num(p.p_whole) + '</b></div></div>';
+  }
+  function tiersTable(p, q) {
+    if (same(p)) return '<div class="pr"><b>' + egp(p.p_retail) + '</b><span>/ ' + esc(p.unit) + ' — سعر موحد</span></div>';
+    var c = S.cfg, rows = [['قطاعي', 'أقل من ' + c.halfMin, p.p_retail, q < c.halfMin], ['نصف جملة', 'من ' + c.halfMin + ' إلى ' + (c.wholeMin - 1), p.p_half, q >= c.halfMin && q < c.wholeMin], ['جملة', 'من ' + c.wholeMin + ' فأكثر', p.p_whole, q >= c.wholeMin]];
+    return '<table class="tiers">' + rows.map(function (r) { return '<tr class="' + (q && r[3] ? 'on' : '') + '"><td>' + r[0] + '</td><td>' + r[1] + ' ' + esc(p.unit) + '</td><td>' + egp(r[2]) + '</td></tr>'; }).join('') + '</table>';
+  }
+
+  // ---------- المتجر ----------
+  function card(p) {
+    var sp = [p.spec_weight, p.spec_length].filter(Boolean).join(' • ');
+    return '<article class="card" tabindex="0" data-act="open" data-id="' + p.id + '"><div class="img" style="' + bg(p.images[0]) + '" role="img" aria-label="' + esc(p.name) + '"></div><div class="cb"><div class="cat">' + esc(p.category) + (p.has_colors ? ' — ' + p.color_ids.length + ' لون' : '') + '</div><h3>' + esc(p.name) + '</h3><div class="sp">' + esc(sp) + '</div><div class="pr"><b>' + egp(p.p_retail) + '</b><span>/ ' + esc(p.unit) + '</span></div>' + ladder(p) + '<span class="cta">' + (p.has_colors ? 'اختر اللون والكمية' : 'اختر الكمية') + '</span></div></article>';
+  }
   function shop() {
-    var q = $('#q').value.trim().toLowerCase(), cats = [''];
-    S.products.forEach(function (p) { if (cats.indexOf(p.category) < 0) cats.push(p.category); });
-    var list = S.products.filter(function (p) { return (!S.cat || p.category === S.cat) && (!q || (p.name + ' ' + p.name_en + ' ' + p.category).toLowerCase().indexOf(q) > -1); });
-    app.innerHTML = '<div class="hero"><h2>خيوط مصرية بجودة عالمية</h2><p>سعر قطاعي ونصف جملة وجملة تلقائياً حسب الكمية، ومئات الألوان لكل منتج. اطلب بدون تسجيل حساب.</p></div>' +
-      '<div class="cats">' + cats.map(function (c) { return '<button class="' + (c === S.cat ? '' : 'g') + '" data-act="cat" data-v="' + esc(c) + '">' + (esc(c) || 'الكل') + '</button>'; }).join('') + '</div>' +
-      '<div class="grid">' + (list.length ? list.map(function (p) {
-        var sp = [p.spec_weight, p.spec_length].filter(Boolean).join(' · ');
-        return '<div class="card" data-act="open" data-id="' + p.id + '"><div class="img" style="' + bg(p.images[0]) + '"></div><div class="cb"><h3>' + esc(p.name) + '</h3><div class="mut">' + esc(p.category) + (p.has_colors ? ' · ' + p.color_ids.length + ' لون' : '') + '</div>' + (sp ? '<div class="mut">' + esc(sp) + '</div>' : '') + priceChips(p) + '</div></div>';
-      }).join('') : '<p class="mut">لا توجد نتائج.</p>') + '</div>';
+    var q = $('#q').value.trim().toLowerCase(), cats = [], count = {}, cimg = {};
+    S.products.forEach(function (p) { if (!count[p.category]) { count[p.category] = 0; cats.push(p.category); cimg[p.category] = p.images[0]; } count[p.category]++; });
+    var list = S.products.filter(function (p) {
+      return (!S.cat || p.category === S.cat) && (!S.colorF || p.color_ids.indexOf(S.colorF) > -1) && (!q || (p.name + ' ' + p.name_en + ' ' + p.category).toLowerCase().indexOf(q) > -1);
+    });
+    var filtering = q || S.cat || S.colorF, h = '', c = S.cfg;
+    if (!filtering) {
+      var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
+      h += '<section class="hero"><div><h1>خيوط قطن مصري، بمئات الألوان</h1><p>كوتن بارليه وكروشيه ومالونيه ومكرمية وخيوط حياكة من مصنع برايت. اطلب بالقطعة أو بالجملة، ويتحدد السعر تلقائياً حسب كمية طلبك.</p><div class="ctas"><button class="lg" data-act="goto" data-v="products">تصفّح المنتجات</button><button class="g lg" data-act="goto" data-v="colors">تسوّق بحسب اللون</button></div></div><div class="mos">' + ims.map(function (u) { return '<div style="' + bg(u) + '"></div>'; }).join('') + '</div></section>' +
+        '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>شحن لكل المحافظات</b><span>التكلفة تظهر قبل التأكيد</span></p></div></section>';
+    }
+    if (S.colors.length) {
+      var cn = S.colorF && color(S.colorF);
+      h += '<section id="colors"><div class="sec"><h2>تسوّق بحسب اللون</h2><span class="mut">' + (cn ? '' : 'اختر لوناً لتعرف أي المنتجات متوفرة به') + '</span>' + (cn ? '<span class="fchip">' + esc(cn.code + ' - ' + cn.name) + '<button data-act="clear" aria-label="إلغاء فلتر اللون">إلغاء</button></span>' : '') + '</div><div class="spools">' +
+        S.colors.map(function (k) { return '<button class="spool' + (S.colorF === k.id ? ' on' : '') + '" style="--c:' + esc(k.hex) + '" data-act="cfilter" data-id="' + k.id + '" title="' + esc(k.code + ' - ' + k.name) + '" aria-label="' + esc(k.code + ' - ' + k.name) + '"></button>'; }).join('') + '</div></section>';
+    }
+    h += '<section id="products"><div class="sec"><h2>المنتجات</h2><span class="mut">' + list.length + ' منتج</span></div><div class="tiles">' +
+      '<button class="tile' + (!S.cat ? ' on' : '') + '" data-act="tile" data-v=""><b>الكل</b></button>' + cats.map(function (k) { return '<button class="tile' + (S.cat === k ? ' on' : '') + '" data-act="tile" data-v="' + esc(k) + '"><i style="' + bg(cimg[k]) + '"></i><span>' + esc(k) + '<small>' + count[k] + ' منتج</small></span></button>'; }).join('') + '</div><div class="grid" style="margin-top:14px">' +
+      (list.length ? list.map(card).join('') : '<div class="panel" style="grid-column:1/-1;text-align:center"><h3>لا توجد منتجات مطابقة</h3><p class="mut">جرّب كلمة بحث أخرى، أو امسح الفلاتر لعرض كل المنتجات.</p><button data-act="clear">مسح الفلاتر</button></div>') + '</div></section>';
+    app.innerHTML = h;
   }
   var M = null;
   function openProduct(id) {
-    var p = prod(id); if (!p) return; M = { p: p, sel: {}, q: '', gi: 0 };
+    var p = prod(id); if (!p) return; M = { p: p, sel: {}, q: '' };
     Object.keys(S.cart).forEach(function (k) { var a = k.split(':'); if (Number(a[0]) === p.id) M.sel[a[1]] = S.cart[k]; });
     var el = $('#modal'); el.hidden = false;
     var specs = SPECS.filter(function (s) { return p[s[0]]; }).map(function (s) { return '<tr><td>' + s[1] + '</td><td>' + esc(p[s[0]]) + '</td></tr>'; }).join('');
-    el.innerHTML = '<div class="sheet"><div style="display:flex;justify-content:space-between;gap:10px"><div><h3 style="margin:0">' + esc(p.name) + '</h3><div class="mut">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close">✕</button></div>' +
-      '<div class="row"><div><div class="img" id="gm" style="' + bg(p.images[0]) + ';border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div><div><p class="mut">' + esc(p.description) + '</p>' + priceChips(p) + (specs ? '<table class="spec">' + specs + '</table>' : '') + '</div></div>' +
-      (p.has_colors ? (p.color_ids.length ? '<input id="cq" placeholder="ابحث عن لون بالاسم أو الرقم…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '<div id="ms"></div></div>';
+    el.innerHTML = '<div class="sheet"><div class="sh-head"><div><div class="mut">' + esc(p.category) + '</div><h2 style="margin:0">' + esc(p.name) + '</h2><div class="mut" dir="ltr" style="text-align:right">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close" aria-label="إغلاق">✕</button></div>' +
+      '<div class="sh-body"><div><div class="img" id="gm" style="' + bg(p.images[0]) + ';border:1px solid var(--line);border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
+      '<div><p class="mut" style="font-size:14px;margin-top:0">' + esc(p.description) + '</p><div id="tt"></div>' + (specs ? '<table class="spec">' + specs + '</table>' : '') +
+      (p.has_colors ? (p.color_ids.length ? '<label for="cq">اختر الألوان (اضغط اللون لإضافة قطعة)</label><input id="cq" placeholder="ابحث باسم اللون أو رقمه…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '</div></div><div id="ms"></div></div>';
     mColors(); mSel();
   }
   function mColors() {
@@ -88,93 +139,103 @@
       var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + '" data-act="pick" data-id="' + c.id + '">' + (n ? '<em>' + n + '</em>' : '') + '<i style="background:' + esc(c.hex) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
-  function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" style="width:64px;padding:4px;text-align:center"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '">+</button></span>'; }
+  function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '" aria-label="إنقاص">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" aria-label="الكمية"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '" aria-label="زيادة">+</button></span>'; }
   function mSel() {
-    var p = M.p, keys = Object.keys(M.sel), q = keys.reduce(function (n, k) { return n + M.sel[k]; }, 0), h = '';
-    if (p.has_colors) h += keys.map(function (k) { var c = color(k); return '<div class="it"><span><i class="dotc" style="background:' + esc(c && c.hex) + '"></i> ' + esc(c ? c.code + ' - ' + c.name : '') + '</span>' + step('m', k, M.sel[k]) + '</div>'; }).join('');
-    else h += '<div class="it"><span>الكمية (' + esc(p.unit) + ')</span>' + step('m', '0', M.sel['0'] || 0) + '</div>';
+    var p = M.p, keys = Object.keys(M.sel), q = keys.reduce(function (n, k) { return n + M.sel[k]; }, 0), lines;
+    if (p.has_colors) lines = keys.map(function (k) { var c = color(k); return '<div class="it"><span><i class="dotc" style="background:' + esc(c && c.hex) + '"></i> ' + esc(c ? c.code + ' - ' + c.name : '') + '</span>' + step('m', k, M.sel[k]) + '</div>'; }).join('');
+    else lines = '<div class="it"><span>الكمية (' + esc(p.unit) + ')</span>' + step('m', '0', M.sel['0'] || 0) + '</div>';
     var u = unitPrice(p, q), n = nudge({ p: p, q: q });
-    h += (n && q ? '<div class="nudge">💡 ' + esc(n) + '</div>' : '') + '<div class="tot"><span>' + q + ' ' + esc(p.unit) + ' × ' + egp(u) + '</span><span>' + egp(u * q) + '</span></div><button style="width:100%;margin-top:10px" data-act="addcart"' + (q ? '' : ' disabled') + '>' + (q ? 'تحديث السلة' : (p.has_colors ? 'اختر الألوان والكميات' : 'حدّد الكمية')) + '</button>';
-    $('#ms').innerHTML = h;
+    $('#tt').innerHTML = tiersTable(p, q);
+    $('#ms').innerHTML = '<div style="padding:0 18px">' + lines + (n && q ? '<div class="nudge">' + esc(n) + '</div>' : '') + '</div><div class="sbar"><div class="tot" style="padding:0 0 8px"><span>' + q + ' ' + esc(p.unit) + ' × ' + egp(u) + '</span><span>' + egp(u * q) + '</span></div><button class="blk lg" data-act="addcart"' + (q ? '' : ' disabled') + '>' + (q ? 'أضف إلى السلة' : (p.has_colors ? 'اختر لوناً وكمية' : 'حدّد الكمية')) + '</button></div>';
   }
   function setSel(k, n) { n = Math.max(0, Math.min(100000, parseInt(n, 10) || 0)); if (n) M.sel[k] = n; else delete M.sel[k]; mSel(); mColors(); }
 
-  // ---------- Cart / checkout (بدون حساب) ----------
+  // ---------- السلة والطلب (بدون حساب) ----------
   function shipFor(gov, sub) {
     var z = S.cfg.zones.filter(function (x) { return x.name === gov; })[0];
     if (!z) return null; return S.cfg.freeOver > 0 && sub >= S.cfg.freeOver ? 0 : z.fee_cents;
   }
   function coSummary() {
     var f = $('#co'); if (!f) return; var sub = cartTotal(), gov = f.governorate.value, ship = shipFor(gov, sub), h = '<div><span>المنتجات</span><b>' + egp(sub) + '</b></div>';
-    h += '<div><span>الشحن' + (gov ? ' — ' + esc(gov) : '') + '</span><b>' + (ship == null ? 'اختر المحافظة' : ship === 0 ? 'مجاني 🎉' : egp(ship)) + '</b></div>';
+    h += '<div><span>الشحن' + (gov ? ' إلى ' + esc(gov) : '') + '</span><b>' + (ship == null ? 'اختر المحافظة' : ship === 0 ? 'مجاني' : egp(ship)) + '</b></div>';
     if (ship > 0 && S.cfg.freeOver > 0) h += '<div class="mut"><span>أضف ' + egp(S.cfg.freeOver - sub) + ' للحصول على شحن مجاني</span></div>';
     h += '<div class="tot"><span>الإجمالي</span><span>' + (ship == null ? egp(sub) + ' + الشحن' : egp(sub + ship)) + '</span></div>';
     $('#sum').innerHTML = h;
   }
+  function tierName(g) { return g.q >= S.cfg.wholeMin ? 'سعر الجملة' : g.q >= S.cfg.halfMin ? 'سعر نصف الجملة' : 'سعر القطاعي'; }
   function cart() {
     var gs = groups();
-    if (!gs.length) { app.innerHTML = '<div class="panel">السلة فارغة. <a href="#/">تصفح المنتجات</a></div>'; return; }
-    var h = '<div class="panel"><h3>سلة المشتريات</h3>';
+    if (!gs.length) { app.innerHTML = '<div class="panel done"><h2>السلة فارغة</h2><p class="mut">أضف منتجات لتبدأ طلبك.</p><a class="btn" href="#/">تصفّح المنتجات</a></div>'; return; }
+    var h = '<h2>إتمام الطلب</h2><div class="cols"><div><div class="panel" style="margin-top:0"><h3>المنتجات</h3>';
     gs.forEach(function (g) {
       var u = unitPrice(g.p, g.q), n = nudge(g);
-      h += '<div style="padding:8px 0;border-bottom:1px solid var(--bd)"><b>' + esc(g.p.name) + '</b> <span class="mut">— ' + g.q + ' ' + esc(g.p.unit) + ' × ' + egp(u) + ' = <b>' + egp(u * g.q) + '</b></span>';
+      h += '<div class="line"><div class="th2" style="' + bg(g.p.images[0]) + '"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px"><b>' + esc(g.p.name) + '</b><b>' + egp(u * g.q) + '</b></div><div class="mut">' + g.q + ' ' + esc(g.p.unit) + ' × ' + egp(u) + ' (' + tierName(g) + ')</div>';
       g.lines.forEach(function (l) { var c = color(l.cid); h += '<div class="it"><span>' + (l.cid && c ? '<i class="dotc" style="background:' + esc(c.hex) + '"></i> ' + esc(c.code + ' - ' + c.name) : 'الكمية') + '</span>' + step('c', l.key, l.qty) + '</div>'; });
-      h += (n ? '<div class="nudge">💡 ' + esc(n) + '</div>' : '') + '</div>';
+      h += (n ? '<div class="nudge">' + esc(n) + '</div>' : '') + '<button class="g sm" style="margin-top:8px" data-act="rmprod" data-id="' + g.p.id + '">إزالة المنتج</button></div></div>';
     });
     var hasW = S.cfg.wallet.number, hasI = S.cfg.instapay.number || S.cfg.instapay.handle || S.cfg.instapay.qr;
-    h += '</div><form class="panel" id="co"><h3>بيانات الشحن والدفع</h3><p class="mut">لا تحتاج لإنشاء حساب — اكتب بياناتك وأكّد الطلب.</p>' +
-      '<div class="row"><input name="name" placeholder="الاسم" required value="' + esc(S.user ? S.user.name : '') + '"><input name="phone" placeholder="رقم الموبايل" required inputmode="tel"></div>' +
-      '<div class="row"><select name="governorate" required><option value="">المحافظة</option>' + S.cfg.zones.map(function (z) { return '<option value="' + esc(z.name) + '">' + esc(z.name) + ' — ' + (z.fee_cents ? egp(z.fee_cents) : 'مجاني') + '</option>'; }).join('') + '</select><input name="area" placeholder="المنطقة / الحي"></div>' +
-      '<textarea name="address" placeholder="العنوان بالتفصيل (الشارع، رقم العقار، علامة مميزة)" required></textarea><input name="note" placeholder="ملاحظات (اختياري)" style="margin-top:8px">' +
-      '<h4>طريقة الدفع</h4><div class="pay"><label class="o"><input type="radio" name="payment" value="cod" checked> الدفع عند الاستلام</label>' +
-      (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet"> محفظة إلكترونية (تحويل ثم تأكيد)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"> إنستا باي (QR أو رقم)</label>' : '') + '</div>' +
-      '<div class="sum" id="sum"></div><p class="mut">' + esc(S.cfg.note || '') + '</p><p id="m"></p><button style="width:100%">تأكيد الطلب</button></form>';
+    h += '</div><form class="panel" id="co"><h3>بيانات الشحن</h3><p class="mut" style="margin-top:-6px">لا تحتاج لإنشاء حساب. اكتب بياناتك وأكّد الطلب.</p>' +
+      '<div class="row"><div><label for="f1">الاسم</label><input id="f1" name="name" required autocomplete="name" value="' + esc(S.user ? S.user.name : '') + '"></div><div><label for="f2">رقم الموبايل</label><input id="f2" name="phone" required inputmode="tel" autocomplete="tel" placeholder="01xxxxxxxxx"></div></div>' +
+      '<div class="row"><div><label for="f3">المحافظة</label><select id="f3" name="governorate" required><option value="">اختر المحافظة</option>' + S.cfg.zones.map(function (z) { return '<option value="' + esc(z.name) + '">' + esc(z.name) + ' — ' + (z.fee_cents ? egp(z.fee_cents) : 'شحن مجاني') + '</option>'; }).join('') + '</select></div><div><label for="f4">المنطقة / الحي</label><input id="f4" name="area"></div></div>' +
+      '<label for="f5">العنوان بالتفصيل</label><textarea id="f5" name="address" required placeholder="الشارع، رقم العقار، علامة مميزة"></textarea><label for="f6" style="margin-top:8px">ملاحظات (اختياري)</label><input id="f6" name="note">' +
+      '<h3 style="margin-top:18px">طريقة الدفع</h3><div class="pay"><label class="o"><input type="radio" name="payment" value="cod" checked> الدفع عند الاستلام</label>' +
+      (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet"> محفظة إلكترونية (تحوّل ثم تؤكد التحويل)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"> إنستا باي (QR أو رقم)</label>' : '') + '</div></form></div>' +
+      '<aside class="sticky"><div class="panel" style="margin-top:0"><h3>ملخص الطلب</h3><div class="sum" id="sum"></div><button class="blk lg" type="submit" form="co">تأكيد الطلب</button><p id="m"></p><p class="mut">' + esc(S.cfg.note || '') + '</p></div></aside></div>';
     app.innerHTML = h; coSummary();
   }
   function payBox(o, token) {
-    if (o.payment_method === 'cod') return '<p>💵 الدفع عند الاستلام: ' + egp(o.total_cents) + '</p>';
-    if (o.payment_status === 'paid') return '<p class="ok">✅ تم تأكيد الدفع.</p>';
-    var w = S.cfg.wallet, i = S.cfg.instapay, h = '<div class="panel" style="background:var(--bg)"><b>حوّل مبلغ ' + egp(o.total_cents) + ' ثم أرسل رقم العملية</b>';
+    if (o.payment_method === 'cod') return '<p>الدفع عند الاستلام: <b>' + egp(o.total_cents) + '</b></p>';
+    if (o.payment_status === 'paid') return '<p class="ok"><b>تم تأكيد الدفع.</b></p>';
+    var w = S.cfg.wallet, i = S.cfg.instapay, h = '<div class="panel" style="background:var(--mist);border-style:dashed"><b>حوّل مبلغ ' + egp(o.total_cents) + ' ثم أرسل رقم العملية</b>';
     if (o.payment_method === 'wallet') h += '<p>رقم المحفظة: <span class="big">' + esc(w.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(w.number) + '">نسخ</button><br><span class="mut">' + esc(w.name) + '</span></p>';
-    else h += (i.qr ? '<p><img class="qr" alt="QR" src="' + esc(i.qr) + '"></p>' : '') + (i.number ? '<p>رقم إنستا باي: <span class="big">' + esc(i.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(i.number) + '">نسخ</button></p>' : '') + (i.handle ? '<p>العنوان: <b>' + esc(i.handle) + '</b></p>' : '');
+    else h += (i.qr ? '<p><img class="qr" alt="QR إنستا باي" src="' + esc(i.qr) + '"></p>' : '') + (i.number ? '<p>رقم إنستا باي: <span class="big">' + esc(i.number) + '</span> <button class="g sm" data-act="copy" data-v="' + esc(i.number) + '">نسخ</button></p>' : '') + (i.handle ? '<p>العنوان: <b>' + esc(i.handle) + '</b></p>' : '');
     if (o.payment_status === 'review') h += '<p class="ok">استلمنا بيانات التحويل (' + esc(o.payment_ref) + ') وهي قيد المراجعة.</p>';
-    return h + '<form data-proof="' + o.id + '" data-token="' + esc(token || '') + '" class="row"><input name="ref" placeholder="رقم العملية أو الرقم المحوَّل منه" required><button>تأكيد التحويل</button></form><p id="m' + o.id + '" class="mut"></p></div>';
+    return h + '<form data-proof="' + o.id + '" data-token="' + esc(token || '') + '" class="row"><input name="ref" placeholder="رقم العملية أو الرقم المحوَّل منه" required aria-label="رقم العملية"><button>تأكيد التحويل</button></form><p id="m' + o.id + '" class="mut"></p></div>';
   }
-  function waLink(text) { return S.cfg.whatsapp ? '<a class="btn" style="background:#25d366" target="_blank" rel="noopener" href="https://wa.me/' + esc(S.cfg.whatsapp) + '?text=' + encodeURIComponent(text) + '">💬 تواصل مع برايت على واتساب</a>' : ''; }
+  function waLink(text) { return S.cfg.whatsapp ? '<a class="btn gr" target="_blank" rel="noopener" href="https://wa.me/' + esc(S.cfg.whatsapp) + '?text=' + encodeURIComponent(text) + '">' + ic('chat') + 'تواصل مع برايت على واتساب</a>' : ''; }
   function done(r, f) {
     var o = { id: r.orderId, payment_method: r.payment, payment_status: 'pending', total_cents: r.total };
-    app.innerHTML = '<div class="panel"><h2 class="ok">✅ تم استلام طلبك</h2><p style="font-size:20px">رقم الطلب: <b>#' + r.orderId + '</b></p><div class="sum"><div><span>المنتجات</span><b>' + egp(r.sub) + '</b></div><div><span>الشحن</span><b>' + (r.shipping ? egp(r.shipping) : 'مجاني') + '</b></div><div class="tot"><span>الإجمالي</span><span>' + egp(r.total) + '</span></div></div>' +
-      '<p>سنتواصل معك على <b>' + esc(f.phone) + '</b> لتأكيد الشحن. احتفظ برقم الطلب لمتابعته من «طلباتي».</p>' + payBox(o, r.token) +
-      '<div class="row">' + waLink('مرحباً برايت، أنا ' + f.name + '، رقم طلبي #' + r.orderId + ' بإجمالي ' + egp(r.total)) + '<a class="btn g" href="#/orders">متابعة طلباتي</a><a class="btn g" href="#/">متابعة التسوق</a></div></div>';
+    app.innerHTML = '<div class="panel done"><div class="chk">' + ic('check') + '</div><h2>تم استلام طلبك</h2><p style="font-size:20px;margin:0 0 12px">رقم الطلب <b>#' + r.orderId + '</b></p><div class="sum"><div><span>المنتجات</span><b>' + egp(r.sub) + '</b></div><div><span>الشحن</span><b>' + (r.shipping ? egp(r.shipping) : 'مجاني') + '</b></div><div class="tot"><span>الإجمالي</span><span>' + egp(r.total) + '</span></div></div>' +
+      '<p class="mut">سنتواصل معك على ' + esc(f.phone) + ' لتأكيد الشحن. احتفظ برقم الطلب لمتابعته من «طلباتي».</p><div style="text-align:right">' + payBox(o, r.token) + '</div>' +
+      '<div class="row" style="justify-content:center">' + waLink('مرحباً برايت، أنا ' + f.name + '، رقم طلبي #' + r.orderId + ' بإجمالي ' + egp(r.total)) + '<a class="btn g" href="#/orders">متابعة طلباتي</a><a class="btn g" href="#/">متابعة التسوق</a></div></div>';
   }
   function login(reg) {
-    app.innerHTML = '<form class="panel" style="max-width:420px;margin:20px auto" id="au" data-reg="' + (reg ? 1 : 0) + '"><h3>' + (reg ? 'إنشاء حساب' : 'تسجيل الدخول') + '</h3>' + (reg ? '<input name="name" placeholder="الاسم" required><br><br>' : '') + '<input name="email" type="email" placeholder="البريد الإلكتروني" required><br><br><input name="password" type="password" placeholder="كلمة المرور (8 أحرف على الأقل)" required minlength="8"><p id="m"></p><button style="width:100%">' + (reg ? 'إنشاء الحساب' : 'دخول') + '</button><p><a href="#/' + (reg ? 'login' : 'register') + '">' + (reg ? 'لدي حساب' : 'حساب جديد') + '</a></p><p class="mut">الحساب اختياري — يمكنك الطلب كضيف.</p></form>';
+    app.innerHTML = '<form class="panel auth" id="au" data-reg="' + (reg ? 1 : 0) + '"><h2>' + (reg ? 'إنشاء حساب' : 'تسجيل الدخول') + '</h2><p class="mut">الحساب اختياري، ويمكنك الطلب كضيف.</p>' + (reg ? '<label for="a1">الاسم</label><input id="a1" name="name" required><br><br>' : '') + '<label for="a2">البريد الإلكتروني</label><input id="a2" name="email" type="email" required><br><br><label for="a3">كلمة المرور</label><input id="a3" name="password" type="password" required minlength="8" placeholder="8 أحرف على الأقل"><p id="m"></p><button class="blk lg">' + (reg ? 'إنشاء الحساب' : 'دخول') + '</button><p style="text-align:center"><a href="#/' + (reg ? 'login' : 'register') + '">' + (reg ? 'لدي حساب بالفعل' : 'إنشاء حساب جديد') + '</a></p></form>';
+  }
+  function track(o) {
+    if (o.status === 'cancelled') return '<span class="pill p-bad">ملغي</span>';
+    var order = ['new', 'processing', 'shipped', 'delivered'], i = order.indexOf(o.status);
+    return '<div class="track">' + order.map(function (s, k) { return '<div class="' + (k <= i ? 'd' : '') + '">' + ST[s] + '</div>'; }).join('') + '</div>';
   }
   function orders() {
     Promise.all([S.user ? api('/orders') : [], S.my.length ? api('/orders/lookup', { method: 'POST', body: { orders: S.my } }) : []]).then(function (r) {
-      var own = {}; r[0].forEach(function (o) { own[o.id] = 1; }); var seen = {}, list = r[0].concat(r[1], S.found || []).filter(function (o) { return seen[o.id] ? false : (seen[o.id] = 1); }).sort(function (a, b) { return b.id - a.id; });
+      var own = {}; r[0].forEach(function (o) { own[o.id] = 1; });
+      var seen = {}, list = r[0].concat(r[1], S.found || []).filter(function (o) { return seen[o.id] ? false : (seen[o.id] = 1); }).sort(function (a, b) { return b.id - a.id; });
       var tok = {}; S.my.forEach(function (m) { tok[m.id] = m.token; });
-      app.innerHTML = '<form class="panel" id="lk"><b>تتبع طلب برقمه</b><div class="row"><input name="id" type="number" placeholder="رقم الطلب" required><input name="phone" placeholder="رقم الموبايل المسجل في الطلب" required><button>بحث</button></div><p id="m" class="err"></p></form>' +
+      var pc = { paid: 'p-ok', review: 'p-gold', pending: 'p-new' };
+      app.innerHTML = '<h2>طلباتي</h2><form class="panel" id="lk" style="margin-top:0"><b>تتبّع طلب برقمه</b><div class="row"><input name="id" type="number" placeholder="رقم الطلب" required aria-label="رقم الطلب"><input name="phone" placeholder="رقم الموبايل المسجل في الطلب" required aria-label="رقم الموبايل"><button>بحث</button></div><p id="m" class="err"></p></form>' +
         (list.length ? list.map(function (o) {
-          return '<div class="panel"><b>طلب #' + o.id + '</b> · ' + ST[o.status] + ' · ' + PM[o.payment_method] + ' (' + PS[o.payment_status] + ')<div class="mut">' + esc(o.created_at) + ' · ' + esc(o.governorate) + '</div>' +
+          return '<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>طلب #' + o.id + '</b><span><span class="pill ' + pc[o.payment_status] + '">' + PS[o.payment_status] + '</span> <span class="mut">' + PM[o.payment_method] + '</span></span></div><div class="mut">' + esc(o.created_at) + ' — ' + esc(o.governorate) + '</div>' + track(o) +
             o.items.map(function (i) { return '<div class="it"><span>' + esc(i.name) + (i.color ? ' — ' + esc(i.color) : '') + '</span><span>' + i.qty + ' × ' + egp(i.price_cents) + '</span></div>'; }).join('') +
             '<div class="it"><span>الشحن</span><span>' + (o.shipping_cents ? egp(o.shipping_cents) : 'مجاني') + '</span></div><div class="tot"><span>الإجمالي</span><span>' + egp(o.total_cents) + '</span></div>' + (o.status === 'cancelled' ? '' : (tok[o.id] || own[o.id] ? payBox(o, tok[o.id]) : (o.payment_method === 'cod' ? payBox(o) : '<p class="mut">لتأكيد التحويل تواصل معنا على واتساب.</p>'))) + '<div>' + waLink('بخصوص طلبي رقم #' + o.id) + '</div></div>';
-        }).join('') : '<div class="panel">لا توجد طلبات على هذا الجهاز/الحساب.</div>');
+        }).join('') : '<div class="panel">لا توجد طلبات على هذا الجهاز أو الحساب بعد.</div>');
     });
   }
 
   // ---------- Admin ----------
   var TABS = { home: 'نظرة عامة', products: 'المنتجات', colors: 'الألوان', orders: 'الطلبات', reports: 'التقارير', audit: 'سجل التعديلات', settings: 'الإعدادات' };
+  var TAB_IC = { home: 'grid', products: 'box', colors: 'palette', orders: 'list', reports: 'chart', audit: 'clock', settings: 'gear' };
+  function side() { return Object.keys(TABS).map(function (k) { return '<button class="sl' + (S.A.tab === k ? ' on' : '') + '" data-act="tab" data-v="' + k + '">' + ic(TAB_IC[k]) + '<span>' + TABS[k] + '</span></button>'; }).join(''); }
   function adminView() {
     if (!S.user || S.user.role !== 'admin') { location.hash = '#/'; return; }
-    var tabs = '<div class="tabs">' + Object.keys(TABS).map(function (k) { return '<button class="' + (S.A.tab === k ? '' : 'g') + '" data-act="tab" data-v="' + k + '">' + TABS[k] + '</button>'; }).join('') + '</div>';
-    var body = $('#abody'); if (!body) { app.innerHTML = tabs + '<div id="abody"></div>'; body = $('#abody'); } else $('.tabs').outerHTML = tabs;
+    var body = $('#abody');
+    if (!body) { app.innerHTML = '<div class="adm"><aside class="side" id="side">' + side() + '</aside><section id="abody"></section></div>'; body = $('#abody'); } else $('#side').innerHTML = side();
     ({ home: aHome, products: aProducts, colors: aColors, orders: aOrders, reports: aReports, audit: aAudit, settings: aSettings }[S.A.tab])(body);
   }
   function aHome(b) {
     api('/admin/stats').then(function (s) {
-      b.innerHTML = '<div class="panel kpi"><div>مبيعات اليوم<b>' + egp(s.today) + '</b></div><div>مبيعات الشهر<b>' + egp(s.month) + '</b></div><div>طلبات جديدة<b>' + s.newOrders + '</b></div><div>تحويلات للمراجعة<b>' + s.review + '</b></div></div>' +
-        '<div class="panel"><h3>مخزون منخفض</h3>' + (s.low.length ? s.low.map(function (p) { return '<div class="it"><span>' + esc(p.name) + '</span><b>' + p.stock + '</b></div>'; }).join('') : '<span class="mut">لا يوجد.</span>') + '</div>';
+      b.innerHTML = '<div class="kpi"><div>' + ic('money') + 'مبيعات اليوم<b>' + egp(s.today) + '</b></div><div>' + ic('chart') + 'مبيعات الشهر<b>' + egp(s.month) + '</b></div><div>' + ic('bell') + 'طلبات جديدة<b>' + s.newOrders + '</b></div><div>' + ic('clock') + 'تحويلات للمراجعة<b>' + s.review + '</b></div></div>' +
+        '<div class="panel"><h3>مخزون منخفض</h3>' + (s.low.length ? s.low.map(function (p) { return '<div class="it"><span>' + ic('alert') + ' ' + esc(p.name) + '</span><b>' + p.stock + '</b></div>'; }).join('') : '<span class="mut">لا يوجد منتج منخفض المخزون.</span>') + '</div>';
     });
   }
   function f(n, l, t, v, x) { return '<div><label>' + l + '</label><input name="' + n + '" type="' + (t || 'text') + '" ' + (x || '') + ' value="' + esc(v == null ? '' : v) + '"></div>'; }
@@ -248,9 +309,9 @@
 
   function route() {
     var r = location.hash.replace('#/', '').split('?')[0];
-    $('#modal').hidden = true;
+    $('#modal').hidden = true; app.className = r === 'admin' ? 'wide' : '';
     ({ '': shop, cart: cart, login: function () { login(false); }, register: function () { login(true); }, orders: orders, admin: adminView }[r] || shop)();
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); cartbar();
   }
   function img(file, max, cb) {
     var r = new FileReader(); r.onload = function () { var i = new Image(); i.onload = function () {
@@ -265,7 +326,11 @@
     var t = e.target.closest('[data-act]'); if (!t || t.tagName === 'INPUT') return;
     var a = t.dataset.act, id = t.dataset.id, k = t.dataset.k;
     if (a === 'logout') logout();
-    else if (a === 'cat') { S.cat = t.dataset.v; shop(); }
+    else if (a === 'tile') { S.cat = t.dataset.v; shop(); var pe = document.getElementById('products'); if (pe) pe.scrollIntoView(); }
+    else if (a === 'cfilter') { S.colorF = S.colorF === Number(id) ? null : Number(id); shop(); var pe2 = document.getElementById('products'); if (pe2) pe2.scrollIntoView(); }
+    else if (a === 'clear') { S.cat = ''; S.colorF = null; $('#q').value = ''; shop(); }
+    else if (a === 'goto') { var ge = document.getElementById(t.dataset.v); if (ge) ge.scrollIntoView(); }
+    else if (a === 'rmprod') { Object.keys(S.cart).forEach(function (key) { if (key.split(':')[0] === id) delete S.cart[key]; }); saveCart(); cart(); }
     else if (a === 'open') openProduct(id);
     else if (a === 'close') $('#modal').hidden = true;
     else if (a === 'gal') { $('#gm').style.backgroundImage = "url('" + M.p.images[t.dataset.i] + "')"; document.querySelectorAll('.gal .th').forEach(function (x) { x.classList.toggle('on', x === t); }); }
@@ -275,7 +340,7 @@
     else if (a === 'addcart') {
       Object.keys(S.cart).forEach(function (key) { if (Number(key.split(':')[0]) === M.p.id) delete S.cart[key]; });
       Object.keys(M.sel).forEach(function (c) { S.cart[M.p.id + ':' + c] = M.sel[c]; });
-      saveCart(); $('#modal').hidden = true; toast('تم تحديث السلة ✓');
+      saveCart(); $('#modal').hidden = true; toast('تمت الإضافة إلى السلة'); var cb = $('#cnt'); if (cb) cb.classList.add('bump');
     }
     else if (a === 'cinc' || a === 'cdec') { S.cart[k] = (S.cart[k] || 0) + (a === 'cinc' ? 1 : -1); if (S.cart[k] <= 0) delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'copy') { (navigator.clipboard ? navigator.clipboard.writeText(t.dataset.v) : Promise.reject()).then(function () { toast('تم النسخ'); }, function () { toast(t.dataset.v); }); }
@@ -318,7 +383,7 @@
   });
   document.addEventListener('submit', function (e) {
     e.preventDefault();
-    var fm = e.target, d = Object.fromEntries(new FormData(fm)), btn = fm.querySelector('button'); if (btn) btn.disabled = true;
+    var fm = e.target, d = Object.fromEntries(new FormData(fm)), btn = e.submitter || fm.querySelector('button'); if (btn) btn.disabled = true;
     var again = function () { if (btn) btn.disabled = false; }, bad = function (x) { msg(x.message); again(); };
     if (fm.id === 'au') api('/auth/' + (fm.dataset.reg === '1' ? 'register' : 'login'), { method: 'POST', body: d }).then(function (r) {
       S.token = r.token; S.user = r.user; localStorage.setItem('token', r.token); nav(); location.hash = '#/'; }).catch(bad);
@@ -341,10 +406,16 @@
   });
   $('#q').addEventListener('input', function () { if (location.hash && location.hash !== '#/') location.hash = '#/'; else shop(); });
   $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal') e.target.hidden = true; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.act === 'open') openProduct(e.target.dataset.id); if (e.key === 'Escape') $('#modal').hidden = true; });
   window.addEventListener('hashchange', route);
 
+  function footer() {
+    var c = S.cfg; $('#bar').textContent = 'الشحن لكل المحافظات، ويُطبَّق سعر الجملة تلقائياً من ' + c.wholeMin + ' وحدة من كل منتج.';
+    $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع عند الاستلام، أو بمحفظة إلكترونية، أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: ' + esc(c.whatsapp) + '</a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+  }
+  app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
-    api('/config').then(function (c) { S.cfg = c; $('#shopname').textContent = c.shop; document.title = c.shop + ' — متجر الجملة والقطاعي'; if (c.whatsapp) { var w = $('#wa'); w.href = 'https://wa.me/' + c.whatsapp; w.hidden = false; } }),
+    api('/config').then(function (c) { S.cfg = c; $('#shopname').textContent = c.shop; document.title = c.shop + ' — متجر الجملة والقطاعي'; footer(); if (c.whatsapp) { var w = $('#wa'); w.href = 'https://wa.me/' + c.whatsapp; w.innerHTML = ic('chat') + ' واتساب'; w.hidden = false; } }),
     api('/products').then(function (p) { S.products = p; }), api('/colors').then(function (c) { S.colors = c; }),
     S.token ? api('/me').then(function (r) { S.user = r.user; }).catch(function () {}) : 0
   ]).then(function () { nav(); route(); }).catch(function (e) { app.textContent = 'تعذر تحميل المتجر: ' + e.message; });
