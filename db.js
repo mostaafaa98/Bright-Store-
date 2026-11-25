@@ -140,4 +140,4 @@ if (!db.prepare('SELECT 1 FROM zones LIMIT 1').get()) {
   const ins = db.prepare('INSERT INTO zones(name,fee_cents,sort) VALUES(?,?,?)'); let i = 0;
   Z.forEach(([fee, ...names]) => names.forEach(n => ins.run(n, fee * 100, i++)));
 }
-module.exports = db;
+module.exports = require('./wal')(db);

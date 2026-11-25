@@ -16,6 +16,13 @@ app.use(helmet({ contentSecurityPolicy: { directives: {
   ...helmet.contentSecurityPolicy.getDefaultDirectives(),
   'img-src': ["'self'", 'data:', 'https:'], 'upgrade-insecure-requests': prod ? [] : null } } }));
 app.use(express.json({ limit: '700kb' }));
+// wait for the write-ahead log to reach Postgres before confirming any change to the client
+app.use('/api', (req, res, next) => {
+  if (req.method === 'GET') return next();
+  const json = res.json.bind(res);
+  res.json = body => { db.flush().then(() => json(body)); return res; };
+  next();
+});
 
 const wrap = f => (req, res, next) => Promise.resolve(f(req, res, next)).catch(next);
 const fail = (res, code, error) => res.status(code).json({ error });
@@ -357,4 +364,4 @@ app.get(['/', '/index.html'], sendIndex);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, setHeaders: (res, p) => { if (/\.(jpg|png|webp)$/i.test(p)) res.setHeader('Cache-Control', 'public, max-age=86400'); else res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => fail(res, 404, 'غير موجود'));
 app.use((err, req, res, next) => { console.error(err); fail(res, 500, 'خطأ في الخادم'); });
-app.listen(process.env.PORT || 3000, () => console.log('Bright Store on :' + (process.env.PORT || 3000)));
+db.ready.then(() => app.listen(process.env.PORT || 3000, () => console.log('Bright Store on :' + (process.env.PORT || 3000))));
