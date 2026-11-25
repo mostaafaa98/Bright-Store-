@@ -106,7 +106,7 @@ app.get('/api/img/:id', (req, res) => {
 const SPEC = ['spec_weight', 'spec_count', 'spec_length', 'spec_material', 'spec_size', 'spec_usage'];
 function pBody(b) {
   const half = b.p_half === '' || b.p_half == null ? b.p_retail : b.p_half, whole = b.p_whole === '' || b.p_whole == null ? half : b.p_whole;
-  const p = { name: str(b.name, 120), name_en: str(b.name_en, 120), category: str(b.category, 40), unit: str(b.unit, 20) || 'وحدة', description: str(b.description, 400),
+  const p = { name: str(b.name, 120), name_en: str(b.name_en, 120), category: str(b.category, 40), unit: str(b.unit, 20) || 'وحدة', description: str(b.description, 1200),
     image_url: okUrl(b.image_url), p_retail: money(b.p_retail), p_half: money(half), p_whole: money(whole),
     stock: b.stock === '' || b.stock == null ? null : Number(b.stock), has_colors: b.has_colors ? 1 : 0, sort: parseInt(b.sort, 10) || 0 };
   SPEC.forEach(k => { p[k] = str(b[k], 200); });

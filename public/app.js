@@ -174,7 +174,7 @@
     var specs = SPECS.filter(function (s) { return p[s[0]]; }).map(function (s) { return '<tr><td>' + s[1] + '</td><td>' + esc(p[s[0]]) + '</td></tr>'; }).join('');
     el.innerHTML = '<div class="sheet"><div class="sh-head"><div><div class="mut">' + esc(p.category) + '</div><h2 style="margin:0">' + esc(p.name) + '</h2><div class="mut" dir="ltr" style="text-align:right">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close" aria-label="إغلاق">✕</button></div>' +
       '<div class="sh-body"><div><div class="img zoomable" id="gm" data-act="zoomimg" title="تكبير" style="' + bg(p.images[0]) + ';border:1px solid var(--line);border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
-      '<div><p class="mut" style="font-size:14px;margin-top:0">' + esc(p.description) + '</p><div id="tt"></div>' + (specs ? '<table class="spec">' + specs + '</table>' : '') +
+      '<div><p class="mut" style="font-size:14px;margin-top:0;white-space:pre-line">' + esc(p.description) + '</p><div id="tt"></div>' + (specs ? '<table class="spec">' + specs + '</table>' : '') +
       (p.has_colors ? (p.color_ids.length ? '<label for="cq">اختر الألوان (اضغط على اللون لتكبير الصورة وإضافته)</label><input id="cq" placeholder="ابحث باسم اللون أو رقمه…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '</div></div><div id="ms"></div></div>';
     mColors(); mSel();
   }
