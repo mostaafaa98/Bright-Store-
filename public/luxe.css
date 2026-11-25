@@ -117,3 +117,60 @@ footer .ft>div:last-child p a{unicode-bidi:plaintext}
 html[dir=ltr] .sh-head .mut[dir=ltr]{display:none}
 @media(max-width:600px){.top{position:relative}.cat{letter-spacing:.08em;font-size:9.5px}.cta{letter-spacing:.06em;font-size:10.5px}.logo small{display:none}.top-in{padding:10px 14px}}
 .pay .o:has(input:checked){background:var(--gold-bg)!important;border-color:var(--gold)!important}
+/* ===== App-like mobile ===== */
+html{-webkit-tap-highlight-color:transparent}
+button,a,.card,.tile,.spool,.ct{touch-action:manipulation}
+#app.pg{animation:pgin .38s cubic-bezier(.2,.7,.2,1)}
+@keyframes pgin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.inst{position:fixed;inset-inline:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:90;display:flex;align-items:center;gap:10px;background:var(--inkbg);color:#f3ecdc;border:1px solid var(--gold);padding:10px 12px;font-size:14px;box-shadow:0 14px 34px -10px rgba(0,0,0,.6)}
+.inst span{flex:1}.inst button{padding:8px 14px;min-height:36px}.inst .g{color:#f3ecdc;border-color:rgba(216,184,101,.5);padding:8px 11px}
+@media(max-width:700px){
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom,0px));overscroll-behavior-y:none;font-size:15.5px}
+.top{padding-top:env(safe-area-inset-top,0px)}
+.top-in{padding:8px 14px 10px;gap:8px}.logo img{height:40px}.logo b{font-size:19px}
+.search{order:5}.search input{height:48px;font-size:16px;border-radius:12px;background:var(--paper)}
+.ib{height:42px;border-radius:12px}
+/* bottom tab bar */
+#nav{position:fixed;inset-inline:0;bottom:0;z-index:50;margin:0;display:flex;align-items:stretch;justify-content:space-around;gap:0;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -10px 30px -18px rgba(0,0,0,.35)}
+#nav .nl,#nav .cartbtn{flex:1;min-height:52px;flex-direction:column;justify-content:center;gap:3px;border-radius:12px;padding:4px 2px;font-size:11px;font-weight:600;letter-spacing:.02em;background:none;color:var(--mut);width:auto;height:auto;position:relative;display:flex;align-items:center}
+#nav .nl span{display:block}#nav .ic{width:24px;height:24px;stroke-width:1.6}
+#nav .on{color:var(--ink)}#nav .on .ic{color:var(--gold);stroke-width:2}
+#nav .on:before{content:"";position:absolute;top:-7px;width:26px;height:2px;background:var(--gold)}
+#nav .nl:active,#nav .cartbtn:active{background:var(--gold-bg);transform:scale(.94)}
+#nav .cartbtn{color:var(--mut)}
+#nav .cartbtn:after{content:"السلة";font-size:11px}html[dir=ltr] #nav .cartbtn:after{content:"Cart"}
+#nav .cnt{top:2px;inset-inline-end:calc(50% - 22px)}
+#nav .cartbtn.on,#nav .cartbtn:hover{background:none;color:var(--ink)}
+/* floating cart bar above tabs */
+.cartbar{bottom:calc(66px + env(safe-area-inset-bottom,0px));padding:0 12px 8px;z-index:45}
+.cartbar a{border-radius:14px;padding:13px 16px;background:linear-gradient(135deg,#1d1810,#0b0907);border:1px solid rgba(216,184,101,.5);color:#f3ecdc;animation:rise .35s cubic-bezier(.2,.7,.2,1)}
+.cartbar em{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#17130d;border-radius:10px;padding:8px 14px;font-weight:700}
+@keyframes rise{from{transform:translateY(20px);opacity:0}}
+.wa{bottom:calc(142px + env(safe-area-inset-bottom,0px));inset-inline-start:auto;inset-inline-end:12px;width:48px;height:48px;padding:0;justify-content:center;border-radius:50%}
+.wa span,.wa{font-size:0}.wa svg,.wa .ic{width:24px;height:24px}
+/* cards: 2 col, bigger tap */
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card:active{transform:scale(.97);transition:transform .12s}
+.card:hover{transform:none}
+.tiles{overflow-x:auto;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px}.tiles::-webkit-scrollbar{display:none}.tile{scroll-snap-align:start;min-height:48px}
+/* product sheet */
+.ov{align-items:flex-end;background:rgba(10,8,5,.6)}
+.sheet{width:100%;max-height:92vh;border-radius:20px 20px 0 0;border-bottom:0;animation:sheetup .38s cubic-bezier(.2,.8,.2,1) both;overscroll-behavior:contain;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet:before{content:"";display:block;width:44px;height:4px;border-radius:4px;background:var(--line);margin:8px auto 0;position:sticky;top:8px;z-index:3}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:none}}
+.sbar{background:var(--paper);box-shadow:0 -12px 30px -16px rgba(0,0,0,.35);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+.sbar button,.step button{min-height:52px;font-size:16px}
+.ct{padding:6px}.cgrid{grid-template-columns:repeat(3,1fr);gap:8px}
+/* checkout: big fields, sticky confirm */
+input,select,textarea{font-size:16px;min-height:52px;border-radius:12px}
+#co label{font-size:13px;letter-spacing:.04em}
+.pay .o{min-height:60px;padding:16px;font-size:16px;border-radius:12px}
+.sticky .blk,.sticky button.blk{position:fixed;inset-inline:12px;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:46;width:auto;min-height:56px;font-size:17px;border-radius:14px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#17130d;box-shadow:0 16px 36px -10px rgba(0,0,0,.55);animation:rise .35s}
+.sticky{margin-bottom:84px}
+.line .step button,.step button{min-width:44px}
+.hero{border-radius:20px;margin-inline:-2px}
+footer{padding-bottom:20px}
+.sec{margin-top:34px}
+}
+@media(max-width:700px) and (prefers-reduced-motion:reduce){.sheet,.cartbar a,.sticky .blk{animation:none}}
+@media(max-width:700px){.top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--paper)}}

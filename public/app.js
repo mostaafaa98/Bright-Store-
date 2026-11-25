@@ -46,12 +46,21 @@
   function cartTotal() { return groups().reduce(function (n, g) { return n + unitPrice(g.p, g.q) * g.q; }, 0); }
   function cartCount() { return Object.keys(S.cart).reduce(function (n, k) { return n + S.cart[k]; }, 0); }
   function logout(silent) { localStorage.removeItem('token'); S.token = null; S.user = null; nav(); if (!silent) location.hash = '#/'; }
+  function tabOn() {
+    var hs = location.hash || '#/', els = document.querySelectorAll('#nav a');
+    for (var i = 0; i < els.length; i++) { var h = els[i].getAttribute('href'); els[i].classList.toggle('on', h === '#/' ? (hs === '#/' || hs === '#' || hs === '') : hs.indexOf(h) === 0); }
+  }
+  function prefill() {
+    var f = $('#co'); if (!f) return; var c; try { c = JSON.parse(localStorage.getItem('cust') || 'null'); } catch (e) { c = null; } if (!c) return;
+    ['name', 'phone', 'governorate', 'area', 'address'].forEach(function (k) { if (f[k] && !f[k].value && c[k]) f[k].value = c[k]; });
+    coSummary();
+  }
   function nav() {
-    var n = cartCount(), h = '<a class="nl" href="#/orders">' + ic('box') + '<span>طلباتي</span></a>';
+    var n = cartCount(), h = '<a class="nl tabh" href="#/">' + ic('house') + '<span>الرئيسية</span></a><a class="nl" href="#/orders">' + ic('box') + '<span>طلباتي</span></a>';
     if (S.user && S.user.role === 'admin') h += '<a class="nl" href="#/admin">' + ic('gear') + '<span>لوحة التحكم</span></a>';
     h += S.user ? '<button class="nl" data-act="logout">' + ic('user') + '<span>خروج</span></button>' : '<a class="nl" href="#/login">' + ic('user') + '<span>دخول</span></a>';
     h += '<a class="cartbtn" href="#/cart" aria-label="السلة">' + ic('cart') + '<span class="cnt' + (n ? '' : ' z') + '" id="cnt">' + n + '</span></a>';
-    $('#nav').innerHTML = h; cartbar();
+    $('#nav').innerHTML = h; tabOn(); cartbar();
   }
   function msg(t, ok) { var e = $('#m'); if (e) { e.className = ok ? 'ok' : 'err'; e.textContent = t; } }
   function nudge(g) {
@@ -64,6 +73,7 @@
 
   // ---------- أيقونات ----------
   var ICONS = {
+    house: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/>',
     cart: '<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.7a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
     box: '<path d="m3 7 9-4 9 4v10l-9 4-9-4z"/><path d="m3 7 9 4 9-4M12 11v10"/>',
@@ -220,7 +230,7 @@
       '<h3 style="margin-top:18px">طريقة الدفع</h3><div class="pay">' +
       (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet" checked> فودافون كاش (تحوّل ثم تؤكد التحويل)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"' + (hasW ? '' : ' checked') + '> إنستا باي (QR أو رقم)</label>' : '') + '</div></form></div>' +
       '<aside class="sticky"><div class="panel" style="margin-top:0"><h3>ملخص الطلب</h3><div class="sum" id="sum"></div><button class="blk lg" type="submit" form="co">تأكيد الطلب</button><p id="m"></p></div></aside></div>';
-    app.innerHTML = h; coSummary();
+    app.innerHTML = h; coSummary(); prefill();
   }
   function payBox(o, token) {
     if (o.payment_method === 'cod') return '<p>الدفع عند الاستلام: <b>' + egp(o.total_cents) + '</b></p>';
@@ -483,7 +493,7 @@
     if (fm.id === 'au') api('/auth/' + (fm.dataset.reg === '1' ? 'register' : 'login'), { method: 'POST', body: d }).then(function (r) {
       S.token = r.token; S.user = r.user; localStorage.setItem('token', r.token); nav(); location.hash = '#/'; }).catch(bad);
     else if (fm.id === 'co') api('/orders', { method: 'POST', body: Object.assign({}, d, { items: Object.keys(S.cart).map(function (k) { var a = k.split(':'); return { id: Number(a[0]), color: Number(a[1]), qty: S.cart[k] }; }) }) }).then(function (r) {
-      S.my.unshift({ id: r.orderId, token: r.token }); S.my = S.my.slice(0, 20); localStorage.setItem('myorders', JSON.stringify(S.my));
+      try { localStorage.setItem('cust', JSON.stringify({ name: d.name, phone: d.phone, governorate: d.governorate, area: d.area, address: d.address })); } catch (e) { } S.my.unshift({ id: r.orderId, token: r.token }); S.my = S.my.slice(0, 20); localStorage.setItem('myorders', JSON.stringify(S.my));
       S.cart = {}; saveCart(); done(r, d); window.scrollTo(0, 0); }).catch(bad);
     else if (fm.id === 'lk') api('/orders/lookup', { method: 'POST', body: { id: d.id, phone: d.phone } }).then(function (r) {
       if (!r.length) { msg('لا يوجد طلب بهذه البيانات'); again(); return; }
@@ -502,7 +512,18 @@
   $('#q').addEventListener('input', function () { if (location.hash && location.hash !== '#/') location.hash = '#/'; else shop(); });
   $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal') e.target.hidden = true; });
   document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.act === 'open') openProduct(e.target.dataset.id); if (e.key === 'Escape') $('#modal').hidden = true; });
+  window.addEventListener('hashchange', function () { tabOn(); app.classList.remove('pg'); void app.offsetWidth; app.classList.add('pg'); });
   window.addEventListener('hashchange', route);
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function () { });
+  var dip = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); dip = e; if (localStorage.getItem('noinstall')) return;
+    var b = document.createElement('div'); b.className = 'inst';
+    b.innerHTML = '<span>ثبّت تطبيق برايت على موبايلك</span><button type="button" id="instgo">تثبيت</button><button type="button" class="g" id="instno" aria-label="إغلاق">✕</button>';
+    document.body.appendChild(b);
+    $('#instgo').onclick = function () { dip.prompt(); b.remove(); };
+    $('#instno').onclick = function () { localStorage.setItem('noinstall', '1'); b.remove(); };
+  });
 
   function footer() {
     var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع بفودافون كاش أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
