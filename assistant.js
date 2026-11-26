@@ -47,7 +47,7 @@ module.exports = function (db, settings) {
     if (toks.length) {
       const cn = c => { const m = String(c.code).toUpperCase().replace(/[\s-]/g, '').match(/^([A-Z]*)0*(\d+)([A-Z0-9]*)$/); return m ? { l: m[1], n: String(parseInt(m[2], 10)) + m[3], raw: String(c.code).toUpperCase().replace(/[\s-]/g, '') } : { l: '', n: '', raw: String(c.code).toUpperCase() }; };
       const idx = colors.map(c => [c, cn(c)]);
-      const lines = [], pset = [], missing = [];
+      const lines = [], pset = [], missing = [], items = [], seen = new Set();
       for (const t of toks.slice(0, 5)) {
         const tn = String(parseInt(t.n, 10));
         let hits = idx.filter(([, k]) => k.raw === t.full).map(x => x[0]);
@@ -56,14 +56,21 @@ module.exports = function (db, settings) {
         for (const c of hits) {
           const ps = products.filter(p => p.colors.some(x => x.id === c.id));
           const ok = c.stock === null || c.stock > 0;
-          lines.push('• ' + c.code + ' — ' + (ps.length ? ps.map(p => p.name).join(' / ') : 'غير مرتبط بمنتج حالياً') + ': ' + (ok ? 'متوفر ✅' : 'غير متوفر حالياً ❌'));
-          ps.forEach(p => { if (!pset.includes(p.id)) pset.push(p.id); });
+          ps.forEach(p => {
+            const k = p.id + ':' + c.id; if (seen.has(k)) return; seen.add(k);
+            items.push({ pid: p.id, cid: c.id, code: c.code, product: p.name, unit: p.unit, ok, price: p.p_retail });
+            if (!pset.includes(p.id)) pset.push(p.id);
+          });
+          if (!ps.length) lines.push('• ' + c.code + ': موجود لكن غير مرتبط بمنتج حالياً');
         }
       }
-      if (lines.length || (missing.length && (/لون|كود|code/.test(last) || toks.length === missing.length && last.replace(/[a-z0-9\s-]/g, '').length < 12))) {
-        out.reply = (lines.length ? 'اللون ' + (lines.length > 1 ? 'اللي سألت عنه:' : 'ده:') + '\n' + lines.join('\n') : '') + (missing.length ? (lines.length ? '\n' : '') + 'مش لاقي في الكتالوج كود: ' + missing.join('، ') + '. اتأكد من الكود أو كلم فريقنا على واتساب.' : '');
-        out.products = pset.slice(0, 4); out.det = true;
-        if (!lines.length) handoff('عايز أسأل عن لون كوده ' + missing.join(' '));
+      if (items.length || lines.length || (missing.length && (/لون|كود|code/.test(last) || toks.length === missing.length && last.replace(/[a-z0-9\s-]/g, '').length < 12))) {
+        const codes = [...new Set(items.map(i => i.code))];
+        out.items = items.slice(0, 8);
+        const head = items.length ? (codes.length === 1 ? 'لقيت الكود ' + codes[0] + (items.length > 1 ? ' في ' + items.length + ' منتجات، اختار اللي يناسبك:' : ' في منتج واحد:') : 'لقيت الأكواد اللي سألت عنها (' + items.length + ' نتيجة):') : '';
+        out.reply = (head ? head + (lines.length ? '\n' + lines.join('\n') : '') : lines.join('\n')) + (missing.length ? (lines.length ? '\n' : '') + 'مش لاقي في الكتالوج كود: ' + missing.join('، ') + '. اتأكد من الكود أو كلم فريقنا على واتساب.' : '');
+        out.products = []; out.det = true;
+        if (!items.length && !lines.length) handoff('عايز أسأل عن لون كوده ' + missing.join(' '));
         return out;
       }
     }

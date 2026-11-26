@@ -222,6 +222,11 @@
     $('#sum').innerHTML = '<div class="tot"><span>الإجمالي</span><span>' + egp(sub) + '</span></div><div class="mut"><span>المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.</span></div>';
   }
   function tierName(g) { return g.q >= S.cfg.wholeMin ? 'سعر الجملة' : g.q >= S.cfg.halfMin ? 'سعر نصف الجملة' : 'سعر القطاعي'; }
+  window.BRadd = function (pid, cid, q) {
+    q = Math.max(1, Math.floor(Number(q) || 1)); var k = pid + ':' + cid, n = (S.cart[k] || 0) + q, cp = capOf(prod(pid), color(cid));
+    if (cp != null && n > cp) { n = cp; toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); }
+    S.cart[k] = n; saveCart(); var cb = $('#cnt'); if (cb) cb.classList.add('bump'); return n;
+  };
   function capCart(k, n) { var a = k.split(':'), cp = capOf(prod(a[0]), color(a[1])); if (cp != null && n > cp) { toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); return cp; } return n; }
   function cartThumb(g) { if (g.p.has_colors) for (var i = 0; i < g.lines.length; i++) { var c = color(g.lines[i].cid); if (c && c.img) return c.img; } return g.p.images[0]; }
   function cart() {
