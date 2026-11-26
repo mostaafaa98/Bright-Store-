@@ -15,7 +15,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: { directives: {
   ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-  'img-src': ["'self'", 'data:', 'https:'], 'upgrade-insecure-requests': prod ? [] : null } } }));
+  'img-src': ["'self'", 'data:', 'blob:', 'https:'], 'upgrade-insecure-requests': prod ? [] : null } } }));
 app.use(express.json({ limit: '700kb' }));
 // wait for the write-ahead log to reach Postgres before confirming any change to the client
 app.use('/api', (req, res, next) => {
