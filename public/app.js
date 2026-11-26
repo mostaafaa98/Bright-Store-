@@ -144,7 +144,7 @@
     if (cres.length) cres.sort(function (x, y) { return (x.code.toLowerCase() === q ? 0 : x.code.toLowerCase().indexOf(q) === 0 ? 1 : 2) - (y.code.toLowerCase() === q ? 0 : y.code.toLowerCase().indexOf(q) === 0 ? 1 : 2); });
     if (!filtering) {
       var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
-      h += '<section class="hero"><div class="hero-t"><h1>خيوط برايت</h1><p class="lead">برايت شركة مصرية رائدة تقدّم مجموعات متميّزة من خيوط الحياكة اليدوية والخيوط، ونفخر بحصولنا على شهادة الأيزو (ISO).</p>' + socials() + '<div class="ctas"><button class="g" data-act="goto" data-v="products">تصفّح المنتجات</button></div></div>' + wall() + '</section>' +
+      h += '' +
         '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>نوصّل لكل المحافظات</b><span>نتواصل معك لتأكيد الطلب</span></p></div></section>';
     }
     if (S.colors.length && S.colors.length < 80) {
@@ -163,6 +163,7 @@
     h += '<section id="products"><div class="sec"><h2>المنتجات</h2><span class="mut">' + list.length + ' منتج</span></div><div class="tiles">' +
       '<button class="tile' + (!S.cat ? ' on' : '') + '" data-act="tile" data-v=""><b>الكل</b></button>' + cats.map(function (k) { return '<button class="tile' + (S.cat === k ? ' on' : '') + '" data-act="tile" data-v="' + esc(k) + '"><i style="' + bg(cimg[k]) + '"></i><span>' + esc(k) + '<small>' + count[k] + ' منتج</small></span></button>'; }).join('') + '</div><div class="grid" style="margin-top:14px">' +
       (list.length ? list.map(card).join('') : cres.length ? '' : '<div class="panel" style="grid-column:1/-1;text-align:center"><h3>لا توجد منتجات مطابقة</h3><p class="mut">جرّب كلمة بحث أخرى، أو امسح الفلاتر لعرض كل المنتجات.</p><button data-act="clear">مسح الفلاتر</button></div>') + '</div></section>';
+    if (!filtering) h += '<section class="hero hero-end">' + socials() + wall() + '</section>';
     app.innerHTML = h;
   }
   var M = null, cyc = null;
@@ -526,7 +527,7 @@
   });
 
   function footer() {
-    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>الشراء</h4><p>الدفع بفودافون كاش أو بإنستا باي.</p><p>' + esc(c.note || '') + '</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
