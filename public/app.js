@@ -189,7 +189,8 @@
   function openProduct(id) {
     var p = prod(id); if (!p) return; M = { p: p, sel: {}, q: '' };
     Object.keys(S.cart).forEach(function (k) { var a = k.split(':'); if (Number(a[0]) === p.id) M.sel[a[1]] = S.cart[k]; });
-    var el = $('#modal'); el.hidden = false;
+    var el = $('#modal'); el.classList.remove('out'); el.hidden = false; document.documentElement.classList.add('lock');
+    if (!(history.state && history.state.sheet)) history.pushState({ sheet: 1 }, '');
     var specs = SPECS.filter(function (s) { return p[s[0]]; }).map(function (s) { return '<tr><td>' + s[1] + '</td><td>' + esc(p[s[0]]) + '</td></tr>'; }).join('');
     el.innerHTML = '<div class="sheet"><div class="sh-head"><div><div class="mut">' + esc(p.category) + '</div><h2 style="margin:0">' + esc(p.name) + '</h2><div class="mut" dir="ltr" style="text-align:right">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close" aria-label="إغلاق">✕</button></div>' +
       '<div class="sh-body"><div><div class="img zoomable" id="gm" data-act="zoomimg" title="تكبير" style="' + bg(heroImg(p)) + ';border:1px solid var(--line);border-radius:12px"></div>' + (!p.has_colors && p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
@@ -396,11 +397,20 @@
     });
   }
 
+  var closing = 0;
+  function closeModal(fromPop) {
+    var el = $('#modal'); if (el.hidden || closing) return;
+    if (!fromPop && history.state && history.state.sheet) { history.back(); return; }
+    closing = 1; el.classList.add('out');
+    setTimeout(function () { el.hidden = true; el.classList.remove('out'); closing = 0; document.documentElement.classList.remove('lock'); }, 230);
+  }
+  window.addEventListener('popstate', function () { if (!(history.state && history.state.sheet)) closeModal(true); });
+  var SCR = {};
   function route() {
     var r = location.hash.replace('#/', '').split('?')[0];
-    $('#modal').hidden = true; app.className = r === 'admin' ? 'wide' : '';
+    $('#modal').hidden = true; document.documentElement.classList.remove('lock'); closing = 0; app.className = r === 'admin' ? 'wide' : '';
     ({ '': shop, cart: cart, login: function () { login(false); }, register: function () { login(true); }, orders: orders, admin: adminView }[r] || shop)();
-    window.scrollTo(0, 0); cartbar();
+    window.scrollTo(0, SCR[r] || 0); cartbar();
   }
   function img(file, max, cb) {
     var r = new FileReader(); r.onload = function () { var i = new Image(); i.onload = function () {
@@ -478,7 +488,7 @@
     else if (a === 'cdel') { delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'rmprod') { Object.keys(S.cart).forEach(function (key) { if (key.split(':')[0] === id) delete S.cart[key]; }); saveCart(); cart(); }
     else if (a === 'open') openProduct(id);
-    else if (a === 'close') $('#modal').hidden = true;
+    else if (a === 'close') closeModal();
     else if (a === 'gal') { $('#gm').style.backgroundImage = "url('" + M.p.images[t.dataset.i] + "')"; document.querySelectorAll('.gal .th').forEach(function (x) { x.classList.toggle('on', x === t); }); }
     else if (a === 'pick') { if (!(M.sel[id] > 0)) setSel(id, 1); }
     else if (a === 'zoomc') zoomColor(id);
@@ -495,7 +505,7 @@
     else if (a === 'addcart') {
       Object.keys(S.cart).forEach(function (key) { if (Number(key.split(':')[0]) === M.p.id) delete S.cart[key]; });
       Object.keys(M.sel).forEach(function (c) { S.cart[M.p.id + ':' + c] = M.sel[c]; });
-      saveCart(); $('#modal').hidden = true; toast('تمت الإضافة إلى السلة'); var cb = $('#cnt'); if (cb) cb.classList.add('bump');
+      saveCart(); closeModal(); toast('تمت الإضافة إلى السلة'); var cb = $('#cnt'); if (cb) cb.classList.add('bump');
     }
     else if (a === 'cinc' || a === 'cdec') { S.cart[k] = capCart(k, (S.cart[k] || 0) + (a === 'cinc' ? 1 : -1)); if (S.cart[k] <= 0) delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'copy') { (navigator.clipboard ? navigator.clipboard.writeText(t.dataset.v) : Promise.reject()).then(function () { toast('تم النسخ'); }, function () { toast(t.dataset.v); }); }
@@ -562,10 +572,11 @@
     else if (fm.id === 'rf') { S.A.rep = d; aReports($('#abody')); }
   });
   $('#q').addEventListener('input', function () { if (location.hash && location.hash !== '#/') location.hash = '#/'; else shop(); });
-  $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal') e.target.hidden = true; });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.act === 'open') openProduct(e.target.dataset.id); if (e.key === 'Escape') $('#modal').hidden = true; });
+  $('#modal').addEventListener('click', function (e) { if (e.target.id === 'modal') closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.dataset && e.target.dataset.act === 'open') openProduct(e.target.dataset.id); if (e.key === 'Escape') closeModal(); });
   window.addEventListener('hashchange', function () { tabOn(); app.classList.remove('pg'); void app.offsetWidth; app.classList.add('pg'); });
   window.addEventListener('hashchange', route);
+  window.addEventListener('scroll', function () { SCR[location.hash.replace('#/', '').split('?')[0]] = window.scrollY; }, { passive: true });
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function () { });
   var dip = null;
   window.addEventListener('beforeinstallprompt', function (e) {

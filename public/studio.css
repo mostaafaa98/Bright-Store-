@@ -172,3 +172,18 @@ html[dir=ltr] body,html[dir=ltr] .card *,html[dir=ltr] .tile *,html[dir=ltr] .sh
 .perms{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0}
 .pm{display:flex;align-items:center;gap:8px;background:var(--cream,#FAF7F2);border:1px solid #e6dccb;border-radius:10px;padding:8px 10px;font-size:14px}
 .ucard .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* smooth navigation */
+html.lock,html.lock body{overflow:hidden}
+.ov{animation:ovin .28s ease both}
+.ov.out{animation:ovout .23s ease both;pointer-events:none}
+.ov.out .sheet{animation:sheetdown .23s cubic-bezier(.4,0,1,1) both}
+@keyframes ovin{from{opacity:0}}
+@keyframes ovout{to{opacity:0}}
+@keyframes sheetdown{to{transform:translateY(100%)}}
+#app.pg{animation:pgin .3s cubic-bezier(.2,.7,.2,1) both}
+.card{transition:transform .18s ease,box-shadow .25s ease}
+.card .img{transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+@media(hover:hover){.card:hover .img{transform:scale(1.04)}}
+.card:active{transform:scale(.97)}
+html{scroll-behavior:auto}
+@media(prefers-reduced-motion:reduce){.ov,.ov.out,#app.pg,.sheet{animation:none!important}}
