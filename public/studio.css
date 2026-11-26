@@ -149,3 +149,20 @@ html[dir=ltr] body,html[dir=ltr] .card *,html[dir=ltr] .tile *,html[dir=ltr] .sh
 .s.oos{opacity:.5;filter:grayscale(.85);pointer-events:none}
 .s .ox{font-size:10px;color:#9a4a3a;font-weight:600}
 .s i.ph,.cimg.ph{display:flex;align-items:center;justify-content:center;background:#efe9db!important;border:1.5px dashed #b9a98a;color:#6e5f45;font-style:normal;font-size:10px;font-weight:700;letter-spacing:0;line-height:1.1;text-align:center;overflow:hidden;word-break:break-all;padding:2px}
+/* swatch select + inline stepper */
+.sw .s{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sw .s .cd{display:block;font-weight:700}
+.sw .s .cn{display:block;font-size:11px;color:var(--mut,#7a6c58)}
+.sw .s .zb{position:absolute;top:6px;inset-inline-start:6px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(255,255,255,.9);color:#2B2118;font-size:14px;line-height:26px;padding:0;box-shadow:0 1px 4px rgba(0,0,0,.2);z-index:2}
+.sw .s .mini{display:flex;align-items:center;justify-content:space-between;gap:2px;margin-top:6px;background:#2B2118;border-radius:999px;padding:2px}
+.sw .s .mini button{width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:18px;line-height:1;padding:0}
+.sw .s .mini b{color:#fff;font-size:14px;min-width:20px;text-align:center}
+.sw .s.on{border-color:#2B2118;box-shadow:0 0 0 2px rgba(43,33,24,.15)}
+.sw .s em{display:none!important}
+/* cart lines */
+.line .it{align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--line)}
+.line .cdot{width:40px!important;height:40px!important;border-radius:10px!important;flex:none;display:inline-block;vertical-align:middle;background-size:cover!important}
+.line .ccode{font-weight:700;margin-inline-start:6px}
+.line .lr{display:flex;align-items:center;gap:8px}
+.line .rm{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:#fff;color:#9a4a3a;padding:0;font-size:14px}
+.line .th2{width:64px;height:64px;border-radius:14px;background-size:cover;background-position:center}

@@ -283,8 +283,16 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   if (!method) return fail(res, 400, 'اختر طريقة الدفع: فودافون كاش أو إنستا باي');
   if (!lines.length || !info.name || !/^\+?\d{10,15}$/.test(info.phone) || !info.address) return fail(res, 400, 'أكمل بيانات الطلب (الاسم، رقم موبايل صحيح، العنوان)');
   let r; try { r = createOrder(req.user ? req.user.id : GUEST, lines, info, method); } catch (e) { return fail(res, 409, e.message); }
-  const items = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=?').all(r.id).map(i => `• ${i.name}${i.color ? ' [' + i.color + ']' : ''} × ${i.qty}`).join('\n');
-  notify(`🛒 طلب جديد #${r.id}\n${info.name} — ${info.phone}\n${info.governorate}${info.area ? ' / ' + info.area : ''}\n${info.address}\n\n${items}\n\nالمنتجات: ${egp(r.sub)}\nالإجمالي: ${egp(r.total)}\nالدفع: ${{ cod: 'عند الاستلام', wallet: 'محفظة', instapay: 'إنستا باي' }[method]}${info.note ? '\nملاحظة: ' + info.note : ''}`);
+  const orows = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=? ORDER BY id').all(r.id);
+  const short = n => /^علبة برايت كوتن بارليه/.test(n) ? 'كوتون بارليه برايت' + (/متعدد/.test(n) ? ' - متعدد الدرجات' : '') : n;
+  const cell = x => String(x == null || x === '' ? '-' : x).replace(/\|/g, '/');
+  const head = `طلب جديد من برايت للخيوط\n\nبيانات العميل:\n- الاسم: ${info.name}\n- الهاتف الأساسي: ${info.phone}\n- العنوان: ${[info.area, info.governorate].filter(Boolean).join('-')}\n${info.address}\n- طريقة الدفع: ${{ wallet: 'فودافون كاش', instapay: 'إنستا باي' }[method]}${info.note ? '\n- ملاحظة: ' + info.note : ''}\n\nتفاصيل الطلب:\n\n| الصنف | الكود | الكمية |\n|-------|--------|---------|`;
+  const trs = orows.map(i => `| ${cell(short(i.name))} | ${cell(i.color)} | ${i.qty} |`);
+  const foot = `\nالإجمالي: ${orows.reduce((n, i) => n + i.qty, 0)} عنصر`;
+  let part = head; const parts = [];
+  for (const l of trs) { if ((part + '\n' + l).length > 3800) { parts.push(part); part = '| الصنف | الكود | الكمية |\n|-------|--------|---------|'; } part += '\n' + l; }
+  parts.push(part + '\n' + foot);
+  (async () => { for (const t of parts) await notify(t); })();
   res.json({ orderId: r.id, sub: r.sub, shipping: r.ship, total: r.total, payment: method, token: r.token });
 }));
 app.get('/api/orders', auth, (req, res) =>

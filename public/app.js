@@ -33,6 +33,12 @@
   function cbg(c) { return c ? 'background:' + c.hex + (c.t ? ' url(' + c.t + ') center/cover' : '') : ''; }
   function avail(p) { return p.color_ids.filter(function (id) { var c = color(id); return !(c && c.oos); }).length; }
   function capOf(p, c) { return c && c.mx != null && (p.unit !== 'كيلو' || c.line === 'linen') ? c.mx : null; }
+  function heroId(p) {
+    if (M && M.p === p && M.hero && color(M.hero) && color(M.hero).img) return M.hero;
+    var cs = p.color_ids.map(color).filter(function (c) { return c && c.img && !c.oos; });
+    return cs.length ? cs[0].id : 0;
+  }
+  function heroImg(p) { if (!p.has_colors) return p.images[0]; var id = heroId(p), c = id && color(id); return c ? c.img : p.images[0]; }
   function color(id) { return S.colors.filter(function (c) { return c.id === Number(id); })[0]; }
   function unitPrice(p, q) { return q >= S.cfg.wholeMin ? p.p_whole : q >= S.cfg.halfMin ? p.p_half : p.p_retail; }
   function saveCart() { localStorage.setItem('cart', JSON.stringify(S.cart)); nav(); }
@@ -186,7 +192,7 @@
     var el = $('#modal'); el.hidden = false;
     var specs = SPECS.filter(function (s) { return p[s[0]]; }).map(function (s) { return '<tr><td>' + s[1] + '</td><td>' + esc(p[s[0]]) + '</td></tr>'; }).join('');
     el.innerHTML = '<div class="sheet"><div class="sh-head"><div><div class="mut">' + esc(p.category) + '</div><h2 style="margin:0">' + esc(p.name) + '</h2><div class="mut" dir="ltr" style="text-align:right">' + esc(p.name_en) + '</div></div><button class="g sm" data-act="close" aria-label="إغلاق">✕</button></div>' +
-      '<div class="sh-body"><div><div class="img zoomable" id="gm" data-act="zoomimg" title="تكبير" style="' + bg(p.images[0]) + ';border:1px solid var(--line);border-radius:12px"></div>' + (p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
+      '<div class="sh-body"><div><div class="img zoomable" id="gm" data-act="zoomimg" title="تكبير" style="' + bg(heroImg(p)) + ';border:1px solid var(--line);border-radius:12px"></div>' + (!p.has_colors && p.images.length > 1 ? '<div class="gal">' + p.images.map(function (u, i) { return '<div class="th' + (i ? '' : ' on') + '" data-act="gal" data-i="' + i + '" style="' + bg(u) + '"></div>'; }).join('') + '</div>' : '') + '</div>' +
       '<div><ul class="dl">' + String(p.description || '').split(/\n/).map(function (l) { return l.replace(/^\s*•\s*/, '').trim(); }).filter(Boolean).map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ul><div id="tt"></div>' + (specs ? '<table class="spec">' + specs + '</table>' : '') +
       (p.has_colors ? (p.color_ids.length ? '<label for="cq">اختر الألوان (اضغط على اللون لتكبير الصورة وإضافته)</label><input id="cq" placeholder="ابحث باسم اللون أو رقمه…"><div class="sw" id="sw" style="margin-top:8px"></div>' : '<p class="err">لا توجد ألوان متاحة لهذا المنتج حالياً.</p>') : '') + '</div></div><div id="ms"></div></div>';
     mColors(); mSel();
@@ -195,7 +201,7 @@
     var sw = $('#sw'); if (!sw) return; var q = M.q.toLowerCase();
     var vis = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }); vis.sort(function (a, b) { return (a.oos ? 1 : 0) - (b.oos ? 1 : 0); }); M.vis = vis.filter(function (c) { return !c.oos; }).map(function (c) { return c.id; });
     sw.innerHTML = vis.map(function (c) {
-      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + (c.oos ? ' oos' : '') + '"' + (c.oos ? ' aria-disabled="true"' : ' data-act="pick" data-id="' + c.id + '"') + '>' + (n ? '<em>' + n + '</em>' : '') + '<i' + (c.t ? '' : ' class="ph"') + ' style="' + esc(cbg(c)) + '">' + (c.t ? '' : esc(c.code)) + '</i>' + esc(c.code) + '<br>' + (c.oos ? '<span class="ox">غير متوفر</span>' : esc(c.name)) + '</div>';
+      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + (c.oos ? ' oos' : '') + '"' + (c.oos ? ' aria-disabled="true"' : ' data-act="pick" data-id="' + c.id + '"') + '>' + (c.t && !c.oos ? '<button type="button" class="zb" data-act="zoomc" data-id="' + c.id + '" aria-label="تكبير الصورة">⤢</button>' : '') + '<i' + (c.t ? '' : ' class="ph"') + ' style="' + esc(cbg(c)) + '">' + (c.t ? '' : esc(c.code)) + '</i><span class="cd">' + esc(c.code) + '</span>' + (c.oos ? '<span class="ox">غير متوفر</span>' : (n ? '<span class="mini"><button type="button" data-act="mdec" data-k="' + c.id + '" aria-label="إنقاص">−</button><b>' + n + '</b><button type="button" data-act="minc" data-k="' + c.id + '" aria-label="زيادة">+</button></span>' : (c.name ? '<span class="cn">' + esc(c.name) + '</span>' : ''))) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
   function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '" aria-label="إنقاص">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" aria-label="الكمية"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '" aria-label="زيادة">+</button></span>'; }
@@ -207,7 +213,7 @@
     $('#tt').innerHTML = tiersTable(p, q);
     $('#ms').innerHTML = '<div style="padding:0 18px">' + lines + (n && q ? '<div class="nudge">' + esc(n) + '</div>' : '') + '</div><div class="sbar"><div class="tot" style="padding:0 0 8px"><span>' + q + ' ' + esc(p.unit) + ' × ' + egp(u) + '</span><span>' + egp(u * q) + '</span></div><button class="blk lg" data-act="addcart"' + (q ? '' : ' disabled') + '>' + (q ? 'أضف إلى السلة' : (p.has_colors ? 'اختر لوناً وكمية' : 'حدّد الكمية')) + '</button></div>';
   }
-  function setSel(k, n) { n = Math.max(0, Math.min(100000, parseInt(n, 10) || 0)); var cp = M.p.has_colors ? capOf(M.p, color(k)) : null; if (cp != null && n > cp) { n = cp; toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); } if (n) M.sel[k] = n; else delete M.sel[k]; mSel(); mColors(); }
+  function setSel(k, n) { n = Math.max(0, Math.min(100000, parseInt(n, 10) || 0)); var cp = M.p.has_colors ? capOf(M.p, color(k)) : null; if (cp != null && n > cp) { n = cp; toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); } if (n) M.sel[k] = n; else delete M.sel[k]; var hc = color(k); if (n && M.p.has_colors && hc && hc.img) { M.hero = hc.id; var g = $('#gm'); if (g) g.style.backgroundImage = "url('" + hc.img + "')"; } mSel(); mColors(); }
 
   // ---------- السلة والطلب (بدون حساب) ----------
   function coSummary() {
@@ -215,14 +221,17 @@
     $('#sum').innerHTML = '<div class="tot"><span>الإجمالي</span><span>' + egp(sub) + '</span></div><div class="mut"><span>المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.</span></div>';
   }
   function tierName(g) { return g.q >= S.cfg.wholeMin ? 'سعر الجملة' : g.q >= S.cfg.halfMin ? 'سعر نصف الجملة' : 'سعر القطاعي'; }
+  function capCart(k, n) { var a = k.split(':'), cp = capOf(prod(a[0]), color(a[1])); if (cp != null && n > cp) { toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); return cp; } return n; }
+  function cartThumb(g) { if (g.p.has_colors) for (var i = 0; i < g.lines.length; i++) { var c = color(g.lines[i].cid); if (c && c.img) return c.img; } return g.p.images[0]; }
   function cart() {
+    var fd = null, fe = $('#co'); if (fe) { fd = {}; ['name', 'phone', 'governorate', 'area', 'address', 'note', 'payment'].forEach(function (n) { var el = fe.elements[n]; if (!el) return; if (el.length && el[0] && el[0].type === 'radio') { for (var i = 0; i < el.length; i++) if (el[i].checked) fd[n] = el[i].value; } else fd[n] = el.value; }); } var sy = window.scrollY;
     var gs = groups();
     if (!gs.length) { app.innerHTML = '<div class="panel done"><h2>السلة فارغة</h2><p class="mut">أضف منتجات لتبدأ طلبك.</p><a class="btn" href="#/">تصفّح المنتجات</a></div>'; return; }
     var h = '<h2>إتمام الطلب</h2><div class="cols"><div><div class="panel" style="margin-top:0"><h3>المنتجات</h3>';
     gs.forEach(function (g) {
       var u = unitPrice(g.p, g.q), n = nudge(g);
-      h += '<div class="line"><div class="th2" style="' + bg(g.p.images[0]) + '"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px"><b>' + esc(g.p.name) + '</b><b>' + egp(u * g.q) + '</b></div><div class="mut">' + g.q + ' ' + esc(g.p.unit) + ' × ' + egp(u) + ' (' + tierName(g) + ')</div>';
-      g.lines.forEach(function (l) { var c = color(l.cid); h += '<div class="it"><span>' + (l.cid && c ? '<i class="dotc" style="' + esc(cbg(c)) + '"></i> ' + esc(cl(c)) : 'الكمية') + '</span>' + step('c', l.key, l.qty) + '</div>'; });
+      h += '<div class="line"><div class="th2" style="' + bg(cartThumb(g)) + '"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between;gap:8px"><b>' + esc(g.p.name) + '</b><b>' + egp(u * g.q) + '</b></div><div class="mut">' + g.q + ' ' + esc(g.p.unit) + ' × ' + egp(u) + ' (' + tierName(g) + ')</div>';
+      g.lines.forEach(function (l) { var c = color(l.cid); h += '<div class="it"><span>' + (l.cid && c ? '<i class="dotc cdot" style="' + esc(cbg(c)) + '"></i> <b class="ccode">' + esc(cl(c)) + '</b>' : 'الكمية') + '</span><span class="lr">' + step('c', l.key, l.qty) + '<button type="button" class="rm" data-act="cdel" data-k="' + esc(l.key) + '" aria-label="حذف">✕</button></span></div>'; });
       h += (n ? '<div class="nudge">' + esc(n) + '</div>' : '') + '<button class="g sm" style="margin-top:8px" data-act="rmprod" data-id="' + g.p.id + '">إزالة المنتج</button></div></div>';
     });
     var hasW = S.cfg.wallet.number, hasI = S.cfg.instapay.number || S.cfg.instapay.handle || S.cfg.instapay.qr;
@@ -234,6 +243,7 @@
       (hasW ? '<label class="o"><input type="radio" name="payment" value="wallet" checked> فودافون كاش (تحوّل ثم تؤكد التحويل)</label>' : '') + (hasI ? '<label class="o"><input type="radio" name="payment" value="instapay"' + (hasW ? '' : ' checked') + '> إنستا باي (QR أو رقم)</label>' : '') + '</div></form></div>' +
       '<aside class="sticky"><div class="panel" style="margin-top:0"><h3>ملخص الطلب</h3><div class="sum" id="sum"></div><button class="blk lg" type="submit" form="co">تأكيد الطلب</button><p id="m"></p></div></aside></div>';
     app.innerHTML = h; coSummary(); prefill();
+    if (fd) { var f2 = $('#co'); if (f2) { Object.keys(fd).forEach(function (n) { var el = f2.elements[n]; if (!el || fd[n] == null || fd[n] === '') return; if (el.length && el[0] && el[0].type === 'radio') { for (var i = 0; i < el.length; i++) el[i].checked = el[i].value === fd[n]; } else el.value = fd[n]; }); coSummary(); } window.scrollTo(0, sy); }
   }
   function payBox(o, token) {
     if (o.payment_method === 'cod') return '<p>الدفع عند الاستلام: <b>' + egp(o.total_cents) + '</b></p>';
@@ -405,6 +415,7 @@
     lbOpen(items, i);
   }
   function zoomProduct() {
+    if (M.p.has_colors) { var hc = heroId(M.p); if (hc) { zoomColor(hc); return; } }
     var items = M.p.images.map(function (u) { return { src: u, title: M.p.name }; }); if (!items.length) return;
     var cur = ($('#gm').style.backgroundImage || '').replace(/^url\(["']?|["']?\)$/g, ''), i = 0;
     items.forEach(function (x, k) { if (cur.indexOf(x.src) > -1 && x.src) i = k; });
@@ -430,11 +441,13 @@
     else if (a === 'cfilter') { S.colorF = S.colorF === Number(id) ? null : Number(id); shop(); var pe2 = document.getElementById('products'); if (pe2) pe2.scrollIntoView(); }
     else if (a === 'clear') { S.cat = ''; S.colorF = null; $('#q').value = ''; shop(); }
     else if (a === 'goto') { var ge = document.getElementById(t.dataset.v); if (ge) ge.scrollIntoView(); }
+    else if (a === 'cdel') { delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'rmprod') { Object.keys(S.cart).forEach(function (key) { if (key.split(':')[0] === id) delete S.cart[key]; }); saveCart(); cart(); }
     else if (a === 'open') openProduct(id);
     else if (a === 'close') $('#modal').hidden = true;
     else if (a === 'gal') { $('#gm').style.backgroundImage = "url('" + M.p.images[t.dataset.i] + "')"; document.querySelectorAll('.gal .th').forEach(function (x) { x.classList.toggle('on', x === t); }); }
-    else if (a === 'pick') zoomColor(id);
+    else if (a === 'pick') { if (!(M.sel[id] > 0)) setSel(id, 1); }
+    else if (a === 'zoomc') zoomColor(id);
     else if (a === 'zc') { var zc = color(id); if (zc && zc.img) { M = M || { sel: {} }; lbOpen([{ src: zc.img, title: cl(zc) }], 0); } }
     else if (a === 'zoomimg') zoomProduct();
     else if (a === 'lbclose') lbClose();
@@ -450,7 +463,7 @@
       Object.keys(M.sel).forEach(function (c) { S.cart[M.p.id + ':' + c] = M.sel[c]; });
       saveCart(); $('#modal').hidden = true; toast('تمت الإضافة إلى السلة'); var cb = $('#cnt'); if (cb) cb.classList.add('bump');
     }
-    else if (a === 'cinc' || a === 'cdec') { S.cart[k] = (S.cart[k] || 0) + (a === 'cinc' ? 1 : -1); if (S.cart[k] <= 0) delete S.cart[k]; saveCart(); cart(); }
+    else if (a === 'cinc' || a === 'cdec') { S.cart[k] = capCart(k, (S.cart[k] || 0) + (a === 'cinc' ? 1 : -1)); if (S.cart[k] <= 0) delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'copy') { (navigator.clipboard ? navigator.clipboard.writeText(t.dataset.v) : Promise.reject()).then(function () { toast('تم النسخ'); }, function () { toast(t.dataset.v); }); }
     else if (a === 'tab') { S.A.tab = t.dataset.v; adminView(); }
     else if (a === 'edit') { S.edit = Number(id); S.pcInit = false; aProducts($('#abody')); window.scrollTo(0, 0); }
@@ -475,7 +488,7 @@
     var t = e.target, a = t.dataset.act;
     if (t.name === 'governorate' && t.closest('#co')) coSummary();
     else if (a === 'mset') setSel(t.dataset.k, t.value);
-    else if (a === 'cset') { var n = parseInt(t.value, 10) || 0; if (n > 0) S.cart[t.dataset.k] = n; else delete S.cart[t.dataset.k]; saveCart(); cart(); }
+    else if (a === 'cset') { var n = capCart(t.dataset.k, parseInt(t.value, 10) || 0); if (n > 0) S.cart[t.dataset.k] = n; else delete S.cart[t.dataset.k]; saveCart(); cart(); }
     else if (a === 'imgadd' && t.files[0]) img(t.files[0], 900, function (d) { api('/admin/products/' + t.dataset.id + '/images', { method: 'POST', body: { data: d } }).then(function () { toast('تمت إضافة الصورة ✓'); reAdmin(); }).catch(function (x) { toast(x.message); }); });
     else if (a === 'qrfile' && t.files[0]) img(t.files[0], 500, function (d) { S.qr = d; $('#qrp').src = d; $('#qrp').style.display = 'block'; });
     else if (t.name === 'has_colors') $('#pcw').hidden = !t.checked;
