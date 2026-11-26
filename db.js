@@ -111,6 +111,8 @@ flag('seed_real_colors', () => {
   }
 });
 
+if (!db.prepare("SELECT 1 FROM pragma_table_info('users') WHERE name='perms'").get()) db.exec("ALTER TABLE users ADD COLUMN perms TEXT NOT NULL DEFAULT ''");
+if (!db.prepare("SELECT 1 FROM pragma_table_info('users') WHERE name='active'").get()) db.exec('ALTER TABLE users ADD COLUMN active INTEGER NOT NULL DEFAULT 1');
 // رصيد الألوان من ملفات الجرد (seed/stock.json): الرصيد لكل لون، وإضافة الأكواد التي بلا صور
 if (!db.prepare("SELECT 1 FROM pragma_table_info('colors') WHERE name='stock'").get()) db.exec('ALTER TABLE colors ADD COLUMN stock INTEGER');
 flag('mig_color_stock_1', () => {

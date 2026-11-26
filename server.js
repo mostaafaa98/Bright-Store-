@@ -31,7 +31,16 @@ const sign = u => jwt.sign({ id: u.id, role: u.role, name: u.name }, SECRET, { e
 const verify = req => jwt.verify((req.headers.authorization || '').slice(7), SECRET);
 const auth = (req, res, next) => { try { req.user = verify(req); next(); } catch { fail(res, 401, 'يلزم تسجيل الدخول'); } };
 const optAuth = (req, res, next) => { try { req.user = verify(req); } catch { req.user = null; } next(); };
-const admin = (req, res, next) => req.user.role === 'admin' ? next() : fail(res, 403, 'غير مسموح');
+const admin = (req, res, next) => { const u = db.prepare("SELECT role,active FROM users WHERE id=?").get(req.user.id); return u && u.active !== 0 && u.role === 'admin' ? next() : fail(res, 403, 'غير مسموح'); };
+const PERMS = ['orders', 'orders_delete', 'products', 'colors', 'reports', 'audit', 'settings'];
+const permsOf = u => u.role === 'admin' ? PERMS.slice() : String(u.perms || '').split(',').filter(x => PERMS.includes(x));
+// صلاحيات الموظفين تُقرأ من قاعدة البيانات في كل طلب (التعطيل وسحب الصلاحية فوري)
+const can = perm => (req, res, next) => {
+  const u = db.prepare('SELECT id,name,role,perms,active FROM users WHERE id=?').get(req.user.id);
+  if (!u || u.active === 0 || !['admin', 'staff'].includes(u.role)) return fail(res, 403, 'غير مسموح');
+  if (perm && !permsOf(u).includes(perm)) return fail(res, 403, 'ليس لديك صلاحية لهذا الإجراء');
+  req.user = { ...req.user, role: u.role, name: u.name, perms: permsOf(u) }; next();
+};
 const str = (v, max) => typeof v === 'string' ? v.trim().slice(0, max) : '';
 const phoneOf = v => str(v, 30).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\s\-()]/g, '');
 const okUrl = v => typeof v === 'string' && v.length <= 400 && /^(https:\/\/|\/img\/)[^\s"'<>]*$/.test(v) ? v : '';
@@ -108,11 +117,12 @@ app.post('/api/auth/register', authLimiter, wrap((req, res) => {
 }));
 app.post('/api/auth/login', authLimiter, wrap((req, res) => {
   const u = db.prepare("SELECT * FROM users WHERE email=? AND role!='guest'").get(str(req.body.email, 120).toLowerCase());
+  if (u && u.active === 0) return fail(res, 403, 'هذا الحساب معطّل');
   if (!u || typeof req.body.password !== 'string' || !bcrypt.compareSync(req.body.password, u.password))
     return fail(res, 401, 'البريد أو كلمة المرور غير صحيحة');
-  res.json({ token: sign(u), user: { id: u.id, role: u.role, name: u.name } });
+  res.json({ token: sign(u), user: { id: u.id, role: u.role, name: u.name, perms: permsOf(u) } });
 }));
-app.get('/api/me', auth, (req, res) => res.json({ user: req.user }));
+app.get('/api/me', auth, (req, res) => { const u = db.prepare('SELECT id,name,role,perms,active FROM users WHERE id=?').get(req.user.id); if (!u || u.active === 0) return fail(res, 401, 'يلزم تسجيل الدخول'); res.json({ user: { id: u.id, role: u.role, name: u.name, perms: permsOf(u) } }); });
 
 // ---------- Public catalog ----------
 function catalog(where) {
@@ -158,14 +168,14 @@ function pBody(b) {
 }
 const Q = 'name,name_en,category,unit,description,image_url,p_retail,p_half,p_whole,stock,has_colors,sort,' + SPEC.join(',');
 const diff = (o, n) => [['p_retail', 'قطاعي'], ['p_half', 'نصف جملة'], ['p_whole', 'جملة']].filter(([k]) => o[k] !== n[k]).map(([k, l]) => `${l} ${o[k] / 100}→${n[k] / 100}`);
-app.get('/api/admin/products', auth, admin, (req, res) => res.json(catalog('active=1')));
-app.post('/api/admin/products', auth, admin, wrap((req, res) => {
+app.get('/api/admin/products', auth, can('products'), (req, res) => res.json(catalog('active=1')));
+app.post('/api/admin/products', auth, can('products'), wrap((req, res) => {
   const p = pBody(req.body); if (!p) return fail(res, 400, 'بيانات المنتج غير صحيحة');
   const id = Number(db.prepare(`INSERT INTO products(${Q}) VALUES(${Q.split(',').map(k => '@' + k)})`).run(p).lastInsertRowid);
   audit(req.user.name, 'create', { id, name: p.name }, `إضافة منتج — قطاعي ${p.p_retail / 100}، مخزون ${p.stock == null ? '∞' : p.stock}`);
   res.json({ id });
 }));
-app.put('/api/admin/products/:id', auth, admin, wrap((req, res) => {
+app.put('/api/admin/products/:id', auth, can('products'), wrap((req, res) => {
   const p = pBody(req.body), id = Number(req.params.id), o = db.prepare('SELECT * FROM products WHERE id=?').get(id);
   if (!p || !o) return fail(res, 400, 'بيانات المنتج غير صحيحة');
   db.prepare(`UPDATE products SET ${Q.split(',').map(k => k + '=@' + k)} WHERE id=@id`).run({ ...p, id });
@@ -173,7 +183,7 @@ app.put('/api/admin/products/:id', auth, admin, wrap((req, res) => {
   if (o.stock !== p.stock) audit(req.user.name, 'stock', o, `${o.stock == null ? '∞' : o.stock} → ${p.stock == null ? '∞' : p.stock} (تعديل يدوي)`);
   res.json({ ok: true });
 }));
-app.put('/api/admin/products/:id/colors', auth, admin, wrap((req, res) => {
+app.put('/api/admin/products/:id/colors', auth, can('products'), wrap((req, res) => {
   const id = Number(req.params.id), ids = (Array.isArray(req.body.ids) ? req.body.ids : []).map(Number).filter(Number.isInteger);
   db.transaction(() => {
     db.prepare('DELETE FROM product_colors WHERE product_id=?').run(id);
@@ -182,14 +192,14 @@ app.put('/api/admin/products/:id/colors', auth, admin, wrap((req, res) => {
   })();
   res.json({ ok: true });
 }));
-app.patch('/api/admin/products/:id/prices', auth, admin, wrap((req, res) => {
+app.patch('/api/admin/products/:id/prices', auth, can('products'), wrap((req, res) => {
   const [a, b, c] = ['p_retail', 'p_half', 'p_whole'].map(k => money(req.body[k])), id = Number(req.params.id), o = db.prepare('SELECT * FROM products WHERE id=?').get(id);
   if (!o || !(a > 0 && b > 0 && c > 0)) return fail(res, 400, 'أسعار غير صحيحة');
   db.prepare('UPDATE products SET p_retail=?,p_half=?,p_whole=? WHERE id=?').run(a, b, c, id);
   const d = diff(o, { p_retail: a, p_half: b, p_whole: c }); if (d.length) audit(req.user.name, 'price', o, d.join(' | '));
   res.json({ ok: true });
 }));
-app.patch('/api/admin/products/:id/stock', auth, admin, wrap((req, res) => {
+app.patch('/api/admin/products/:id/stock', auth, can('products'), wrap((req, res) => {
   const id = Number(req.params.id), o = db.prepare('SELECT * FROM products WHERE id=?').get(id), v = req.body.stock;
   const n = v === '' || v == null ? null : Number(v);
   if (!o || !(n === null || (Number.isInteger(n) && n >= 0))) return fail(res, 400, 'مخزون غير صحيح');
@@ -197,13 +207,13 @@ app.patch('/api/admin/products/:id/stock', auth, admin, wrap((req, res) => {
   audit(req.user.name, 'stock', o, `${o.stock == null ? '∞' : o.stock} → ${n == null ? '∞' : n} (تعديل يدوي)`);
   res.json({ ok: true });
 }));
-app.patch('/api/admin/products/:id/hidden', auth, admin, (req, res) => {
+app.patch('/api/admin/products/:id/hidden', auth, can('products'), (req, res) => {
   const id = Number(req.params.id), o = db.prepare('SELECT * FROM products WHERE id=?').get(id), h = req.body.hidden ? 1 : 0;
   if (!o) return fail(res, 404, 'غير موجود');
   db.prepare('UPDATE products SET hidden=? WHERE id=?').run(h, id); audit(req.user.name, 'status', o, h ? 'إيقاف مؤقت' : 'إعادة تفعيل');
   res.json({ ok: true });
 });
-app.post('/api/admin/prices/bump', auth, admin, wrap((req, res) => {
+app.post('/api/admin/prices/bump', auth, can('products'), wrap((req, res) => {
   const pct = Number(req.body.percent);
   if (!(pct >= -50 && pct <= 100) || pct === 0) return fail(res, 400, 'النسبة من -50 إلى 100');
   const f = 1 + pct / 100, r = c => `MAX(100,CAST(ROUND(${c}*${f}/100.0)*100 AS INTEGER))`, before = db.prepare('SELECT * FROM products WHERE active=1').all();
@@ -213,26 +223,26 @@ app.post('/api/admin/prices/bump', auth, admin, wrap((req, res) => {
   })();
   res.json({ ok: true });
 }));
-app.delete('/api/admin/products/:id', auth, admin, (req, res) => {
+app.delete('/api/admin/products/:id', auth, can('products'), (req, res) => {
   const o = db.prepare('SELECT * FROM products WHERE id=?').get(Number(req.params.id));
   if (o) { db.prepare('UPDATE products SET active=0 WHERE id=?').run(o.id); audit(req.user.name, 'delete', o, 'حذف المنتج'); }
   res.json({ ok: true });
 });
-app.post('/api/admin/products/:id/images', auth, admin, wrap((req, res) => {
+app.post('/api/admin/products/:id/images', auth, can('products'), wrap((req, res) => {
   const id = Number(req.params.id), m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(okData(req.body.data));
   if (!m || !db.prepare('SELECT 1 FROM products WHERE id=?').get(id)) return fail(res, 400, 'صورة غير صالحة (jpeg/png/webp حتى 400KB)');
   if (db.prepare('SELECT COUNT(*) n FROM product_images WHERE product_id=?').get(id).n >= 8) return fail(res, 400, 'الحد الأقصى 8 صور');
   const sort = db.prepare('SELECT COALESCE(MAX(sort),0)+1 n FROM product_images WHERE product_id=?').get(id).n;
   res.json({ id: Number(db.prepare('INSERT INTO product_images(product_id,mime,data,sort) VALUES(?,?,?,?)').run(id, m[1], Buffer.from(m[2], 'base64'), sort).lastInsertRowid) });
 }));
-app.post('/api/admin/images/:id/cover', auth, admin, (req, res) => {
+app.post('/api/admin/images/:id/cover', auth, can('products'), (req, res) => {
   const i = db.prepare('SELECT product_id FROM product_images WHERE id=?').get(Number(req.params.id)); if (!i) return fail(res, 404, 'غير موجود');
   db.prepare('UPDATE product_images SET sort=(SELECT MIN(sort)-1 FROM product_images WHERE product_id=?) WHERE id=?').run(i.product_id, Number(req.params.id)); res.json({ ok: true });
 });
-app.delete('/api/admin/images/:id', auth, admin, (req, res) => { db.prepare('DELETE FROM product_images WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
+app.delete('/api/admin/images/:id', auth, can('products'), (req, res) => { db.prepare('DELETE FROM product_images WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
 
 // ---------- Admin: colors / settings / zones / stats / audit / backup ----------
-app.post('/api/admin/colors/bulk', auth, admin, wrap((req, res) => {
+app.post('/api/admin/colors/bulk', auth, can('colors'), wrap((req, res) => {
   const up = db.prepare('INSERT INTO colors(code,line,name,hex,active) VALUES(?,\'\',?,?,1) ON CONFLICT(line,code) DO UPDATE SET name=excluded.name,hex=excluded.hex,active=1');
   const link = db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) SELECT p.id,c.id FROM products p, colors c WHERE p.has_colors=1 AND c.code=? AND c.line=\'\'');
   let n = 0;
@@ -244,10 +254,10 @@ app.post('/api/admin/colors/bulk', auth, admin, wrap((req, res) => {
   })();
   res.json({ imported: n });
 }));
-app.delete('/api/admin/colors/:id', auth, admin, (req, res) => { db.prepare('UPDATE colors SET active=0 WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
+app.delete('/api/admin/colors/:id', auth, can('colors'), (req, res) => { db.prepare('UPDATE colors SET active=0 WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
 const SKEYS = ['shop_name', 'half_min', 'whole_min', 'wallet_number', 'wallet_name', 'instapay_number', 'instapay_handle', 'instapay_qr', 'instapay_link', 'whatsapp_number', 'telegram_token', 'telegram_chat'];
-app.get('/api/admin/settings', auth, admin, (req, res) => res.json({ ...settings(), zones: db.prepare('SELECT name,fee_cents,active FROM zones ORDER BY sort').all() }));
-app.put('/api/admin/settings', auth, admin, wrap((req, res) => {
+app.get('/api/admin/settings', auth, can('settings'), (req, res) => res.json({ ...settings(), zones: db.prepare('SELECT name,fee_cents,active FROM zones ORDER BY sort').all() }));
+app.put('/api/admin/settings', auth, can('settings'), wrap((req, res) => {
   const b = req.body, h = parseInt(b.half_min, 10), w = parseInt(b.whole_min, 10), wa = phoneOf(b.whatsapp_number).replace(/^\+/, '');
   if (!(h >= 1 && w > h)) return fail(res, 400, 'حدّ الجملة يجب أن يكون أكبر من حدّ نصف الجملة');
   if (wa && !/^\d{10,15}$/.test(wa)) return fail(res, 400, 'رقم واتساب (بالصيغة الدولية 2010xxxxxxxx) غير صحيح');
@@ -256,13 +266,13 @@ app.put('/api/admin/settings', auth, admin, wrap((req, res) => {
   db.transaction(() => SKEYS.forEach(k => set.run(k, k in val ? val[k] : str(b[k], 300))))();
   res.json({ ok: true });
 }));
-app.put('/api/admin/zones', auth, admin, wrap((req, res) => {
+app.put('/api/admin/zones', auth, can('settings'), wrap((req, res) => {
   const up = db.prepare('UPDATE zones SET fee_cents=?,active=? WHERE name=?');
   db.transaction(() => (Array.isArray(req.body.zones) ? req.body.zones : []).forEach(z => { const f = money(z.fee); if (f >= 0) up.run(f, z.active ? 1 : 0, str(z.name, 40)); }))();
   res.json({ ok: true });
 }));
-app.post('/api/admin/telegram/test', auth, admin, wrap(async (req, res) => (await notify('✅ اختبار إشعارات متجر برايت')) ? res.json({ ok: true }) : fail(res, 502, 'تعذر الإرسال — تحقق من التوكن ومعرّف المحادثة')));
-app.get('/api/admin/stats', auth, admin, (req, res) => {
+app.post('/api/admin/telegram/test', auth, can('settings'), wrap(async (req, res) => (await notify('✅ اختبار إشعارات متجر برايت')) ? res.json({ ok: true }) : fail(res, 502, 'تعذر الإرسال — تحقق من التوكن ومعرّف المحادثة')));
+app.get('/api/admin/stats', auth, can(), (req, res) => {
   const one = sql => db.prepare(sql).get();
   res.json({
     today: one("SELECT COALESCE(SUM(total_cents),0) v FROM orders WHERE status!='cancelled' AND date(created_at,'localtime')=date('now','localtime')").v,
@@ -271,11 +281,11 @@ app.get('/api/admin/stats', auth, admin, (req, res) => {
     review: one("SELECT COUNT(*) v FROM orders WHERE payment_status='review' AND status!='cancelled'").v,
     low: db.prepare('SELECT id,name,stock FROM products WHERE active=1 AND stock IS NOT NULL AND stock<=10 ORDER BY stock LIMIT 10').all() });
 });
-app.get('/api/admin/audit', auth, admin, (req, res) => {
+app.get('/api/admin/audit', auth, can('audit'), (req, res) => {
   const s = `%${str(req.query.q, 40)}%`;
   res.json(db.prepare("SELECT id,datetime(at,'localtime') at,who,action,product,detail FROM audit_log WHERE product LIKE ? OR detail LIKE ? ORDER BY id DESC LIMIT 300").all(s, s));
 });
-app.get('/api/admin/backup', auth, admin, wrap(async (req, res) => {
+app.get('/api/admin/backup', auth, can('settings'), wrap(async (req, res) => {
   const f = path.join(os.tmpdir(), 'bk-' + Date.now() + '.db'); await db.backup(f);
   res.download(f, 'bright-store-backup.db', () => fs.unlink(f, () => {}));
 }));
@@ -379,14 +389,14 @@ async function sendXlsx(res, file, title, cols, rows) {
   await wb.xlsx.write(res); res.end();
 }
 const ST = { new: 'جديد', processing: 'قيد التجهيز', shipped: 'تم الشحن', delivered: 'تم التسليم', cancelled: 'ملغي' }, PS = { pending: 'غير مدفوع', review: 'بانتظار المراجعة', paid: 'مدفوع' }, PM = { cod: 'عند الاستلام', wallet: 'محفظة', instapay: 'إنستا باي' };
-app.get('/api/admin/orders', auth, admin, wrap(async (req, res) => {
+app.get('/api/admin/orders', auth, can('orders'), wrap(async (req, res) => {
   const f = orderFilter(req.query), xl = req.query.format === 'xlsx';
   const list = db.prepare(`SELECT o.*,datetime(o.created_at,'localtime') local_at FROM orders o WHERE ${f.w} ORDER BY o.id DESC LIMIT ${xl ? 5000 : 300}`).all(...f.a).map(withItems);
   if (!xl) return res.json(list);
   await sendXlsx(res, 'orders', 'الطلبات', [['رقم', 8], ['التاريخ', 18], ['العميل', 20], ['الهاتف', 15], ['المحافظة', 14], ['المنطقة', 14], ['العنوان', 30], ['الأصناف', 50], ['المنتجات', 12], ['الشحن', 10], ['الإجمالي', 12], ['الدفع', 14], ['حالة الدفع', 16], ['حالة الطلب', 14], ['مرجع الدفع', 18], ['ملاحظات', 24]],
     list.map(o => [o.id, o.local_at, o.name, o.phone, o.governorate, o.area, o.address, o.items.map(i => `${i.name}${i.color ? ' [' + i.color + ']' : ''} ×${i.qty}`).join(' ; '), (o.total_cents - o.shipping_cents) / 100, o.shipping_cents / 100, o.total_cents / 100, PM[o.payment_method], PS[o.payment_status], ST[o.status], o.payment_ref, o.note]));
 }));
-app.patch('/api/admin/orders/:id', auth, admin, wrap((req, res) => {
+app.patch('/api/admin/orders/:id', auth, can('orders'), wrap((req, res) => {
   const { status, payment_status: ps } = req.body, id = Number(req.params.id);
   if (status && !ST[status]) return fail(res, 400, 'حالة غير صحيحة');
   if (ps && !PS[ps]) return fail(res, 400, 'حالة دفع غير صحيحة');
@@ -402,7 +412,51 @@ app.patch('/api/admin/orders/:id', auth, admin, wrap((req, res) => {
   })();
   res.json({ ok: true });
 }));
-app.get('/api/admin/reports', auth, admin, wrap(async (req, res) => {
+// ---------- Admin: حذف الطلبات الملغاة ----------
+const delOrder = id => { db.prepare('DELETE FROM order_items WHERE order_id=?').run(id); db.prepare('DELETE FROM orders WHERE id=?').run(id); };
+app.delete('/api/admin/orders/:id', auth, can('orders_delete'), wrap((req, res) => {
+  const id = Number(req.params.id), o = db.prepare('SELECT id,status FROM orders WHERE id=?').get(id);
+  if (!o) return fail(res, 404, 'الطلب غير موجود');
+  if (o.status !== 'cancelled') return fail(res, 400, 'يمكن حذف الطلبات الملغاة فقط');
+  db.transaction(() => { delOrder(id); audit(req.user.name, 'delete', { id: null, name: 'طلب #' + id }, 'حذف طلب ملغي'); })();
+  res.json({ ok: true });
+}));
+app.post('/api/admin/orders/purge-cancelled', auth, can('orders_delete'), wrap((req, res) => {
+  const ids = db.prepare("SELECT id FROM orders WHERE status='cancelled'").all().map(x => x.id);
+  db.transaction(() => { ids.forEach(delOrder); if (ids.length) audit(req.user.name, 'delete', { id: null, name: 'الطلبات الملغاة' }, `حذف ${ids.length} طلب ملغي`); })();
+  res.json({ deleted: ids.length });
+}));
+// ---------- Admin: حسابات الموظفين وصلاحياتهم (للمدير فقط) ----------
+const staffRow = u => ({ id: u.id, name: u.name, email: u.email, role: u.role, active: u.active !== 0, perms: permsOf(u), created_at: u.created_at });
+const permList = v => [...new Set((Array.isArray(v) ? v : []).filter(x => PERMS.includes(x)))];
+app.get('/api/admin/users', auth, admin, (req, res) => res.json(db.prepare("SELECT * FROM users WHERE role IN ('admin','staff') ORDER BY role='admin' DESC, id").all().map(staffRow)));
+app.post('/api/admin/users', auth, admin, wrap((req, res) => {
+  const name = str(req.body.name, 80), email = str(req.body.email, 120).toLowerCase(), pw = req.body.password;
+  if (!name || !/^[a-z0-9._@\-]{3,60}$/.test(email) || typeof pw !== 'string' || pw.length < 8 || pw.length > 100) return fail(res, 400, 'أكمل الاسم واسم مستخدم (حروف إنجليزية وأرقام، 3 على الأقل) وكلمة مرور 8 أحرف على الأقل');
+  if (db.prepare('SELECT 1 FROM users WHERE email=?').get(email)) return fail(res, 409, 'اسم المستخدم مستخدم مسبقاً');
+  const id = Number(db.prepare("INSERT INTO users(name,email,password,role,perms,active) VALUES(?,?,?,'staff',?,1)").run(name, email, bcrypt.hashSync(pw, 10), permList(req.body.perms).join(',')).lastInsertRowid);
+  audit(req.user.name, 'create', { id: null, name: 'حساب ' + name }, 'إنشاء حساب موظف: ' + permList(req.body.perms).join(', '));
+  res.json({ id });
+}));
+app.patch('/api/admin/users/:id', auth, admin, wrap((req, res) => {
+  const id = Number(req.params.id), u = db.prepare("SELECT * FROM users WHERE id=? AND role='staff'").get(id);
+  if (!u) return fail(res, 404, 'حساب الموظف غير موجود');
+  const b = req.body;
+  if (b.name !== undefined) { const n = str(b.name, 80); if (!n) return fail(res, 400, 'الاسم مطلوب'); db.prepare('UPDATE users SET name=? WHERE id=?').run(n, id); }
+  if (b.perms !== undefined) db.prepare('UPDATE users SET perms=? WHERE id=?').run(permList(b.perms).join(','), id);
+  if (b.active !== undefined) db.prepare('UPDATE users SET active=? WHERE id=?').run(b.active ? 1 : 0, id);
+  if (b.password) { if (typeof b.password !== 'string' || b.password.length < 8 || b.password.length > 100) return fail(res, 400, 'كلمة المرور 8 أحرف على الأقل'); db.prepare('UPDATE users SET password=? WHERE id=?').run(bcrypt.hashSync(b.password, 10), id); }
+  audit(req.user.name, 'status', { id: null, name: 'حساب ' + u.name }, 'تعديل حساب موظف');
+  res.json({ ok: true });
+}));
+app.delete('/api/admin/users/:id', auth, admin, wrap((req, res) => {
+  const id = Number(req.params.id), u = db.prepare("SELECT * FROM users WHERE id=? AND role='staff'").get(id);
+  if (!u) return fail(res, 404, 'حساب الموظف غير موجود');
+  if (db.prepare('SELECT 1 FROM orders WHERE user_id=?').get(id)) return fail(res, 409, 'لهذا الحساب طلبات. عطّله بدلاً من الحذف');
+  db.prepare('DELETE FROM users WHERE id=?').run(id); audit(req.user.name, 'delete', { id: null, name: 'حساب ' + u.name }, 'حذف حساب موظف');
+  res.json({ ok: true });
+}));
+app.get('/api/admin/reports', auth, can('reports'), wrap(async (req, res) => {
   const f = orderFilter({ from: req.query.from, to: req.query.to }), by = req.query.by, base = `${f.w} AND o.status!='cancelled'`;
   const Q = {
     product: [`SELECT i.name k1,'' k2,SUM(i.qty) c1,COUNT(DISTINCT o.id) c2,SUM(i.qty*i.price_cents) tot FROM order_items i JOIN orders o ON o.id=i.order_id WHERE ${base} GROUP BY i.product_id ORDER BY tot DESC`, ['المنتج', ''], ['الكمية', 'عدد الطلبات']],

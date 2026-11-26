@@ -65,7 +65,7 @@
   }
   function nav() {
     var n = cartCount(), h = '<a class="nl tabh" href="#/">' + ic('house') + '<span>الرئيسية</span></a><a class="nl" href="#/orders">' + ic('box') + '<span>طلباتي</span></a>';
-    if (S.user && S.user.role === 'admin') h += '<a class="nl" href="#/admin">' + ic('gear') + '<span>لوحة التحكم</span></a>';
+    if (S.user && (S.user.role === 'admin' || S.user.role === 'staff')) h += '<a class="nl" href="#/admin">' + ic('gear') + '<span>لوحة التحكم</span></a>';
     h += S.user ? '<button class="nl" data-act="logout">' + ic('user') + '<span>خروج</span></button>' : '<a class="nl" href="#/login">' + ic('user') + '<span>دخول</span></a>';
     h += '<a class="cartbtn" href="#/cart" aria-label="السلة">' + ic('cart') + '<span class="cnt' + (n ? '' : ' z') + '" id="cnt">' + n + '</span></a>';
     $('#nav').innerHTML = h; tabOn(); cartbar();
@@ -273,7 +273,7 @@
       '<div class="row" style="justify-content:center">' + waOrderBtn(o) + '<a class="btn g" href="#/orders">متابعة طلباتي</a><a class="btn g" href="#/">متابعة التسوق</a></div></div>';
   }
   function login(reg) {
-    app.innerHTML = '<form class="panel auth" id="au" data-reg="' + (reg ? 1 : 0) + '"><h2>' + (reg ? 'إنشاء حساب' : 'تسجيل الدخول') + '</h2><p class="mut">الحساب اختياري، ويمكنك الطلب كضيف.</p>' + (reg ? '<label for="a1">الاسم</label><input id="a1" name="name" required><br><br>' : '') + '<label for="a2">البريد الإلكتروني</label><input id="a2" name="email" type="email" required><br><br><label for="a3">كلمة المرور</label><input id="a3" name="password" type="password" required minlength="8" placeholder="8 أحرف على الأقل"><p id="m"></p><button class="blk lg">' + (reg ? 'إنشاء الحساب' : 'دخول') + '</button><p style="text-align:center"><a href="#/' + (reg ? 'login' : 'register') + '">' + (reg ? 'لدي حساب بالفعل' : 'إنشاء حساب جديد') + '</a></p></form>';
+    app.innerHTML = '<form class="panel auth" id="au" data-reg="' + (reg ? 1 : 0) + '"><h2>' + (reg ? 'إنشاء حساب' : 'تسجيل الدخول') + '</h2><p class="mut">الحساب اختياري، ويمكنك الطلب كضيف.</p>' + (reg ? '<label for="a1">الاسم</label><input id="a1" name="name" required><br><br>' : '') + '<label for="a2">' + (reg ? 'البريد الإلكتروني' : 'البريد أو اسم المستخدم') + '</label><input id="a2" name="email" ' + (reg ? 'type="email"' : 'type="text" autocapitalize="none" dir="ltr"') + ' required><br><br><label for="a3">كلمة المرور</label><input id="a3" name="password" type="password" required minlength="8" placeholder="8 أحرف على الأقل"><p id="m"></p><button class="blk lg">' + (reg ? 'إنشاء الحساب' : 'دخول') + '</button><p style="text-align:center"><a href="#/' + (reg ? 'login' : 'register') + '">' + (reg ? 'لدي حساب بالفعل' : 'إنشاء حساب جديد') + '</a></p></form>';
   }
   function track(o) {
     if (o.status === 'cancelled') return '<span class="pill p-bad">ملغي</span>';
@@ -296,14 +296,18 @@
   }
 
   // ---------- Admin ----------
-  var TABS = { home: 'نظرة عامة', products: 'المنتجات', colors: 'الألوان', orders: 'الطلبات', reports: 'التقارير', audit: 'سجل التعديلات', settings: 'الإعدادات' };
-  var TAB_IC = { home: 'grid', products: 'box', colors: 'palette', orders: 'list', reports: 'chart', audit: 'clock', settings: 'gear' };
-  function side() { return Object.keys(TABS).map(function (k) { return '<button class="sl' + (S.A.tab === k ? ' on' : '') + '" data-act="tab" data-v="' + k + '">' + ic(TAB_IC[k]) + '<span>' + TABS[k] + '</span></button>'; }).join(''); }
+  var TABS = { home: 'نظرة عامة', products: 'المنتجات', colors: 'الألوان', orders: 'الطلبات', reports: 'التقارير', audit: 'سجل التعديلات', settings: 'الإعدادات', users: 'الحسابات' };
+  var PERM_L = { orders: 'الطلبات (عرض وتغيير الحالة والدفع)', orders_delete: 'حذف الطلبات الملغاة', products: 'المنتجات والأسعار', colors: 'الألوان', reports: 'التقارير', audit: 'سجل التعديلات', settings: 'الإعدادات والنسخ الاحتياطي' };
+  function can(p) { return !!S.user && (S.user.role === 'admin' || (S.user.perms || []).indexOf(p) > -1); }
+  function tabOk(k) { return k === 'home' || (k === 'users' ? S.user && S.user.role === 'admin' : can(k)); }
+  var TAB_IC = { users: 'user', home: 'grid', products: 'box', colors: 'palette', orders: 'list', reports: 'chart', audit: 'clock', settings: 'gear' };
+  function side() { return Object.keys(TABS).filter(tabOk).map(function (k) { return '<button class="sl' + (S.A.tab === k ? ' on' : '') + '" data-act="tab" data-v="' + k + '">' + ic(TAB_IC[k]) + '<span>' + TABS[k] + '</span></button>'; }).join(''); }
   function adminView() {
-    if (!S.user || S.user.role !== 'admin') { location.hash = '#/'; return; }
+    if (!S.user || (S.user.role !== 'admin' && S.user.role !== 'staff')) { location.hash = '#/'; return; }
+    if (!tabOk(S.A.tab)) S.A.tab = 'home';
     var body = $('#abody');
     if (!body) { app.innerHTML = '<div class="adm"><aside class="side" id="side">' + side() + '</aside><section id="abody"></section></div>'; body = $('#abody'); } else $('#side').innerHTML = side();
-    ({ home: aHome, products: aProducts, colors: aColors, orders: aOrders, reports: aReports, audit: aAudit, settings: aSettings }[S.A.tab])(body);
+    ({ home: aHome, products: aProducts, colors: aColors, orders: aOrders, reports: aReports, audit: aAudit, settings: aSettings, users: aUsers }[S.A.tab])(body);
   }
   function aHome(b) {
     api('/admin/stats').then(function (s) {
@@ -350,10 +354,23 @@
     var F = S.A.f, zs = {}; S.cfg.zones.forEach(function (z) { zs[z.name] = z.name; });
     api('/admin/orders?' + qs(F)).then(function (os) {
       b.innerHTML = '<form class="panel" id="of"><div class="flt"><div><label>من</label><input type="date" name="from" value="' + esc(F.from || '') + '"></div><div><label>إلى</label><input type="date" name="to" value="' + esc(F.to || '') + '"></div><div><label>المحافظة</label><select name="governorate">' + opts(zs, F.governorate, 'الكل') + '</select></div><div><label>حالة الطلب</label><select name="status">' + opts(ST, F.status, 'الكل') + '</select></div><div><label>حالة الدفع</label><select name="payment_status">' + opts(PS, F.payment_status, 'الكل') + '</select></div><div><label>طريقة الدفع</label><select name="payment_method">' + opts(PM, F.payment_method, 'الكل') + '</select></div><div><label>بحث (اسم/هاتف/رقم)</label><input name="q" value="' + esc(F.q || '') + '"></div><button>تطبيق</button><button type="button" class="g" data-act="oreset">مسح</button><button type="button" data-act="oxlsx" style="background:#15803d">تصدير Excel</button></div></form>' +
-        '<div class="panel scroll"><h3>الطلبات (' + os.length + ')</h3><table><tr><th>#</th><th>العميل</th><th>الأصناف</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr>' + os.map(function (o) {
-          return '<tr><td>' + o.id + '<br><span class="mut">' + esc(o.local_at) + '</span></td><td>' + esc(o.name) + '<br><span class="mut">' + esc(o.phone) + '<br>' + esc(o.governorate) + (o.area ? ' / ' + esc(o.area) : '') + '<br>' + esc(o.address) + (o.note ? '<br>📝 ' + esc(o.note) : '') + '</span></td><td>' + o.items.map(function (i) { return esc(i.name) + (i.color ? ' [' + esc(i.color) + ']' : '') + ' ×' + i.qty; }).join('<br>') + '</td><td>' + egp(o.total_cents) + '</td><td>' + PM[o.payment_method] + '<br>' + sel(PS, o.payment_status, o.id, 'payment_status') + (o.payment_ref ? '<br><span class="mut">مرجع: ' + esc(o.payment_ref) + '</span>' : '') + '</td><td>' + sel(ST, o.status, o.id, 'status') + '</td></tr>';
+        '<div class="panel scroll"><h3>الطلبات (' + os.length + ')</h3>' + (can('orders_delete') && os.some(function (o) { return o.status === 'cancelled'; }) ? '<button type="button" class="g sm" data-act="opurge">🗑 حذف كل الطلبات الملغاة</button>' : '') + '<table><tr><th>#</th><th>العميل</th><th>الأصناف</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th></tr>' + os.map(function (o) {
+          return '<tr><td>' + o.id + '<br><span class="mut">' + esc(o.local_at) + '</span></td><td>' + esc(o.name) + '<br><span class="mut">' + esc(o.phone) + '<br>' + esc(o.governorate) + (o.area ? ' / ' + esc(o.area) : '') + '<br>' + esc(o.address) + (o.note ? '<br>📝 ' + esc(o.note) : '') + '</span></td><td>' + o.items.map(function (i) { return esc(i.name) + (i.color ? ' [' + esc(i.color) + ']' : '') + ' ×' + i.qty; }).join('<br>') + '</td><td>' + egp(o.total_cents) + '</td><td>' + PM[o.payment_method] + '<br>' + sel(PS, o.payment_status, o.id, 'payment_status') + (o.payment_ref ? '<br><span class="mut">مرجع: ' + esc(o.payment_ref) + '</span>' : '') + '</td><td>' + sel(ST, o.status, o.id, 'status') + (o.status === 'cancelled' && can('orders_delete') ? '<br><button type="button" class="g sm" data-act="odel" data-id="' + o.id + '">🗑 حذف الطلب</button>' : '') + '</td></tr>';
         }).join('') + '</table></div>';
     });
+  }
+  function aUsers(b) {
+    api('/admin/users').then(function (us) {
+      var pk = Object.keys(PERM_L);
+      b.innerHTML = '<form class="panel" id="uf"><h3>إضافة حساب موظف</h3><div class="row"><div><label>الاسم</label><input name="name" required></div><div><label>اسم المستخدم (إنجليزي)</label><input name="email" required autocomplete="off" autocapitalize="none" dir="ltr" pattern="[A-Za-z0-9._@\-]{3,60}"></div><div><label>كلمة المرور (8 أحرف على الأقل)</label><input name="password" type="text" minlength="8" required autocomplete="off"></div></div>' +
+        '<label>الصلاحيات</label><div class="perms">' + pk.map(function (k) { return '<label class="pm"><input type="checkbox" name="perm_' + k + '" style="width:auto"' + (k === 'orders' ? ' checked' : '') + '> ' + PERM_L[k] + '</label>'; }).join('') + '</div><button>إنشاء الحساب</button><p id="m" class="err"></p></form>' +
+        us.map(function (u) {
+          var adm = u.role === 'admin';
+          return '<div class="panel ucard"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>' + esc(u.name) + (adm ? ' <span class="pill p-ok">مدير</span>' : '') + (u.active ? '' : ' <span class="pill p-bad">معطّل</span>') + '</b><span class="mut" dir="ltr">' + esc(u.email) + '</span></div>' +
+            (adm ? '<p class="mut">المدير لديه كل الصلاحيات.</p>' : '<div class="perms">' + pk.map(function (k) { return '<label class="pm"><input type="checkbox" data-uperm="' + u.id + '" data-k="' + k + '" style="width:auto"' + (u.perms.indexOf(k) > -1 ? ' checked' : '') + '> ' + PERM_L[k] + '</label>'; }).join('') + '</div>' +
+              '<div class="row"><button type="button" class="g sm" data-act="utoggle" data-id="' + u.id + '" data-v="' + (u.active ? 0 : 1) + '">' + (u.active ? 'تعطيل الحساب' : 'تفعيل الحساب') + '</button><button type="button" class="g sm" data-act="upass" data-id="' + u.id + '">تغيير كلمة المرور</button><button type="button" class="g sm" data-act="udel" data-id="' + u.id + '">حذف الحساب</button></div>') + '</div>';
+        }).join('');
+    }).catch(function (x) { b.innerHTML = '<div class="panel err">' + esc(x.message) + '</div>'; });
   }
   function aReports(b) {
     var R = S.A.rep, BY = { product: 'حسب المنتج', customer: 'حسب العميل', day: 'حسب اليوم', governorate: 'حسب المحافظة' };
@@ -453,6 +470,11 @@
     else if (a === 'clear') { S.cat = ''; S.colorF = null; $('#q').value = ''; shop(); }
     else if (a === 'goto') { var ge = document.getElementById(t.dataset.v); if (ge) ge.scrollIntoView(); }
     else if (a === 'waord') { var wo = S.oc && S.oc[id]; if (wo) { if (S.refs && S.refs[id] && wo.payment_status === 'pending') { wo.payment_status = 'review'; wo.payment_ref = S.refs[id]; } window.open('https://wa.me/' + S.cfg.whatsapp + '?text=' + encodeURIComponent(waOrderText(wo)), '_blank'); } }
+    else if (a === 'odel') { if (confirm('حذف الطلب #' + id + ' نهائياً؟')) api('/admin/orders/' + id, { method: 'DELETE' }).then(function () { toast('تم حذف الطلب'); aOrders($('#abody')); }).catch(function (x) { toast(x.message); }); }
+    else if (a === 'opurge') { if (confirm('حذف كل الطلبات الملغاة نهائياً؟ لا يمكن التراجع.')) api('/admin/orders/purge-cancelled', { method: 'POST', body: {} }).then(function (r) { toast('تم حذف ' + r.deleted + ' طلب'); aOrders($('#abody')); }).catch(function (x) { toast(x.message); }); }
+    else if (a === 'utoggle') api('/admin/users/' + id, { method: 'PATCH', body: { active: t.dataset.v === '1' } }).then(function () { aUsers($('#abody')); }).catch(function (x) { toast(x.message); });
+    else if (a === 'upass') { var np = prompt('كلمة المرور الجديدة (8 أحرف على الأقل)'); if (np) api('/admin/users/' + id, { method: 'PATCH', body: { password: np } }).then(function () { toast('تم تغيير كلمة المرور'); }).catch(function (x) { toast(x.message); }); }
+    else if (a === 'udel') { if (confirm('حذف هذا الحساب؟')) api('/admin/users/' + id, { method: 'DELETE' }).then(function () { toast('تم حذف الحساب'); aUsers($('#abody')); }).catch(function (x) { toast(x.message); }); }
     else if (a === 'cdel') { delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'rmprod') { Object.keys(S.cart).forEach(function (key) { if (key.split(':')[0] === id) delete S.cart[key]; }); saveCart(); cart(); }
     else if (a === 'open') openProduct(id);
@@ -503,6 +525,7 @@
     else if (a === 'cset') { var n = capCart(t.dataset.k, parseInt(t.value, 10) || 0); if (n > 0) S.cart[t.dataset.k] = n; else delete S.cart[t.dataset.k]; saveCart(); cart(); }
     else if (a === 'imgadd' && t.files[0]) img(t.files[0], 900, function (d) { api('/admin/products/' + t.dataset.id + '/images', { method: 'POST', body: { data: d } }).then(function () { toast('تمت إضافة الصورة ✓'); reAdmin(); }).catch(function (x) { toast(x.message); }); });
     else if (a === 'qrfile' && t.files[0]) img(t.files[0], 500, function (d) { S.qr = d; $('#qrp').src = d; $('#qrp').style.display = 'block'; });
+    else if (t.dataset.uperm) { var uid = t.dataset.uperm, ps = Array.prototype.filter.call(document.querySelectorAll('[data-uperm="' + uid + '"]'), function (c) { return c.checked; }).map(function (c) { return c.dataset.k; }); api('/admin/users/' + uid, { method: 'PATCH', body: { perms: ps } }).then(function () { toast('تم حفظ الصلاحيات ✓'); }).catch(function (x) { toast(x.message); }); }
     else if (t.name === 'has_colors') $('#pcw').hidden = !t.checked;
     else if (t.dataset.price) { var row = t.closest('tr'), body = {}; row.querySelectorAll('[data-price]').forEach(function (i) { body[i.dataset.k] = i.value; });
       api('/admin/products/' + t.dataset.price + '/prices', { method: 'PATCH', body: body }).then(function () { toast('تم حفظ السعر ✓'); }).catch(function (x) { toast(x.message); }); }
@@ -534,6 +557,7 @@
     else if (fm.id === 'cf') api('/admin/colors/bulk', { method: 'POST', body: { text: d.text, addToAll: !!d.addToAll } }).then(function (r) { toast('تم استيراد ' + r.imported + ' لون'); aColors($('#abody')); }).catch(bad);
     else if (fm.id === 'sf') { d.instapay_qr = S.qr || ''; api('/admin/settings', { method: 'PUT', body: d }).then(function () { toast('تم الحفظ ✓'); return api('/config').then(function (c) { S.cfg = c; }); }).then(again).catch(bad); }
     else if (fm.id === 'zf') api('/admin/zones', { method: 'PUT', body: { zones: Array.prototype.map.call(fm.querySelectorAll('[data-zone]'), function (i) { return { name: i.dataset.zone, fee: i.value, active: fm.querySelector('[data-zon="' + i.dataset.zone + '"]').checked }; }) } }).then(function () { toast('تم حفظ الشحن ✓'); return api('/config').then(function (c) { S.cfg = c; }); }).then(again).catch(function (x) { toast(x.message); again(); });
+    else if (fm.id === 'uf') api('/admin/users', { method: 'POST', body: { name: d.name, email: d.email, password: d.password, perms: Object.keys(PERM_L).filter(function (k) { return d['perm_' + k]; }) } }).then(function () { toast('تم إنشاء الحساب ✓'); aUsers($('#abody')); }).catch(bad);
     else if (fm.id === 'of') { S.A.f = d; aOrders($('#abody')); }
     else if (fm.id === 'rf') { S.A.rep = d; aReports($('#abody')); }
   });
