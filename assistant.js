@@ -111,7 +111,7 @@ module.exports = function (db, settings) {
   // ---- نموذج ذكي اختياري ----
   function ctx() {
     const { s, products, zones } = data();
-    return 'أنت مساعد متجر "' + s.shop_name + '" (مصنع خيوط قطن مصري). رد بالعامية المصرية بأسلوب ودود ومختصر (٣ أسطر تقريباً). استخدم فقط المعلومات التالية ولا تخترع أسعاراً أو أكواداً أو مواعيد. لو السؤال خارج المعلومات قل إنك هتحوله لفريقنا على واتساب. لا تذكر أرقام مخزون دقيقة، فقط متوفر أو غير متوفر. الدفع: فودافون كاش وإنستا باي فقط، والشحن عن طريق شركة شحن خارجية بتحديد المحافظة عند الطلب. لا دفع عند الاستلام ولا كارت.\n' +
+    return 'أنت مساعد متجر "' + s.shop_name + '" (مصنع خيوط قطن مصري). رد بالعامية المصرية بأسلوب ودود ومختصر (٣ أسطر تقريباً). لا تبدأ كل رد بترحيب (رحّب فقط في أول رسالة)، ولا تذكر الدفع أو الشحن إلا لو العميل سأل عنهما. جاوب على السؤال المطروح مباشرة. استخدم فقط المعلومات التالية ولا تخترع أسعاراً أو أكواداً أو مواعيد. لو السؤال خارج المعلومات قل إنك هتحوله لفريقنا على واتساب. لا تذكر أرقام مخزون دقيقة، فقط متوفر أو غير متوفر. الدفع: فودافون كاش وإنستا باي فقط، والشحن عن طريق شركة شحن خارجية بتحديد المحافظة عند الطلب. لا دفع عند الاستلام ولا كارت.\n' +
       'مستويات السعر: قطاعي، نصف جملة من ' + s.half_min + ' وحدة، جملة من ' + s.whole_min + ' وحدة (الأسعار بالجنيه).\n' +
       'المنتجات:\n' + products.map(p => '- ' + p.name + ' | ' + p.category + ' | وحدة: ' + p.unit + ' | قطاعي ' + p.p_retail / 100 + ' نصف جملة ' + p.p_half / 100 + ' جملة ' + p.p_whole / 100 + ' | ' + (p.available ? 'متوفر' : 'غير متوفر') + (p.has_colors ? ' | عدد الألوان ' + p.colors.length : '') + ' | ' + String(p.description).replace(/\n/g, ' ').slice(0, 110)).join('\n') + '\n' +
       'المحافظات: ' + zones.map(z => z.name).join('، ');
@@ -121,11 +121,18 @@ module.exports = function (db, settings) {
     if (!key && !gkey) return null;
     const sys = ctx(), turns = msgs.slice(-8);
     if (key) {
-      const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + (process.env.GEMINI_MODEL || 'gemini-2.0-flash') + ':generateContent?key=' + key, {
-        method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(15000),
-        body: JSON.stringify({ systemInstruction: { parts: [{ text: sys }] }, contents: turns.map(m => ({ role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.content }] })), generationConfig: { temperature: 0.4, maxOutputTokens: 400 } })
-      });
-      const j = await r.json(); return (j.candidates && j.candidates[0] && j.candidates[0].content.parts.map(p => p.text).join('')) || null;
+      const models = [process.env.GEMINI_MODEL, 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite', 'gemini-flash-latest'].filter(Boolean);
+      for (const m of models) {
+        try {
+          const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent', {
+            method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': key }, signal: AbortSignal.timeout(9000),
+            body: JSON.stringify({ systemInstruction: { parts: [{ text: sys }] }, contents: turns.map(t => ({ role: t.role === 'user' ? 'user' : 'model', parts: [{ text: t.content }] })), generationConfig: { temperature: 0.3, maxOutputTokens: 500 } })
+          });
+          const j = await r.json(); const t = j.candidates && j.candidates[0] && j.candidates[0].content && j.candidates[0].content.parts.map(x => x.text || '').join('');
+          if (t) return t; console.error('gemini', m, r.status, j.error && j.error.status);
+        } catch (e) { console.error('gemini', m, e.message); }
+      }
+      return null;
     }
     const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + gkey }, signal: AbortSignal.timeout(15000),
