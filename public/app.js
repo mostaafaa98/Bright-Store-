@@ -255,11 +255,22 @@
     return h + '<form data-proof="' + o.id + '" data-token="' + esc(token || '') + '" class="row"><input name="ref" placeholder="رقم العملية أو الرقم المحوَّل منه" required aria-label="رقم العملية"><button>تأكيد التحويل</button></form><p id="m' + o.id + '" class="mut"></p></div>';
   }
   function waLink(text) { return S.cfg.whatsapp ? '<a class="btn gr" target="_blank" rel="noopener" href="https://wa.me/' + esc(S.cfg.whatsapp) + '?text=' + encodeURIComponent(text) + '">' + ic('chat') + 'تواصل مع برايت على واتساب</a>' : ''; }
+  var PMN = { wallet: 'فودافون كاش', instapay: 'إنستا باي' };
+  function shortName(n) { return /^علبة برايت كوتن بارليه/.test(n) ? 'كوتون بارليه برايت' + (/متعدد/.test(n) ? ' - متعدد الدرجات' : '') : n; }
+  function waOrderText(o) {
+    var its = o.items || [], head = 'طلب رقم #' + o.id + (o.name ? ' - ' + o.name : '') + (o.phone ? '\nالهاتف: ' + o.phone : '') + '\n\nالطلب:\n';
+    var st = o.payment_status === 'paid' ? '✅ تم الدفع (مؤكد)' : o.payment_status === 'review' ? '💳 تم التحويل' + (o.payment_ref ? ' (المرجع: ' + o.payment_ref + ')' : '') + ' - بانتظار تأكيدكم' : '❌ لم أدفع بعد';
+    var tail = '\n\nالإجمالي: ' + egp(o.total_cents) + '\nالدفع: ' + (PMN[o.payment_method] || '') + '\nحالة الدفع: ' + st;
+    var lines = its.map(function (i, k) { return (k + 1) + '- ' + shortName(i.name) + (i.color ? ' | ' + i.color : '') + ' × ' + i.qty; }), body = '';
+    for (var k = 0; k < lines.length; k++) { if ((head + body + lines[k] + tail).length > 1500) { body += '... و' + (lines.length - k) + ' صنف آخر (التفاصيل في رسالة الطلب)\n'; break; } body += lines[k] + '\n'; }
+    return head + body.replace(/\n$/, '') + tail;
+  }
+  function waOrderBtn(o, label) { S.oc = S.oc || {}; S.oc[o.id] = o; return S.cfg.whatsapp ? '<button type="button" class="btn gr" data-act="waord" data-id="' + o.id + '">' + ic('chat') + (label || 'أرسل طلبي على واتساب') + '</button>' : ''; }
   function done(r, f) {
-    var o = { id: r.orderId, payment_method: r.payment, payment_status: 'pending', total_cents: r.total };
+    var o = { id: r.orderId, payment_method: r.payment, payment_status: 'pending', total_cents: r.total, items: r.items || [], name: f.name, phone: f.phone };
     app.innerHTML = '<div class="panel done"><div class="chk">' + ic('check') + '</div><h2>تم استلام طلبك</h2><p style="font-size:20px;margin:0 0 12px">رقم الطلب <b>#' + r.orderId + '</b></p><div class="sum"><div class="tot"><span>الإجمالي</span><span>' + egp(r.total) + '</span></div></div>' +
       '<p class="mut">سنتواصل معك على ' + esc(f.phone) + ' لتأكيد الشحن. احتفظ برقم الطلب لمتابعته من «طلباتي».</p><div style="text-align:right">' + payBox(o, r.token) + '</div>' +
-      '<div class="row" style="justify-content:center">' + waLink('مرحباً برايت، أنا ' + f.name + '، رقم طلبي #' + r.orderId + ' بإجمالي ' + egp(r.total)) + '<a class="btn g" href="#/orders">متابعة طلباتي</a><a class="btn g" href="#/">متابعة التسوق</a></div></div>';
+      '<div class="row" style="justify-content:center">' + waOrderBtn(o) + '<a class="btn g" href="#/orders">متابعة طلباتي</a><a class="btn g" href="#/">متابعة التسوق</a></div></div>';
   }
   function login(reg) {
     app.innerHTML = '<form class="panel auth" id="au" data-reg="' + (reg ? 1 : 0) + '"><h2>' + (reg ? 'إنشاء حساب' : 'تسجيل الدخول') + '</h2><p class="mut">الحساب اختياري، ويمكنك الطلب كضيف.</p>' + (reg ? '<label for="a1">الاسم</label><input id="a1" name="name" required><br><br>' : '') + '<label for="a2">البريد الإلكتروني</label><input id="a2" name="email" type="email" required><br><br><label for="a3">كلمة المرور</label><input id="a3" name="password" type="password" required minlength="8" placeholder="8 أحرف على الأقل"><p id="m"></p><button class="blk lg">' + (reg ? 'إنشاء الحساب' : 'دخول') + '</button><p style="text-align:center"><a href="#/' + (reg ? 'login' : 'register') + '">' + (reg ? 'لدي حساب بالفعل' : 'إنشاء حساب جديد') + '</a></p></form>';
@@ -279,7 +290,7 @@
         (list.length ? list.map(function (o) {
           return '<div class="panel"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b>طلب #' + o.id + '</b><span><span class="pill ' + pc[o.payment_status] + '">' + PS[o.payment_status] + '</span> <span class="mut">' + PM[o.payment_method] + '</span></span></div><div class="mut">' + esc(o.created_at) + ' — ' + esc(o.governorate) + '</div>' + track(o) +
             o.items.map(function (i) { return '<div class="it"><span>' + esc(i.name) + (i.color ? ' — ' + esc(i.color) : '') + '</span><span>' + i.qty + ' × ' + egp(i.price_cents) + '</span></div>'; }).join('') +
-            '<div class="tot"><span>الإجمالي</span><span>' + egp(o.total_cents) + '</span></div>' + (o.status === 'cancelled' ? '' : (tok[o.id] || own[o.id] ? payBox(o, tok[o.id]) : (o.payment_method === 'cod' ? payBox(o) : '<p class="mut">لتأكيد التحويل تواصل معنا على واتساب.</p>'))) + '<div>' + waLink('بخصوص طلبي رقم #' + o.id) + '</div></div>';
+            '<div class="tot"><span>الإجمالي</span><span>' + egp(o.total_cents) + '</span></div>' + (o.status === 'cancelled' ? '' : (tok[o.id] || own[o.id] ? payBox(o, tok[o.id]) : (o.payment_method === 'cod' ? payBox(o) : '<p class="mut">لتأكيد التحويل تواصل معنا على واتساب.</p>'))) + '<div>' + waOrderBtn(o, 'أرسل تفاصيل الطلب على واتساب') + '</div></div>';
         }).join('') : '<div class="panel">لا توجد طلبات على هذا الجهاز أو الحساب بعد.</div>');
     });
   }
@@ -441,6 +452,7 @@
     else if (a === 'cfilter') { S.colorF = S.colorF === Number(id) ? null : Number(id); shop(); var pe2 = document.getElementById('products'); if (pe2) pe2.scrollIntoView(); }
     else if (a === 'clear') { S.cat = ''; S.colorF = null; $('#q').value = ''; shop(); }
     else if (a === 'goto') { var ge = document.getElementById(t.dataset.v); if (ge) ge.scrollIntoView(); }
+    else if (a === 'waord') { var wo = S.oc && S.oc[id]; if (wo) { if (S.refs && S.refs[id] && wo.payment_status === 'pending') { wo.payment_status = 'review'; wo.payment_ref = S.refs[id]; } window.open('https://wa.me/' + S.cfg.whatsapp + '?text=' + encodeURIComponent(waOrderText(wo)), '_blank'); } }
     else if (a === 'cdel') { delete S.cart[k]; saveCart(); cart(); }
     else if (a === 'rmprod') { Object.keys(S.cart).forEach(function (key) { if (key.split(':')[0] === id) delete S.cart[key]; }); saveCart(); cart(); }
     else if (a === 'open') openProduct(id);
@@ -514,7 +526,7 @@
     else if (fm.id === 'lk') api('/orders/lookup', { method: 'POST', body: { id: d.id, phone: d.phone } }).then(function (r) {
       if (!r.length) { msg('لا يوجد طلب بهذه البيانات'); again(); return; }
       S.found = r; orders(); }).catch(bad);
-    else if (fm.dataset.proof) api('/orders/' + fm.dataset.proof + '/proof', { method: 'POST', body: { ref: d.ref, token: fm.dataset.token } }).then(function () { toast('تم إرسال بيانات التحويل ✓'); route(); }).catch(function (x) { var m = $('#m' + fm.dataset.proof); if (m) { m.className = 'err'; m.textContent = x.message; } again(); });
+    else if (fm.dataset.proof) api('/orders/' + fm.dataset.proof + '/proof', { method: 'POST', body: { ref: d.ref, token: fm.dataset.token } }).then(function () { S.refs = S.refs || {}; S.refs[fm.dataset.proof] = d.ref; toast('تم إرسال بيانات التحويل ✓'); route(); }).catch(function (x) { var m = $('#m' + fm.dataset.proof); if (m) { m.className = 'err'; m.textContent = x.message; } again(); });
     else if (fm.id === 'pf') { var cur = prod(S.edit) || {}; d.has_colors = fm.has_colors.checked; d.image_url = cur.image_url || '';
       api(S.edit ? '/admin/products/' + S.edit : '/admin/products', { method: S.edit ? 'PUT' : 'POST', body: d }).then(function (r) {
         var id = S.edit || r.id; return api('/admin/products/' + id + '/colors', { method: 'PUT', body: { ids: d.has_colors ? Object.keys(S.pc).filter(function (c) { return S.pc[c]; }) : [] } }).then(function () { return id; });

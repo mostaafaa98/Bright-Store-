@@ -1,5 +1,6 @@
 process.env.TZ = process.env.TZ || 'Africa/Cairo';
 require('dotenv').config();
+const { orderPdf } = require('./pdfgen');
 const express = require('express'), helmet = require('helmet'), rateLimit = require('express-rate-limit');
 const bcrypt = require('bcryptjs'), jwt = require('jsonwebtoken'), crypto = require('crypto');
 const path = require('path'), os = require('os'), fs = require('fs'), ExcelJS = require('exceljs');
@@ -38,18 +39,60 @@ const okData = v => typeof v === 'string' && v.length <= 400000 && /^data:image\
 const money = v => Math.round(Number(v) * 100);
 const settings = () => Object.fromEntries(db.prepare('SELECT key,value FROM settings').all().map(r => [r.key, r.value]));
 const tier = (p, q, s) => q >= +s.whole_min ? p.p_whole : q >= +s.half_min ? p.p_half : p.p_retail;
+const egpAr = c => (c / 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' ج.م';
 const egp = c => (c / 100).toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' EGP';
 const audit = (who, action, p, detail) => db.prepare('INSERT INTO audit_log(who,action,product_id,product,detail) VALUES(?,?,?,?,?)').run(who, action, p ? p.id : null, p ? p.name : '', detail);
 
 // ---------- Telegram ----------
-async function notify(text) {
-  const s = settings(), tok = s.telegram_token || process.env.TELEGRAM_BOT_TOKEN, chat = s.telegram_chat || process.env.TELEGRAM_CHAT_ID;
-  if (!tok || !chat) return false;
+const tgCfg = () => { const s = settings(); return { tok: s.telegram_token || process.env.TELEGRAM_BOT_TOKEN, chat: s.telegram_chat || process.env.TELEGRAM_CHAT_ID }; };
+const tgApi = (tok, m) => `${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${tok}/${m}`;
+async function tgCall(m, body, timeout = 8000) {
+  const { tok } = tgCfg(); if (!tok) return null;
+  try { const r = await fetch(tgApi(tok, m), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(timeout) }); return r.ok ? await r.json() : null; }
+  catch (e) { console.error('telegram', m, e.message); return null; }
+}
+async function notify(text, reply_markup) {
+  const { tok, chat } = tgCfg(); if (!tok || !chat) return false;
+  const b = { chat_id: chat, text }; if (reply_markup) b.reply_markup = reply_markup;
+  return !!(await tgCall('sendMessage', b, 6000));
+}
+async function notifyPdf(buf, filename, caption) {
+  const { tok, chat } = tgCfg(); if (!tok || !chat) return false;
   try {
-    const r = await fetch(`${process.env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${tok}/sendMessage`, { method: 'POST',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chat, text }), signal: AbortSignal.timeout(6000) });
-    return r.ok;
-  } catch (e) { console.error('telegram', e.message); return false; }
+    const f = new FormData(); f.append('chat_id', String(chat)); if (caption) f.append('caption', caption);
+    f.append('document', new Blob([buf], { type: 'application/pdf' }), filename);
+    const r = await fetch(tgApi(tok, 'sendDocument'), { method: 'POST', body: f, signal: AbortSignal.timeout(20000) }); return r.ok;
+  } catch (e) { console.error('telegram pdf', e.message); return false; }
+}
+const payKb = (id, st) => ({ inline_keyboard: st === 'paid'
+  ? [[{ text: '✅ تم تأكيد الدفع (اضغط للتراجع)', callback_data: `pay:${id}:pending` }]]
+  : [[{ text: '✅ تم استلام الدفع', callback_data: `pay:${id}:paid` }, { text: '❌ لم يتم الدفع', callback_data: `pay:${id}:pending` }]] });
+// استقبال ضغطات أزرار البوت (تأكيد الدفع) بالـ long polling
+let tgOff = 0, tgTokSeen = null;
+async function tgPoll() {
+  for (;;) {
+    const { tok, chat } = tgCfg();
+    if (!tok || !chat) { await new Promise(r => setTimeout(r, 30000)); continue; }
+    try {
+      if (tgTokSeen !== tok) { await tgCall('deleteWebhook', {}); tgTokSeen = tok; tgOff = 0; }
+      const r = await fetch(tgApi(tok, 'getUpdates'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ offset: tgOff, timeout: 25, allowed_updates: ['callback_query'] }), signal: AbortSignal.timeout(35000) });
+      const j = r.ok ? await r.json() : null;
+      if (!j) { await new Promise(r2 => setTimeout(r2, 8000)); continue; }
+      for (const u of j.result || []) { tgOff = u.update_id + 1; try { await tgHandle(u, String(chat)); } catch (e) { console.error('tg handle', e.message); } }
+    } catch (e) { await new Promise(r => setTimeout(r, 8000)); }
+  }
+}
+async function tgHandle(u, chat) {
+  const cq = u.callback_query; if (!cq || !cq.message) return;
+  const m = /^pay:(\d+):(paid|pending)$/.exec(cq.data || '');
+  if (String(cq.message.chat.id) !== chat || !m) return tgCall('answerCallbackQuery', { callback_query_id: cq.id });
+  const id = Number(m[1]), st = m[2], o = db.prepare('SELECT id,status,payment_status FROM orders WHERE id=?').get(id);
+  if (!o) return tgCall('answerCallbackQuery', { callback_query_id: cq.id, text: 'الطلب غير موجود', show_alert: true });
+  if (o.status === 'cancelled') return tgCall('answerCallbackQuery', { callback_query_id: cq.id, text: 'هذا الطلب ملغي', show_alert: true });
+  db.prepare('UPDATE orders SET payment_status=? WHERE id=?').run(st, id);
+  try { audit('تليجرام', 'payment', { id: null, name: 'طلب #' + id }, st === 'paid' ? 'تم تأكيد الدفع' : 'غير مدفوع'); } catch (e) { }
+  await tgCall('editMessageReplyMarkup', { chat_id: cq.message.chat.id, message_id: cq.message.message_id, reply_markup: payKb(id, st) });
+  await tgCall('answerCallbackQuery', { callback_query_id: cq.id, text: st === 'paid' ? `تم تأكيد دفع الطلب #${id} ✅` : `الطلب #${id}: غير مدفوع` });
 }
 
 // ---------- Auth ----------
@@ -286,14 +329,18 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   const orows = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=? ORDER BY id').all(r.id);
   const short = n => /^علبة برايت كوتن بارليه/.test(n) ? 'كوتون بارليه برايت' + (/متعدد/.test(n) ? ' - متعدد الدرجات' : '') : n;
   const cell = x => String(x == null || x === '' ? '-' : x).replace(/\|/g, '/');
-  const head = `طلب جديد من برايت للخيوط\n\nبيانات العميل:\n- الاسم: ${info.name}\n- الهاتف الأساسي: ${info.phone}\n- العنوان: ${[info.area, info.governorate].filter(Boolean).join('-')}\n${info.address}\n- طريقة الدفع: ${{ wallet: 'فودافون كاش', instapay: 'إنستا باي' }[method]}${info.note ? '\n- ملاحظة: ' + info.note : ''}\n\nتفاصيل الطلب:\n\n| الصنف | الكود | الكمية |\n|-------|--------|---------|`;
+  const head = `طلب جديد من برايت للخيوط\n\nبيانات العميل:\n- الاسم: ${info.name}\n- الهاتف الأساسي: ${info.phone}\n- العنوان: ${[info.area, info.governorate].filter(Boolean).join('-')}\n${info.address}\n- طريقة الدفع: ${{ wallet: 'فودافون كاش', instapay: 'إنستا باي' }[method]}\n- المبلغ: ${egpAr(r.total)}${info.note ? '\n- ملاحظة: ' + info.note : ''}\n\nتفاصيل الطلب:\n\n| الصنف | الكود | الكمية |\n|-------|--------|---------|`;
   const trs = orows.map(i => `| ${cell(short(i.name))} | ${cell(i.color)} | ${i.qty} |`);
   const foot = `\nالإجمالي: ${orows.reduce((n, i) => n + i.qty, 0)} عنصر`;
   let part = head; const parts = [];
   for (const l of trs) { if ((part + '\n' + l).length > 3800) { parts.push(part); part = '| الصنف | الكود | الكمية |\n|-------|--------|---------|'; } part += '\n' + l; }
   parts.push(part + '\n' + foot);
-  (async () => { for (const t of parts) await notify(t); })();
-  res.json({ orderId: r.id, sub: r.sub, shipping: r.ship, total: r.total, payment: method, token: r.token });
+  const label = i => short(i.name) + (i.color ? ' - ' + i.color : '');
+  (async () => {
+    for (let k = 0; k < parts.length; k++) await notify(parts[k], k === parts.length - 1 ? payKb(r.id, 'pending') : undefined);
+    try { const buf = await orderPdf({ title: `${info.name} - طلب #${r.id}`, rows: orows.map(i => ({ label: label(i), qty: i.qty })) }); await notifyPdf(buf, `order-${r.id}.pdf`, `طلب #${r.id} - ${info.name}`); } catch (e) { console.error('pdf', e.message); }
+  })();
+  res.json({ orderId: r.id, sub: r.sub, shipping: r.ship, total: r.total, payment: method, token: r.token, items: orows });
 }));
 app.get('/api/orders', auth, (req, res) =>
   res.json(db.prepare('SELECT * FROM orders WHERE user_id=? ORDER BY id DESC LIMIT 100').all(req.user.id).map(withItems)));
@@ -312,7 +359,7 @@ app.post('/api/orders/:id/proof', authLimiter, optAuth, wrap((req, res) => {
   const o = db.prepare("SELECT * FROM orders WHERE id=? AND payment_method IN ('wallet','instapay') AND payment_status!='paid' AND status!='cancelled'").get(Number(req.params.id));
   if (!o || !((req.user && req.user.id === o.user_id) || tokEq(req.body.token, o.token))) return fail(res, 400, 'لا يمكن تحديث هذا الطلب');
   db.prepare("UPDATE orders SET payment_ref=?, payment_status='review' WHERE id=?").run(ref, o.id);
-  notify(`💳 تم إرسال بيانات تحويل للطلب #${o.id}\nالمرجع: ${ref}\nالمبلغ: ${egp(o.total_cents)}`);
+  notify(`💳 تم إرسال بيانات تحويل للطلب #${o.id}\nالعميل: ${o.name} - ${o.phone}\nالمرجع: ${ref}\nالمبلغ: ${egpAr(o.total_cents)}`, payKb(o.id, 'review'));
   res.json({ ok: true });
 }));
 
@@ -377,4 +424,4 @@ app.get(['/', '/index.html'], sendIndex);
 app.use(express.static(path.join(__dirname, 'public'), { maxAge: 0, setHeaders: (res, p) => { if (/\.(jpg|png|webp)$/i.test(p)) res.setHeader('Cache-Control', 'public, max-age=86400'); else res.setHeader('Cache-Control', 'no-cache'); } }));
 app.use('/api', (req, res) => fail(res, 404, 'غير موجود'));
 app.use((err, req, res, next) => { console.error(err); fail(res, 500, 'خطأ في الخادم'); });
-db.ready.then(() => app.listen(process.env.PORT || 3000, () => console.log('Bright Store on :' + (process.env.PORT || 3000))));
+db.ready.then(() => app.listen(process.env.PORT || 3000, () => { console.log('Bright Store on :' + (process.env.PORT || 3000)); if (process.env.TG_POLL !== 'false') tgPoll(); }));
