@@ -526,7 +526,7 @@
   });
 
   function footer() {
-    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><img class="flogo" src="/img/logo.png" alt="Bright" width="70" height="79"><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<p class="fsoc"><a target="_blank" rel="noopener" href="' + IG + '">' + SI.ig + '<span>انستجرام</span></a><a target="_blank" rel="noopener" href="' + FB + '">' + SI.fb + '<span>فيسبوك</span></a></p><small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
