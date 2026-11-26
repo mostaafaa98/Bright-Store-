@@ -182,3 +182,15 @@ footer{padding-bottom:20px}
 .flogo{display:block;height:64px;width:auto;margin:0 0 12px;background:#fff;border-radius:6px;padding:4px 8px}
 .fsoc{display:flex;gap:14px;flex-wrap:wrap}.fsoc a{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#cfc5af}.fsoc svg{width:16px;height:16px}
 .logo img{height:50px!important;width:auto;border-radius:0}
+/* bright-eg.com product display: borderless, big photo, centered bronze name */
+.card{background:transparent;border:0;box-shadow:none;text-align:center;overflow:visible}
+.card:after{display:none}.card:hover{box-shadow:none;border:0}
+.card>.img{background-color:#fff;background-size:contain;background-repeat:no-repeat;border:1px solid var(--line);border-radius:2px;filter:drop-shadow(0 10px 16px rgba(60,45,20,.12))}
+.cb{padding:16px 6px 10px}
+.cat{font-size:10px;letter-spacing:.14em}
+.cb h3,html[dir=ltr] .cb h3{font-family:inherit;font-weight:700;color:var(--gold);font-size:20px;line-height:1.3;margin:4px 0 6px}
+html[dir=ltr] .cb h3{font-size:20px}
+.sp{justify-content:center}.pr{justify-content:center}.pr b{font-family:inherit;font-size:20px;font-weight:700}
+.ladder{display:none}.cta{display:inline-block;margin-top:6px;border-bottom:1px solid var(--gold);padding-bottom:2px}
+@media(max-width:600px){.cb h3,html[dir=ltr] .cb h3{font-size:17px}.pr b{font-size:18px}}
+.fsoc a svg.ic{width:16px;height:16px}

@@ -73,6 +73,7 @@
 
   // ---------- أيقونات ----------
   var ICONS = {
+    phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
     house: '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/>',
     cart: '<path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h8.7a1 1 0 0 0 1-.8L20 8H6"/><circle cx="9" cy="20" r="1.3"/><circle cx="18" cy="20" r="1.3"/>',
     user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
@@ -526,7 +527,7 @@
   });
 
   function footer() {
-    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><img class="flogo" src="/img/logo.png" alt="Bright" width="70" height="79"><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>تواصل معنا</h4>' + (c.whatsapp ? '<p><a href="https://wa.me/' + esc(c.whatsapp) + '" target="_blank" rel="noopener">واتساب: <bdi dir="ltr">' + esc(c.whatsapp) + '</bdi></a></p>' : '') + '<p class="fsoc"><a target="_blank" rel="noopener" href="' + IG + '">' + SI.ig + '<span>انستجرام</span></a><a target="_blank" rel="noopener" href="' + FB + '">' + SI.fb + '<span>فيسبوك</span></a></p><small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
+    var c = S.cfg; $('#foot').innerHTML = '<div class="ft"><div><img class="flogo" src="/img/logo.png" alt="Bright" width="70" height="79"><b style="color:#fff;font-size:17px">' + esc(c.shop) + '</b><p>مصنع مصري لخيوط القطن والبوليستر: كوتن بارليه، كروشيه، تطريز، مكرمية وخيوط حياكة. نبيع بالقطعة وبالجملة.</p></div><div><h4>تواصل معنا</h4>' + '<p>العنوان: المنطقة الصناعية الثالثة، السادس من أكتوبر، الجيزة، مصر</p>' + (c.whatsapp ? '<p>اتصال وواتساب: <bdi dir="ltr">0' + esc(String(c.whatsapp).slice(2)) + '</bdi></p><p class="fsoc"><a href="tel:+' + esc(c.whatsapp) + '">' + ic('phone') + '<span>اتصال</span></a><a target="_blank" rel="noopener" href="https://wa.me/' + esc(c.whatsapp) + '">' + ic('chat') + '<span>واتساب</span></a></p>' : '') + '<p class="fsoc"><a target="_blank" rel="noopener" href="' + IG + '">' + SI.ig + '<span>انستجرام</span></a><a target="_blank" rel="noopener" href="' + FB + '">' + SI.fb + '<span>فيسبوك</span></a></p><small>© ' + new Date().getFullYear() + ' ' + esc(c.shop) + '</small></div></div>';
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
