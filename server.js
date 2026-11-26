@@ -131,6 +131,13 @@ function catalog(where) {
   db.prepare('SELECT product_id,color_id FROM product_colors').all().forEach(c => (cm[c.product_id] = cm[c.product_id] || []).push(c.color_id));
   return ps.map(p => ({ ...p, images: im[p.id] || (p.image_url ? [p.image_url] : []), color_ids: cm[p.id] || [] }));
 }
+const assistantReply = require('./assistant')(db, settings);
+const chatLimiter = rateLimit({ windowMs: 10 * 60 * 1000, limit: 40, standardHeaders: true, legacyHeaders: false });
+app.post('/api/assistant', chatLimiter, wrap(async (req, res) => {
+  const m = Array.isArray(req.body.messages) ? req.body.messages.slice(-10).filter(x => x && (x.role === 'user' || x.role === 'assistant') && typeof x.content === 'string').map(x => ({ role: x.role, content: x.content.slice(0, 500) })) : [];
+  if (!m.length || m[m.length - 1].role !== 'user' || !m[m.length - 1].content.trim()) return fail(res, 400, 'اكتب سؤالك');
+  res.json(await assistantReply(m));
+}));
 app.get('/api/config', (req, res) => {
   const s = settings();
   res.json({ shop: s.shop_name, halfMin: +s.half_min, wholeMin: +s.whole_min, whatsapp: s.whatsapp_number,

@@ -187,3 +187,33 @@ html.lock,html.lock body{overflow:hidden}
 .card:active{transform:scale(.97)}
 html{scroll-behavior:auto}
 @media(prefers-reduced-motion:reduce){.ov,.ov.out,#app.pg,.sheet{animation:none!important}}
+/* AI assistant */
+.ai-fab{position:fixed;inset-inline-end:14px;bottom:calc(86px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:50%;border:0;background:var(--esp,#2B2118);color:#F3E3B8;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px -8px rgba(0,0,0,.5);z-index:40;cursor:pointer;transition:transform .2s}
+.ai-fab:active{transform:scale(.92)}.ai-fab.on{transform:scale(.9);opacity:.0;pointer-events:none}
+.ai-box{position:fixed;inset-inline:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));max-width:420px;margin-inline:auto;height:min(540px,78vh);background:#FAF7F2;border:1px solid #e6dccb;border-radius:20px;box-shadow:0 24px 60px -16px rgba(0,0,0,.55);z-index:70;display:flex;flex-direction:column;overflow:hidden;animation:sheetup .3s cubic-bezier(.2,.8,.2,1) both;color:#2B2118}
+.ai-box[hidden]{display:none}
+@media(min-width:700px){.ai-box{inset-inline-end:20px;inset-inline-start:auto;margin:0;bottom:20px}.ai-fab{bottom:24px}}
+.ai-h{background:#2B2118;color:#F3E3B8;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.ai-h small{display:block;opacity:.7;font-size:12px;margin-top:2px}.ai-x{background:none;border:0;color:inherit;font-size:18px;cursor:pointer;padding:6px}
+.ai-m{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain}
+.ai-b{max-width:86%;padding:9px 12px;border-radius:14px;font-size:14.5px;line-height:1.6;animation:ovin .2s ease both;word-break:break-word}
+.ai-b.bot{background:#fff;border:1px solid #e9dfce;align-self:flex-start;border-end-start-radius:4px}
+.ai-b.me{background:#8D7955;color:#fff;align-self:flex-end;border-end-end-radius:4px}
+.ai-p{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.ai-p button{background:#FAF7F2;border:1px solid #d9c9a8;border-radius:10px;padding:8px 10px;font:inherit;font-size:13px;text-align:start;cursor:pointer;color:#2B2118}
+.ai-wa{display:block;margin-top:8px;background:#25D366;color:#fff;text-align:center;border-radius:10px;padding:9px;text-decoration:none;font-weight:600;font-size:14px}
+.ai-s{display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 8px}.ai-s:empty{display:none}
+.ai-s button{background:#fff;border:1px solid #d9c9a8;border-radius:99px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer;color:#2B2118}
+.ai-f{display:flex;gap:8px;padding:10px;border-top:1px solid #e6dccb;background:#fff}
+.ai-f input{flex:1;border:1px solid #d9c9a8;border-radius:12px;padding:11px 12px;font:inherit;font-size:16px;background:#FAF7F2;min-width:0}
+.ai-f button{width:46px;border:0;border-radius:12px;background:#2B2118;color:#F3E3B8;font-size:18px;cursor:pointer}
+.ai-f button:active{transform:scale(.94)}
+.ai-dots i{display:inline-block;width:7px;height:7px;margin:0 2px;border-radius:50%;background:#8D7955;animation:aid 1s infinite}.ai-dots i:nth-child(2){animation-delay:.15s}.ai-dots i:nth-child(3){animation-delay:.3s}
+@keyframes aid{50%{transform:translateY(-4px);opacity:.4}}
+html.aiopen .wa{display:none!important}
+.ai-fab{border-radius:50%!important;width:54px!important;height:54px!important;padding:0!important;min-height:0!important}
+.ai-box .ai-p button{background:#FAF7F2!important;color:#2B2118!important;border:1px solid #d9c9a8!important;border-radius:10px!important;box-shadow:none!important;min-height:0!important;width:100%;font-weight:600}
+.ai-box .ai-s button{background:#fff!important;color:#2B2118!important;border:1px solid #d9c9a8!important;border-radius:99px!important;box-shadow:none!important;min-height:0!important;width:auto}
+.ai-box .ai-f button{border-radius:12px!important;min-height:0!important;background:#2B2118!important;color:#F3E3B8!important;width:46px}
+.ai-box .ai-x{background:none!important;box-shadow:none!important;min-height:0!important;width:auto;color:#F3E3B8!important}
+.ai-b.bot{font-size:14px}
