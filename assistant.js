@@ -39,22 +39,33 @@ module.exports = function (db, settings) {
     const out = { reply: '', products: [], handoff: false };
     const handoff = (why, ctx) => { out.handoff = true; out.wa = waLink(s, why + (ctx ? ' — ' + ctx : '')); return out; };
 
-    // كود لون
-    const code = (String(msgs[msgs.length - 1].content).match(/\b([A-Za-z]{1,3}\s?-?\d{2,5}|\d{2,5})\b/) || [])[1];
-    if (code && !/ج\.?م|جنيه|قطع|علبه|كيلو|شله/.test(last.replace(code, ''))) {
-      const k = code.replace(/[\s-]/g, '').toUpperCase();
-      const hits = colors.filter(c => c.code.replace(/[\s-]/g, '').toUpperCase() === k);
-      if (hits.length) {
-        const lines = hits.map(c => {
+    // كود لون: رد حاسم من قاعدة البيانات (لا يمر على النموذج)
+    const raw = String(msgs[msgs.length - 1].content).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    const toks = []; let mt; const re = /(?:^|[^A-Za-z0-9])([A-Za-z]{1,3})\s?-?\s?(\d{1,5})(?![0-9])/g;
+    while ((mt = re.exec(raw))) toks.push({ l: mt[1].toUpperCase(), n: mt[2], full: mt[1].toUpperCase() + mt[2] });
+    if (!toks.length && /لون|كود|code/.test(last)) { const m2 = raw.match(/(?:^|[^0-9])(\d{2,5})(?![0-9])/); if (m2) toks.push({ l: '', n: m2[1], full: m2[1] }); }
+    if (toks.length) {
+      const cn = c => { const m = String(c.code).toUpperCase().replace(/[\s-]/g, '').match(/^([A-Z]*)0*(\d+)([A-Z0-9]*)$/); return m ? { l: m[1], n: String(parseInt(m[2], 10)) + m[3], raw: String(c.code).toUpperCase().replace(/[\s-]/g, '') } : { l: '', n: '', raw: String(c.code).toUpperCase() }; };
+      const idx = colors.map(c => [c, cn(c)]);
+      const lines = [], pset = [], missing = [];
+      for (const t of toks.slice(0, 5)) {
+        const tn = String(parseInt(t.n, 10));
+        let hits = idx.filter(([, k]) => k.raw === t.full).map(x => x[0]);
+        if (!hits.length) hits = idx.filter(([, k]) => k.n === tn && (!t.l || k.l === t.l)).map(x => x[0]);
+        if (!hits.length) { missing.push(t.full); continue; }
+        for (const c of hits) {
           const ps = products.filter(p => p.colors.some(x => x.id === c.id));
           const ok = c.stock === null || c.stock > 0;
-          return '• ' + c.code + ' (' + (ps[0] ? ps[0].name : c.line) + '): ' + (ok ? 'متوفر ✅' : 'غير متوفر حالياً ❌');
-        });
-        out.reply = 'لقيت اللون ده:\n' + lines.join('\n');
-        out.products = [...new Set(hits.flatMap(c => products.filter(p => p.colors.some(x => x.id === c.id)).map(p => p.id)))].slice(0, 3);
+          lines.push('• ' + c.code + ' — ' + (ps.length ? ps.map(p => p.name).join(' / ') : 'غير مرتبط بمنتج حالياً') + ': ' + (ok ? 'متوفر ✅' : 'غير متوفر حالياً ❌'));
+          ps.forEach(p => { if (!pset.includes(p.id)) pset.push(p.id); });
+        }
+      }
+      if (lines.length || (missing.length && (/لون|كود|code/.test(last) || toks.length === missing.length && last.replace(/[a-z0-9\s-]/g, '').length < 12))) {
+        out.reply = (lines.length ? 'اللون ' + (lines.length > 1 ? 'اللي سألت عنه:' : 'ده:') + '\n' + lines.join('\n') : '') + (missing.length ? (lines.length ? '\n' : '') + 'مش لاقي في الكتالوج كود: ' + missing.join('، ') + '. اتأكد من الكود أو كلم فريقنا على واتساب.' : '');
+        out.products = pset.slice(0, 4); out.det = true;
+        if (!lines.length) handoff('عايز أسأل عن لون كوده ' + missing.join(' '));
         return out;
       }
-      if (/^[A-Za-z]/.test(code) || /لون|كود/.test(last)) { out.reply = 'مش لاقي كود "' + code + '" في الألوان المتاحة. اتأكد من الكود، أو كلم فريقنا على واتساب نساعدك.'; return handoff('عايز أسأل عن لون كوده ' + code); }
     }
     if (/^(مرحبا|اهلا|هاي|السلام|سلام|صباح|مساء|ازيك|هلا|hello|hi)\b/.test(last) && last.length < 25) { out.reply = 'أهلاً بيك في ' + s.shop_name + ' 👋 اسألني عن أي منتج أو لون أو سعر أو شحن، أو قولي بتعمل إيه (كروشيه، تطريز، مكرمية...) وأرشحلك الأنسب.'; return out; }
     const askShip = /شحن|توصيل|توصل|بيوصل|يوصل|مصاريف|محافظ|delivery|shipping/.test(last), askPay = /دفع|ادفع|اسدد|سداد|فودافون|كاش|انستا|instapay|تحويل|فيزا|كارت|عند الاستلام|cod/.test(last);
@@ -143,6 +154,7 @@ module.exports = function (db, settings) {
 
   return async function reply(msgs) {
     const base = answer(msgs);
+    if (base.det) return base;
     try {
       const t = await llm(msgs);
       if (t) {
