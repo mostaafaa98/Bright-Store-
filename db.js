@@ -199,3 +199,15 @@ module.exports = require('./wal')(db);
 flag('mig_wallet_name', () => {
   db.prepare("UPDATE settings SET value='Mustafa Mahmoud Hanafy' WHERE key='wallet_name' AND (value IS NULL OR value='')").run();
 });
+
+flag('mig_rename_ginga_1', () => {
+  const ren = [
+    ['علبة برايت كوتن بارليه - لون واحد', 'علب كوتن بارلية'],
+    ['علبة برايت كوتن بارليه - متعدد الدرجات', 'علب كوتن بارلية - جنجاه'],
+    ['علبة الأهرام سوبر بارليه - لون واحد', 'علبة الأهرام'],
+    ['علبة الأهرام سوبر بارليه - متعدد الدرجات', 'علبة الأهرام - جنجاه'],
+    ['شلات كروشيه 100 جم - متعدد الدرجات', 'شلات كروشيه 100 جم - جنجاه'],
+    ['كوتن بارليه متعدد الدرجات - بالكيلو', 'كوتن بارليه جنجاه - بالكيلو'],
+  ], up = db.prepare('UPDATE products SET name=? WHERE name=?'), oi = db.prepare('UPDATE order_items SET name=? WHERE 0');
+  for (const [a, b] of ren) up.run(b, a);
+});

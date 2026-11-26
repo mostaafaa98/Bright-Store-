@@ -257,7 +257,7 @@
   }
   function waLink(text) { return S.cfg.whatsapp ? '<a class="btn gr" target="_blank" rel="noopener" href="https://wa.me/' + esc(S.cfg.whatsapp) + '?text=' + encodeURIComponent(text) + '">' + ic('chat') + 'تواصل مع برايت على واتساب</a>' : ''; }
   var PMN = { wallet: 'فودافون كاش', instapay: 'إنستا باي' };
-  function shortName(n) { return /^علبة برايت كوتن بارليه/.test(n) ? 'كوتون بارليه برايت' + (/متعدد/.test(n) ? ' - متعدد الدرجات' : '') : n; }
+  function shortName(n) { return n; }
   function waOrderText(o) {
     var its = o.items || [], head = 'طلب رقم #' + o.id + (o.name ? ' - ' + o.name : '') + (o.phone ? '\nالهاتف: ' + o.phone : '') + '\n\nالطلب:\n';
     var st = o.payment_status === 'paid' ? '✅ تم الدفع (مؤكد)' : o.payment_status === 'review' ? '💳 تم التحويل' + (o.payment_ref ? ' (المرجع: ' + o.payment_ref + ')' : '') + ' - بانتظار تأكيدكم' : '❌ لم أدفع بعد';

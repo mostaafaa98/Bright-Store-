@@ -337,7 +337,7 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   if (!lines.length || !info.name || !/^\+?\d{10,15}$/.test(info.phone) || !info.address) return fail(res, 400, 'أكمل بيانات الطلب (الاسم، رقم موبايل صحيح، العنوان)');
   let r; try { r = createOrder(req.user ? req.user.id : GUEST, lines, info, method); } catch (e) { return fail(res, 409, e.message); }
   const orows = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=? ORDER BY id').all(r.id);
-  const short = n => /^علبة برايت كوتن بارليه/.test(n) ? 'كوتون بارليه برايت' + (/متعدد/.test(n) ? ' - متعدد الدرجات' : '') : n;
+  const short = n => n;
   const cell = x => String(x == null || x === '' ? '-' : x).replace(/\|/g, '/');
   const head = `طلب جديد من برايت للخيوط\n\nبيانات العميل:\n- الاسم: ${info.name}\n- الهاتف الأساسي: ${info.phone}\n- العنوان: ${[info.area, info.governorate].filter(Boolean).join('-')}\n${info.address}\n- طريقة الدفع: ${{ wallet: 'فودافون كاش', instapay: 'إنستا باي' }[method]}\n- المبلغ: ${egpAr(r.total)}${info.note ? '\n- ملاحظة: ' + info.note : ''}\n\nتفاصيل الطلب:\n\n| الصنف | الكود | الكمية |\n|-------|--------|---------|`;
   const trs = orows.map(i => `| ${cell(short(i.name))} | ${cell(i.color)} | ${i.qty} |`);
