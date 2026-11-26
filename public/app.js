@@ -31,6 +31,8 @@
   }
   function cl(c) { return c ? (c.name ? c.code + ' - ' + c.name : c.code) : ''; }
   function cbg(c) { return c ? 'background:' + c.hex + (c.t ? ' url(' + c.t + ') center/cover' : '') : ''; }
+  function avail(p) { return p.color_ids.filter(function (id) { var c = color(id); return !(c && c.oos); }).length; }
+  function capOf(p, c) { return c && c.mx != null && (p.unit !== 'كيلو' || c.line === 'linen') ? c.mx : null; }
   function color(id) { return S.colors.filter(function (c) { return c.id === Number(id); })[0]; }
   function unitPrice(p, q) { return q >= S.cfg.wholeMin ? p.p_whole : q >= S.cfg.halfMin ? p.p_half : p.p_retail; }
   function saveCart() { localStorage.setItem('cart', JSON.stringify(S.cart)); nav(); }
@@ -132,7 +134,7 @@
   }
   function card(p) {
     var sp = [p.spec_weight, p.spec_length].filter(Boolean).join(' • '), cc = cardCols(p), rep = cc.length ? cc[Math.floor(cc.length / 2)] : null;
-    return '<article class="card" tabindex="0" data-act="open" data-id="' + p.id + '"><div class="img' + (rep ? ' col' : '') + '" style="' + (rep ? bg(rep.img) : bg(p.images[0])) + '"' + (rep ? ' data-base="' + esc(rep.img) + '" data-cyc="' + cc.map(function (c) { return c.img; }).join(' ') + '"' : '') + ' role="img" aria-label="' + esc(p.name) + '">' + (p.has_colors ? '<span class="bd">' + p.color_ids.length + ' لون</span>' : '') + '</div><div class="cb"><div class="cat">' + esc(p.category) + (p.has_colors ? ' — ' + p.color_ids.length + ' لون' : '') + '</div><h3>' + esc(p.name) + '</h3><div class="sp">' + esc(sp) + '</div><div class="pr"><b>' + egp(p.p_retail) + '</b><span>/ ' + esc(p.unit) + '</span></div>' + ladder(p) + '<span class="cta">' + (p.has_colors ? 'اختر اللون والكمية' : 'اختر الكمية') + '</span></div></article>';
+    return '<article class="card" tabindex="0" data-act="open" data-id="' + p.id + '"><div class="img' + (rep ? ' col' : '') + '" style="' + (rep ? bg(rep.img) : bg(p.images[0])) + '"' + (rep ? ' data-base="' + esc(rep.img) + '" data-cyc="' + cc.map(function (c) { return c.img; }).join(' ') + '"' : '') + ' role="img" aria-label="' + esc(p.name) + '">' + (p.has_colors ? '<span class="bd">' + avail(p) + ' لون</span>' : '') + '</div><div class="cb"><div class="cat">' + esc(p.category) + (p.has_colors ? ' — ' + avail(p) + ' لون' : '') + '</div><h3>' + esc(p.name) + '</h3><div class="sp">' + esc(sp) + '</div><div class="pr"><b>' + egp(p.p_retail) + '</b><span>/ ' + esc(p.unit) + '</span></div>' + ladder(p) + '<span class="cta">' + (p.has_colors ? 'اختر اللون والكمية' : 'اختر الكمية') + '</span></div></article>';
   }
   function shop() {
     var q = $('#q').value.trim().toLowerCase(), cats = [], count = {}, cimg = {};
@@ -191,9 +193,9 @@
   }
   function mColors() {
     var sw = $('#sw'); if (!sw) return; var q = M.q.toLowerCase();
-    var vis = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }); M.vis = vis.map(function (c) { return c.id; });
+    var vis = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }); vis.sort(function (a, b) { return (a.oos ? 1 : 0) - (b.oos ? 1 : 0); }); M.vis = vis.filter(function (c) { return !c.oos; }).map(function (c) { return c.id; });
     sw.innerHTML = vis.map(function (c) {
-      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + '" data-act="pick" data-id="' + c.id + '">' + (n ? '<em>' + n + '</em>' : '') + '<i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '</div>';
+      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + (c.oos ? ' oos' : '') + '"' + (c.oos ? ' aria-disabled="true"' : ' data-act="pick" data-id="' + c.id + '"') + '>' + (n ? '<em>' + n + '</em>' : '') + '<i' + (c.t ? '' : ' class="ph"') + ' style="' + esc(cbg(c)) + '">' + (c.t ? '' : esc(c.code)) + '</i>' + esc(c.code) + '<br>' + (c.oos ? '<span class="ox">غير متوفر</span>' : esc(c.name)) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
   function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '" aria-label="إنقاص">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" aria-label="الكمية"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '" aria-label="زيادة">+</button></span>'; }
@@ -205,7 +207,7 @@
     $('#tt').innerHTML = tiersTable(p, q);
     $('#ms').innerHTML = '<div style="padding:0 18px">' + lines + (n && q ? '<div class="nudge">' + esc(n) + '</div>' : '') + '</div><div class="sbar"><div class="tot" style="padding:0 0 8px"><span>' + q + ' ' + esc(p.unit) + ' × ' + egp(u) + '</span><span>' + egp(u * q) + '</span></div><button class="blk lg" data-act="addcart"' + (q ? '' : ' disabled') + '>' + (q ? 'أضف إلى السلة' : (p.has_colors ? 'اختر لوناً وكمية' : 'حدّد الكمية')) + '</button></div>';
   }
-  function setSel(k, n) { n = Math.max(0, Math.min(100000, parseInt(n, 10) || 0)); if (n) M.sel[k] = n; else delete M.sel[k]; mSel(); mColors(); }
+  function setSel(k, n) { n = Math.max(0, Math.min(100000, parseInt(n, 10) || 0)); var cp = M.p.has_colors ? capOf(M.p, color(k)) : null; if (cp != null && n > cp) { n = cp; toast('الكمية المطلوبة أكبر من المتاح لهذا اللون'); } if (n) M.sel[k] = n; else delete M.sel[k]; mSel(); mColors(); }
 
   // ---------- السلة والطلب (بدون حساب) ----------
   function coSummary() {

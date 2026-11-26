@@ -146,3 +146,6 @@ html[dir=ltr] body,html[dir=ltr] .card *,html[dir=ltr] .tile *,html[dir=ltr] .sh
 .wa{background:#25D366!important;color:#fff;width:54px!important;height:54px!important;font-size:0;display:flex;align-items:center;justify-content:center;bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;inset-inline-start:14px!important;inset-inline-end:auto!important}
 .wa svg{width:30px!important;height:30px!important}
 .card>.img:after{display:none!important;content:none!important}
+.s.oos{opacity:.5;filter:grayscale(.85);pointer-events:none}
+.s .ox{font-size:10px;color:#9a4a3a;font-weight:600}
+.s i.ph,.cimg.ph{display:flex;align-items:center;justify-content:center;background:#efe9db!important;border:1.5px dashed #b9a98a;color:#6e5f45;font-style:normal;font-size:10px;font-weight:700;letter-spacing:0;line-height:1.1;text-align:center;overflow:hidden;word-break:break-all;padding:2px}

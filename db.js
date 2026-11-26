@@ -110,6 +110,31 @@ flag('seed_real_colors', () => {
     for (const k of Object.keys(ids)) if (k.startsWith(l.line + '|') && ids[k].g === l.ginga) link.run(p.id, ids[k].id);
   }
 });
+
+// رصيد الألوان من ملفات الجرد (seed/stock.json): الرصيد لكل لون، وإضافة الأكواد التي بلا صور
+if (!db.prepare("SELECT 1 FROM pragma_table_info('colors') WHERE name='stock'").get()) db.exec('ALTER TABLE colors ADD COLUMN stock INTEGER');
+flag('mig_color_stock_1', () => {
+  const fs = require('fs'), path = require('path'), f = path.join(__dirname, 'seed', 'stock.json');
+  if (!fs.existsSync(f)) return;
+  const S = JSON.parse(fs.readFileSync(f, 'utf8')), M = JSON.parse(fs.readFileSync(path.join(__dirname, 'seed', 'colors.json'), 'utf8'));
+  const norm = x => String(x).replace(/[\s-]+/g, '').toUpperCase();
+  const lines = [...new Set(S.map(r => r.line))], seen = new Set();
+  const all = db.prepare('SELECT id,code,line FROM colors').all(), idx = {};
+  all.forEach(c => { idx[c.line + '|' + norm(c.code)] = c.id; });
+  const insC = db.prepare("INSERT INTO colors(code,line,name,hex,active,stock) VALUES(?,?,'','#e6dfd0',1,?)"), setS = db.prepare('UPDATE colors SET stock=?,active=1 WHERE id=?');
+  const link = db.prepare('INSERT OR IGNORE INTO product_colors(product_id,color_id) VALUES(?,?)'), prod = db.prepare('SELECT id FROM products WHERE name=?');
+  for (const r of S) {
+    const k = r.line + '|' + norm(r.code); let id = idx[k];
+    if (id) setS.run(r.stock, id);
+    else {
+      id = Number(insC.run(r.code, r.line, r.stock).lastInsertRowid); idx[k] = id;
+      for (const l of M.links) if (l.line === r.line && l.ginga === !!r.ginga) { const p = prod.get(l.product); if (p) link.run(p.id, id); }
+    }
+    seen.add(id);
+  }
+  // ألوان في الموقع غير موجودة في الملف: تظهر "غير متوفر"
+  for (const c of all) if (lines.includes(c.line) && !seen.has(c.id)) setS.run(0, c.id);
+});
 // مواصفات المنتجات من كتالوج برايت
 flag('mig_specs', () => {
   const S = { // الوزن | العدد | الطول | الخامة | المقاس | الاستخدام

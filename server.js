@@ -86,9 +86,9 @@ app.get('/api/config', (req, res) => {
 });
 app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
 app.get('/api/colors', (req, res) => {
-  const rows = db.prepare('SELECT id,code,line,name,hex,(thumb IS NOT NULL) AS has_img FROM colors WHERE active=1').all()
+  const rows = db.prepare('SELECT id,code,line,name,hex,stock,(thumb IS NOT NULL) AS has_img FROM colors WHERE active=1').all()
     .sort((a, b) => a.line.localeCompare(b.line) || a.code.localeCompare(b.code, 'en', { numeric: true }));
-  res.json(rows.map(({ has_img, ...c }) => has_img ? { ...c, t: '/api/color-img/' + c.id + '?t=1', img: '/api/color-img/' + c.id } : c));
+  res.json(rows.map(({ has_img, stock, ...c }) => (c = { ...c, oos: stock !== null && stock <= 0, mx: stock === null ? null : Math.floor(stock) }, has_img) ? { ...c, t: '/api/color-img/' + c.id + '?t=1', img: '/api/color-img/' + c.id } : c));
 });
 app.get('/api/color-img/:id', (req, res) => {
   const c = db.prepare('SELECT image,thumb FROM colors WHERE id=?').get(Number(req.params.id));
@@ -240,7 +240,7 @@ app.get('/api/admin/backup', auth, admin, wrap(async (req, res) => {
 // ---------- Orders ----------
 const withItems = o => { const { token, ...r } = o; return { ...r, items: db.prepare('SELECT name,color,qty,price_cents FROM order_items WHERE order_id=?').all(o.id) }; };
 const createOrder = db.transaction((uid, lines, info, method) => {
-  const s = settings(), groups = new Map();
+  const s = settings(), groups = new Map(), cq = {};
   for (const l of lines) {
     const p = db.prepare('SELECT * FROM products WHERE id=? AND active=1 AND hidden=0').get(l.id);
     if (!p) throw new Error('منتج غير متاح حالياً');
@@ -249,6 +249,10 @@ const createOrder = db.transaction((uid, lines, info, method) => {
       const c = db.prepare('SELECT c.* FROM colors c JOIN product_colors pc ON pc.color_id=c.id WHERE c.id=? AND pc.product_id=? AND c.active=1').get(l.color, p.id);
       if (!c) throw new Error('اللون غير متاح لهذا المنتج: ' + p.name);
       color = c.name ? `${c.code} - ${c.name}` : c.code;
+      if (c.stock !== null) {
+        if (c.stock <= 0) throw new Error('اللون غير متوفر حالياً: ' + c.code + ' (' + p.name + ')');
+        if (p.unit !== 'كيلو' || c.line === 'linen') { cq[c.id] = (cq[c.id] || 0) + l.qty; if (cq[c.id] > c.stock) throw new Error('الكمية المطلوبة غير متوفرة للون ' + c.code + ' (' + p.name + ')'); }
+      }
     }
     const g = groups.get(p.id) || { p, q: 0, items: [] };
     g.q += l.qty; g.items.push([color, l.qty]); groups.set(p.id, g);
