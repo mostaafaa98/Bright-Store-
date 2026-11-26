@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS zones(name TEXT PRIMARY KEY, fee_cents INTEGER NOT NU
 CREATE TABLE IF NOT EXISTS audit_log(id INTEGER PRIMARY KEY, at TEXT DEFAULT CURRENT_TIMESTAMP, who TEXT, action TEXT, product_id INTEGER, product TEXT, detail TEXT);
 CREATE INDEX IF NOT EXISTS idx_audit_at ON audit_log(id DESC);
 `);
+db.exec(`CREATE TABLE IF NOT EXISTS color_alerts(id INTEGER PRIMARY KEY, color_id INTEGER NOT NULL REFERENCES colors(id) ON DELETE CASCADE, product_id INTEGER, name TEXT NOT NULL, phone TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP, notified INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS idx_calert_color ON color_alerts(color_id, notified);`);
 const hasCol = (t, c) => db.prepare(`PRAGMA table_info(${t})`).all().some(x => x.name === c);
 const addCol = (t, c, d) => { if (!hasCol(t, c)) db.exec(`ALTER TABLE ${t} ADD COLUMN ${c} ${d}`); };
 ['spec_weight', 'spec_count', 'spec_length', 'spec_material', 'spec_size', 'spec_usage'].forEach(c => addCol('products', c, "TEXT NOT NULL DEFAULT ''"));

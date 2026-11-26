@@ -31,7 +31,7 @@
   });
   function card(it) {
     return '<div class="ai-c"><img src="/api/color-img/' + it.cid + '?t=1" alt="' + esc(it.code) + '" loading="lazy"><div class="ai-ct"><b>' + esc(it.code) + '</b><span>' + esc(it.product) + '</span><em class="' + (it.ok ? 'ok' : 'no') + '">' + (it.ok ? T.ok : T.no) + '</em></div>' +
-      (it.ok ? '<div class="ai-q"><label>' + T.qty + ' (' + esc(it.unit) + ')</label><div><input type="number" inputmode="numeric" min="1" value="1" aria-label="' + T.qty + '"><button type="button" data-add="' + it.pid + ':' + it.cid + '">' + T.add + '</button></div></div>' : '') + '</div>';
+      (it.ok ? '<div class="ai-q"><label>' + T.qty + ' (' + esc(it.unit) + ')</label><div><input type="number" inputmode="numeric" min="1" value="1" aria-label="' + T.qty + '"><button type="button" data-add="' + it.pid + ':' + it.cid + '">' + T.add + '</button></div><button type="button" class="pl-add" data-pal="' + it.pid + ':' + it.cid + '">' + (window.BRico || '') + ' ' + (en ? 'Add to palette' : 'أضف للوحة') + '</button></div>' : '<div class="ai-q"><button type="button" class="pl-add miss" data-miss="' + it.pid + ':' + it.cid + '">' + (en ? 'Alternatives / notify me' : 'بدائل / ابلغني لما يرجع') + '</button></div>') + '</div>';
   }
   window.BRcard = card;
   function send(t) {

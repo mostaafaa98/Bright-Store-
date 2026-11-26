@@ -202,7 +202,7 @@
     var sw = $('#sw'); if (!sw) return; var q = M.q.toLowerCase();
     var vis = S.colors.filter(function (c) { return M.p.color_ids.indexOf(c.id) > -1 && (!q || (c.name + ' ' + c.code).toLowerCase().indexOf(q) > -1); }); vis.sort(function (a, b) { return (a.oos ? 1 : 0) - (b.oos ? 1 : 0); }); M.vis = vis.filter(function (c) { return !c.oos; }).map(function (c) { return c.id; });
     sw.innerHTML = vis.map(function (c) {
-      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + (c.oos ? ' oos' : '') + '"' + (c.oos ? ' aria-disabled="true"' : ' data-act="pick" data-id="' + c.id + '"') + '>' + (c.t && !c.oos ? '<button type="button" class="zb" data-act="zoomc" data-id="' + c.id + '" aria-label="تكبير الصورة">⤢</button>' : '') + '<i' + (c.t ? '' : ' class="ph"') + ' style="' + esc(cbg(c)) + '">' + (c.t ? '' : esc(c.code)) + '</i><span class="cd">' + esc(c.code) + '</span>' + (c.oos ? '<span class="ox">غير متوفر</span>' : (n ? '<span class="mini"><button type="button" data-act="mdec" data-k="' + c.id + '" aria-label="إنقاص">−</button><b>' + n + '</b><button type="button" data-act="minc" data-k="' + c.id + '" aria-label="زيادة">+</button></span>' : (c.name ? '<span class="cn">' + esc(c.name) + '</span>' : ''))) + '</div>';
+      var n = M.sel[c.id] || 0; return '<div class="s' + (n ? ' on' : '') + (c.oos ? ' oos' : '') + '"' + (c.oos ? ' data-miss="' + M.p.id + ':' + c.id + '" role="button"' : ' data-act="pick" data-id="' + c.id + '"') + '>' + (c.t && !c.oos ? '<button type="button" class="zb" data-act="zoomc" data-id="' + c.id + '" aria-label="تكبير الصورة">⤢</button>' : '') + (!c.oos ? '<button type="button" class="pb' + (window.BRpal && window.BRpal.has(M.p.id, c.id) ? ' on' : '') + '" data-pal="' + M.p.id + ':' + c.id + '" aria-label="لوحة الألوان">' + (window.BRico || '+') + '</button>' : '') + '<i' + (c.t ? '' : ' class="ph"') + ' style="' + esc(cbg(c)) + '">' + (c.t ? '' : esc(c.code)) + '</i><span class="cd">' + esc(c.code) + '</span>' + (c.oos ? '<span class="ox">غير متوفر ›</span>' : (n ? '<span class="mini"><button type="button" data-act="mdec" data-k="' + c.id + '" aria-label="إنقاص">−</button><b>' + n + '</b><button type="button" data-act="minc" data-k="' + c.id + '" aria-label="زيادة">+</button></span>' : (c.name ? '<span class="cn">' + esc(c.name) + '</span>' : ''))) + '</div>';
     }).join('') || '<span class="mut">لا توجد ألوان مطابقة.</span>';
   }
   function step(kind, key, n) { return '<span class="step"><button class="g sm" data-act="' + kind + 'dec" data-k="' + esc(key) + '" aria-label="إنقاص">−</button><input type="number" min="0" value="' + n + '" data-act="' + kind + 'set" data-k="' + esc(key) + '" aria-label="الكمية"><button class="g sm" data-act="' + kind + 'inc" data-k="' + esc(key) + '" aria-label="زيادة">+</button></span>'; }
@@ -222,6 +222,7 @@
     $('#sum').innerHTML = '<div class="tot"><span>الإجمالي</span><span>' + egp(sub) + '</span></div><div class="mut"><span>المبلغ لا يشمل الشحن. تتواصل معك شركة الشحن لتحديده.</span></div>';
   }
   function tierName(g) { return g.q >= S.cfg.wholeMin ? 'سعر الجملة' : g.q >= S.cfg.halfMin ? 'سعر نصف الجملة' : 'سعر القطاعي'; }
+  window.BRrefresh = function () { if (M && $('#sw')) mColors(); };
   window.BRdata = function () { return { products: S.products || [], colors: S.colors || [] }; };
   window.BRadd = function (pid, cid, q) {
     q = Math.max(1, Math.floor(Number(q) || 1)); var k = pid + ':' + cid, n = (S.cart[k] || 0) + q, cp = capOf(prod(pid), color(cid));
@@ -349,9 +350,13 @@
     });
   }
   function aColors(b) {
-    api('/colors').then(function (cs) {
-      S.colors = cs;
-      b.innerHTML = '<form class="panel" id="cf"><h3>استيراد / تحديث الألوان</h3><p class="mut">سطر لكل لون: <b>الكود , الاسم , #لون</b> — مثال: 205, أزرق ملكي, #1f3a93. الكود الموجود يتم تحديثه.</p><textarea name="text" style="min-height:140px;direction:ltr" placeholder="205,أزرق ملكي,#1f3a93"></textarea><label><input type="checkbox" name="addToAll" style="width:auto" checked> إضافة الألوان الجديدة لكل المنتجات ذات الألوان (يمكن تخصيصها لاحقاً لكل منتج)</label><p id="m"></p><button>استيراد</button></form>' +
+    Promise.all([api('/colors'), api('/admin/color-alerts').catch(function () { return []; })]).then(function (rs) {
+      var cs = rs[0], al = rs[1]; S.colors = cs;
+      var alp = '<div class="panel scroll"><h3>طلبات "أبلغني عند التوفر" (' + al.filter(function (x) { return !x.notified; }).length + ' منتظر)</h3>' + (al.length ? '<table><tr><th>اللون</th><th>العميل</th><th>الرصيد</th><th></th></tr>' + al.map(function (x) {
+        var inS = x.stock === null || x.stock > 0;
+        return '<tr><td><b>' + esc(x.code) + '</b><br><span class="mut">' + esc(x.product || '') + '</span></td><td>' + esc(x.name) + '<br><span class="mut" dir="ltr">' + esc(x.phone) + '</span><br><span class="mut">' + esc(x.created_at) + '</span></td><td>' + (x.notified ? '✅ تم الإخطار' : inS ? 'متوفر' : '<input type="number" min="0" placeholder="الرصيد" style="width:80px" id="cas' + x.id + '"> <button type="button" class="g sm" data-act="castock" data-id="' + x.id + '" data-c="' + x.color_id + '">توفر</button>') + '</td><td><button type="button" class="g sm" data-act="cadel" data-id="' + x.id + '">حذف</button></td></tr>';
+      }).join('') + '</table>' : '<p class="mut">لا توجد طلبات.</p>') + '</div>';
+      b.innerHTML = alp + '<form class="panel" id="cf"><h3>استيراد / تحديث الألوان</h3><p class="mut">سطر لكل لون: <b>الكود , الاسم , #لون</b> — مثال: 205, أزرق ملكي, #1f3a93. الكود الموجود يتم تحديثه.</p><textarea name="text" style="min-height:140px;direction:ltr" placeholder="205,أزرق ملكي,#1f3a93"></textarea><label><input type="checkbox" name="addToAll" style="width:auto" checked> إضافة الألوان الجديدة لكل المنتجات ذات الألوان (يمكن تخصيصها لاحقاً لكل منتج)</label><p id="m"></p><button>استيراد</button></form>' +
         '<div class="panel"><h3>كل الألوان (' + cs.length + ')</h3><div class="sw" style="max-height:none">' + cs.map(function (c) { return '<div class="s"><i style="' + esc(cbg(c)) + '"></i>' + esc(c.code) + '<br>' + esc(c.name) + '<br><button class="g sm" data-act="delcolor" data-id="' + c.id + '">حذف</button></div>'; }).join('') + '</div></div>';
     });
   }
@@ -520,6 +525,8 @@
     else if (a === 'canceledit') { S.edit = null; S.pcInit = false; aProducts($('#abody')); }
     else if (a === 'hide') api('/admin/products/' + id + '/hidden', { method: 'PATCH', body: { hidden: t.dataset.v === '1' } }).then(function () { toast(t.dataset.v === '1' ? 'تم إيقاف المنتج مؤقتاً' : 'تم تفعيل المنتج'); reAdmin(); });
     else if (a === 'del' && confirm('حذف المنتج؟ (يمكنك بدلاً من ذلك إيقافه مؤقتاً)')) api('/admin/products/' + id, { method: 'DELETE' }).then(reAdmin);
+    else if (a === 'castock') { var cv = $('#cas' + id); api('/admin/colors/' + t.dataset.c + '/stock', { method: 'PATCH', body: { stock: cv ? cv.value : '' } }).then(function () { toast('تم تحديث الرصيد وإشعار تيليجرام'); aColors($('#abody')); }).catch(function (x) { toast(x.message || 'خطأ'); }); }
+    else if (a === 'cadel') api('/admin/color-alerts/' + id, { method: 'DELETE' }).then(function () { aColors($('#abody')); });
     else if (a === 'delcolor') api('/admin/colors/' + id, { method: 'DELETE' }).then(function () { aColors($('#abody')); });
     else if (a === 'pcol') { S.pc[id] = !S.pc[id]; renderPC(); }
     else if (a === 'pcall') { S.colors.forEach(function (c) { S.pc[c.id] = true; }); renderPC(); }

@@ -144,6 +144,7 @@
     im.src = url; e.target.value = '';
   });
 
+  window.BRcolor = { lab: function (h) { var r = hex2rgb(h); return r ? rgb2lab(r[0], r[1], r[2]) : null; }, de00: de00 };
   window.BRmatch = { open: open, close: close };
   // entry point in the header search bar
   var s = document.querySelector('.search');

@@ -144,6 +144,40 @@ app.get('/api/config', (req, res) => {
     zones: db.prepare('SELECT name FROM zones WHERE active=1 ORDER BY sort').all(),
     wallet: { number: s.wallet_number, name: s.wallet_name }, instapay: { number: s.instapay_number, handle: s.instapay_handle, qr: s.instapay_qr, link: /^https:\/\/ipn\.eg\//.test(s.instapay_link || '') ? s.instapay_link : '' } });
 });
+
+// ---------- "أبلغني عند التوفر": طلبات انتظار اللون ----------
+const alertLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 12, standardHeaders: true, legacyHeaders: false });
+app.post('/api/color-alerts', alertLimiter, wrap((req, res) => {
+  const b = req.body || {}, name = str(b.name, 60), phone = str(b.phone, 25).replace(/[\s\-()]/g, ''), cid = Number(b.color), pid = Number(b.product) || null;
+  if (name.length < 2) return fail(res, 400, 'اكتب اسمك');
+  if (!/^\+?\d{8,15}$/.test(phone)) return fail(res, 400, 'رقم الموبايل غير صحيح');
+  const c = db.prepare('SELECT id,code,stock FROM colors WHERE id=? AND active=1').get(cid);
+  if (!c) return fail(res, 404, 'اللون غير موجود');
+  if (c.stock === null || c.stock > 0) return res.json({ ok: true, available: true });
+  if (!db.prepare('SELECT 1 FROM color_alerts WHERE color_id=? AND phone=? AND notified=0').get(cid, phone))
+    db.prepare('INSERT INTO color_alerts(color_id,product_id,name,phone) VALUES(?,?,?,?)').run(cid, pid, name, phone);
+  res.json({ ok: true });
+}));
+async function sweepAlerts() {
+  const rows = db.prepare("SELECT a.id,a.name,a.phone,a.color_id,c.code,p.name pname FROM color_alerts a JOIN colors c ON c.id=a.color_id LEFT JOIN products p ON p.id=a.product_id WHERE a.notified=0 AND c.active=1 AND (c.stock IS NULL OR c.stock>0) ORDER BY a.id").all();
+  const by = {}; rows.forEach(r => (by[r.color_id] = by[r.color_id] || []).push(r));
+  for (const g of Object.values(by)) {
+    const t = `🔔 رجع للمخزون: لون ${g[0].code}${g[0].pname ? ' (' + g[0].pname + ')' : ''}\nعملاء منتظرين (${g.length}):\n` + g.map(r => `• ${r.name} - ${r.phone}`).join('\n');
+    if (await notify(t)) g.forEach(r => db.prepare('UPDATE color_alerts SET notified=1 WHERE id=?').run(r.id));
+  }
+}
+setInterval(() => sweepAlerts().catch(e => console.error('sweep', e.message)), 120000).unref();
+app.get('/api/admin/color-alerts', auth, can('colors'), (req, res) => res.json(db.prepare("SELECT a.id,a.color_id,a.name,a.phone,a.notified,a.created_at,c.code,c.line,c.stock,p.name product FROM color_alerts a JOIN colors c ON c.id=a.color_id LEFT JOIN products p ON p.id=a.product_id ORDER BY a.notified, a.id DESC LIMIT 200").all()));
+app.delete('/api/admin/color-alerts/:id', auth, can('colors'), (req, res) => { db.prepare('DELETE FROM color_alerts WHERE id=?').run(Number(req.params.id)); res.json({ ok: true }); });
+app.patch('/api/admin/colors/:id/stock', auth, can('colors'), wrap((req, res) => {
+  const id = Number(req.params.id), c = db.prepare('SELECT id,code,stock FROM colors WHERE id=?').get(id), v = req.body.stock;
+  if (!c) return fail(res, 404, 'غير موجود');
+  const n = v === '' || v == null ? null : Number(v);
+  if (n !== null && (!Number.isInteger(n) || n < 0)) return fail(res, 400, 'رصيد غير صحيح');
+  db.prepare('UPDATE colors SET stock=? WHERE id=?').run(n, id);
+  audit(req.user.name, 'stock', { id: 0, name: 'لون ' + c.code }, `${c.stock == null ? '∞' : c.stock} → ${n == null ? '∞' : n} (رصيد لون)`);
+  sweepAlerts().catch(() => {}); res.json({ ok: true });
+}));
 app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
 app.get('/api/colors', (req, res) => {
   const rows = db.prepare('SELECT id,code,line,name,hex,stock,(thumb IS NOT NULL) AS has_img FROM colors WHERE active=1').all()
