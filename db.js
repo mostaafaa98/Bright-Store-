@@ -211,3 +211,9 @@ flag('mig_rename_ginga_1', () => {
   ], up = db.prepare('UPDATE products SET name=? WHERE name=?'), oi = db.prepare('UPDATE order_items SET name=? WHERE 0');
   for (const [a, b] of ren) up.run(b, a);
 });
+
+flag('mig_rename_ginga_2', () => {
+  const up = db.prepare('UPDATE products SET name=? WHERE name=?');
+  up.run('شلات كروشية بلس 100 جم - جنجاه', 'شلات كروشيه 100 جم - جنجاه');
+  up.run('علبة مالونيه', 'علبة شلات مالونيه (خيوط تطريز)');
+});
