@@ -143,3 +143,6 @@ footer a,.fsoc a{color:#E9DDC4}footer small{color:#9C8F78}
 .sw .s em{inset-inline-end:6px!important;inset-inline-start:auto!important}
 .line b{white-space:nowrap}
 html[dir=ltr] body,html[dir=ltr] .card *,html[dir=ltr] .tile *,html[dir=ltr] .sheet *,html[dir=ltr] #nav *{letter-spacing:0!important}
+.wa{background:#25D366!important;color:#fff;width:54px!important;height:54px!important;font-size:0;display:flex;align-items:center;justify-content:center;bottom:calc(86px + env(safe-area-inset-bottom,0px))!important;inset-inline-start:14px!important;inset-inline-end:auto!important}
+.wa svg{width:30px!important;height:30px!important}
+.card>.img:after{display:none!important;content:none!important}

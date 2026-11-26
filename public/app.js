@@ -146,7 +146,7 @@
     if (!filtering) {
       var ims = cats.map(function (k) { return cimg[k]; }).filter(Boolean).slice(0, 3);
       h += '' +
-        '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div><div>' + ic('tag') + '<p style="margin:0"><b>سعر الجملة تلقائياً</b><span>نصف جملة من ' + c.halfMin + '، جملة من ' + c.wholeMin + '</span></p></div><div>' + ic('truck') + '<p style="margin:0"><b>نوصّل لكل المحافظات</b><span>نتواصل معك لتأكيد الطلب</span></p></div></section>';
+        '<section class="trust"><div>' + ic('leaf') + '<p style="margin:0"><b>قطن مصري 100%</b><span>محرر لنعومة ولمعان</span></p></div><div>' + ic('drop') + '<p style="margin:0"><b>ألوان ثابتة</b><span>صبغات أوروبية عالية الجودة</span></p></div></section>';
     }
     if (S.colors.length && S.colors.length < 80) {
       var cn = S.colorF && color(S.colorF);
@@ -531,7 +531,7 @@
   }
   app.innerHTML = '<div class="grid">' + new Array(8).join('<div class="sk"></div>') + '</div>';
   Promise.all([
-    api('/config').then(function (c) { S.cfg = c; $('#shopname').textContent = c.shop; document.title = c.shop + ' — متجر الجملة والقطاعي'; footer(); if (c.whatsapp) { var w = $('#wa'); w.href = 'https://wa.me/' + c.whatsapp; w.innerHTML = ic('chat') + ' واتساب'; w.hidden = false; } }),
+    api('/config').then(function (c) { S.cfg = c; $('#shopname').textContent = c.shop; document.title = c.shop + ' — متجر الجملة والقطاعي'; footer(); if (c.whatsapp) { var w = $('#wa'); w.href = 'https://wa.me/' + c.whatsapp; w.innerHTML = SI.wa; w.hidden = false; } }),
     api('/products').then(function (p) { S.products = p; window.BR = { products: p }; }), api('/colors').then(function (c) { S.colors = c; }),
     S.token ? api('/me').then(function (r) { S.user = r.user; }).catch(function () {}) : 0
   ]).then(function () { nav(); route(); }).catch(function (e) { app.textContent = 'تعذر تحميل المتجر: ' + e.message; });
