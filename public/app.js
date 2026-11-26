@@ -163,7 +163,6 @@
     h += '<section id="products"><div class="sec"><h2>المنتجات</h2><span class="mut">' + list.length + ' منتج</span></div><div class="tiles">' +
       '<button class="tile' + (!S.cat ? ' on' : '') + '" data-act="tile" data-v=""><b>الكل</b></button>' + cats.map(function (k) { return '<button class="tile' + (S.cat === k ? ' on' : '') + '" data-act="tile" data-v="' + esc(k) + '"><i style="' + bg(cimg[k]) + '"></i><span>' + esc(k) + '<small>' + count[k] + ' منتج</small></span></button>'; }).join('') + '</div><div class="grid" style="margin-top:14px">' +
       (list.length ? list.map(card).join('') : cres.length ? '' : '<div class="panel" style="grid-column:1/-1;text-align:center"><h3>لا توجد منتجات مطابقة</h3><p class="mut">جرّب كلمة بحث أخرى، أو امسح الفلاتر لعرض كل المنتجات.</p><button data-act="clear">مسح الفلاتر</button></div>') + '</div></section>';
-    if (!filtering) h += '<section class="hero hero-end">' + socials() + wall() + '</section>';
     app.innerHTML = h;
   }
   var M = null, cyc = null;
