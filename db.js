@@ -48,6 +48,8 @@ addCol('products', 'hidden', 'INTEGER NOT NULL DEFAULT 0');
 addCol('orders', 'governorate', "TEXT NOT NULL DEFAULT ''");
 addCol('orders', 'area', "TEXT NOT NULL DEFAULT ''");
 addCol('orders', 'shipping_cents', 'INTEGER NOT NULL DEFAULT 0');
+addCol('order_items', 'color_id', 'INTEGER');
+addCol('order_items', 'color_dec', 'INTEGER NOT NULL DEFAULT 0');
 addCol('orders', 'token', "TEXT NOT NULL DEFAULT ''");
 
 const defaults = { shop_name: 'برايت للخيوط', half_min: '50', whole_min: '100', wallet_number: '01030869840', wallet_name: 'Mustafa Mahmoud Hanafy',

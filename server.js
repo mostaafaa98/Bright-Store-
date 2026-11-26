@@ -138,6 +138,7 @@ app.post('/api/assistant', chatLimiter, wrap(async (req, res) => {
   if (!m.length || m[m.length - 1].role !== 'user' || !m[m.length - 1].content.trim()) return fail(res, 400, 'اكتب سؤالك');
   res.json(await assistantReply(m));
 }));
+app.get(['/healthz', '/api/health'], (req, res) => res.type('text').send('ok'));
 app.get('/api/config', (req, res) => {
   const s = settings();
   res.json({ shop: s.shop_name, halfMin: +s.half_min, wholeMin: +s.whole_min, whatsapp: s.whatsapp_number,
@@ -178,11 +179,11 @@ app.patch('/api/admin/colors/:id/stock', auth, can('colors'), wrap((req, res) =>
   audit(req.user.name, 'stock', { id: 0, name: 'لون ' + c.code }, `${c.stock == null ? '∞' : c.stock} → ${n == null ? '∞' : n} (رصيد لون)`);
   sweepAlerts().catch(() => {}); res.json({ ok: true });
 }));
-app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0')));
+app.get('/api/products', (req, res) => res.json(catalog('active=1 AND hidden=0').map(({ stock, ...p }) => ({ ...p, oos: stock !== null && stock <= 0 }))));
 app.get('/api/colors', (req, res) => {
   const rows = db.prepare('SELECT id,code,line,name,hex,stock,(thumb IS NOT NULL) AS has_img FROM colors WHERE active=1').all()
     .sort((a, b) => a.line.localeCompare(b.line) || a.code.localeCompare(b.code, 'en', { numeric: true }));
-  res.json(rows.map(({ has_img, stock, ...c }) => (c = { ...c, oos: stock !== null && stock <= 0, mx: stock === null ? null : Math.floor(stock) }, has_img) ? { ...c, t: '/api/color-img/' + c.id + '?t=1', img: '/api/color-img/' + c.id } : c));
+  res.json(rows.map(({ has_img, stock, ...c }) => (c = { ...c, oos: stock !== null && stock <= 0 }, has_img) ? { ...c, t: '/api/color-img/' + c.id + '?t=1', img: '/api/color-img/' + c.id } : c));
 });
 app.get('/api/color-img/:id', (req, res) => {
   const c = db.prepare('SELECT image,thumb FROM colors WHERE id=?').get(Number(req.params.id));
@@ -332,24 +333,31 @@ app.get('/api/admin/backup', auth, can('settings'), wrap(async (req, res) => {
 }));
 
 // ---------- Orders ----------
+const LOW_COLOR = 5; // تنبيه تيليجرام عندما يصل رصيد اللون إلى هذا الحد أو أقل
 const withItems = o => { const { token, ...r } = o; return { ...r, items: db.prepare('SELECT name,color,qty,price_cents FROM order_items WHERE order_id=?').all(o.id) }; };
 const createOrder = db.transaction((uid, lines, info, method) => {
-  const s = settings(), groups = new Map(), cq = {};
+  const s = settings(), groups = new Map(), cq = {}, cmeta = {}, lows = [];
   for (const l of lines) {
     const p = db.prepare('SELECT * FROM products WHERE id=? AND active=1 AND hidden=0').get(l.id);
     if (!p) throw new Error('منتج غير متاح حالياً');
-    let color = null;
+    let color = null, cid = null, dec = 0;
     if (p.has_colors) {
       const c = db.prepare('SELECT c.* FROM colors c JOIN product_colors pc ON pc.color_id=c.id WHERE c.id=? AND pc.product_id=? AND c.active=1').get(l.color, p.id);
       if (!c) throw new Error('اللون غير متاح لهذا المنتج: ' + p.name);
-      color = c.name ? `${c.code} - ${c.name}` : c.code;
+      color = c.name ? `${c.code} - ${c.name}` : c.code; cid = c.id;
       if (c.stock !== null) {
         if (c.stock <= 0) throw new Error('اللون غير متوفر حالياً: ' + c.code + ' (' + p.name + ')');
-        if (p.unit !== 'كيلو' || c.line === 'linen') { cq[c.id] = (cq[c.id] || 0) + l.qty; if (cq[c.id] > c.stock) throw new Error('الكمية المطلوبة غير متوفرة للون ' + c.code + ' (' + p.name + ')'); }
+        if (p.unit !== 'كيلو' || c.line === 'linen') { cq[c.id] = (cq[c.id] || 0) + l.qty; if (cq[c.id] > c.stock) throw new Error('الكمية المطلوبة غير متوفرة للون ' + c.code + ' (' + p.name + ')'); dec = l.qty; cmeta[c.id] = c; }
       }
     }
     const g = groups.get(p.id) || { p, q: 0, items: [] };
-    g.q += l.qty; g.items.push([color, l.qty]); groups.set(p.id, g);
+    g.q += l.qty; g.items.push([color, l.qty, cid, dec]); groups.set(p.id, g);
+  }
+  // خصم رصيد كل لون (ذري داخل نفس الترانزاكشن، ولا يسمح بالسالب)
+  for (const [id, q] of Object.entries(cq)) {
+    const c = cmeta[id]; if (!c) continue;
+    if (db.prepare('UPDATE colors SET stock=stock-? WHERE id=? AND stock>=?').run(q, id, q).changes !== 1) throw new Error('الكمية المطلوبة غير متوفرة للون ' + c.code);
+    lows.push({ id: Number(id), code: c.code, line: c.line, before: c.stock, after: c.stock - q });
   }
   let sub = 0; const rows = [], moves = [];
   for (const { p, q, items } of groups.values()) {
@@ -357,16 +365,16 @@ const createOrder = db.transaction((uid, lines, info, method) => {
       if (p.stock < q) throw new Error('الكمية غير متوفرة: ' + p.name + (p.stock ? ` (المتاح ${p.stock})` : ''));
       db.prepare('UPDATE products SET stock=stock-? WHERE id=?').run(q, p.id); moves.push([p, q]);
     }
-    const u = tier(p, q, s); sub += u * q; items.forEach(([c, n]) => rows.push([p, c, n, u]));
+    const u = tier(p, q, s); sub += u * q; items.forEach(([c, n, cid, dec]) => rows.push([p, c, n, u, cid, dec]));
   }
   const zone = db.prepare('SELECT name FROM zones WHERE name=? AND active=1').get(info.governorate);
   if (!zone) throw new Error('اختر المحافظة');
   const ship = 0, token = crypto.randomBytes(12).toString('hex');
   const oid = Number(db.prepare('INSERT INTO orders(user_id,total_cents,shipping_cents,payment_method,name,phone,governorate,area,address,note,token) VALUES(?,?,?,?,?,?,?,?,?,?,?)')
     .run(uid, sub + ship, ship, method, info.name, info.phone, info.governorate, info.area, info.address, info.note, token).lastInsertRowid);
-  rows.forEach(([p, c, n, u]) => db.prepare('INSERT INTO order_items(order_id,product_id,name,color,qty,price_cents) VALUES(?,?,?,?,?,?)').run(oid, p.id, p.name, c, n, u));
+  rows.forEach(([p, c, n, u, cid, dec]) => db.prepare('INSERT INTO order_items(order_id,product_id,name,color,qty,price_cents,color_id,color_dec) VALUES(?,?,?,?,?,?,?,?)').run(oid, p.id, p.name, c, n, u, cid, dec));
   moves.forEach(([p, q]) => audit('عميل', 'stock', p, `${p.stock} → ${p.stock - q} (طلب #${oid})`));
-  return { id: oid, sub, ship, total: sub + ship, token };
+  return { id: oid, sub, ship, total: sub + ship, token, lows };
 });
 const orderLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 25, standardHeaders: true, legacyHeaders: false });
 app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
@@ -378,6 +386,8 @@ app.post('/api/orders', orderLimiter, optAuth, wrap((req, res) => {
   if (!lines.length || !info.name || !/^\+?\d{10,15}$/.test(info.phone) || !info.address) return fail(res, 400, 'أكمل بيانات الطلب (الاسم، رقم موبايل صحيح، العنوان)');
   let r; try { r = createOrder(req.user ? req.user.id : GUEST, lines, info, method); } catch (e) { return fail(res, 409, e.message); }
   const orows = db.prepare('SELECT name,color,qty FROM order_items WHERE order_id=? ORDER BY id').all(r.id);
+  const lw = (r.lows || []).filter(x => x.after <= LOW_COLOR && x.before > LOW_COLOR || x.after <= 0 && x.before > 0);
+  if (lw.length) notify('⚠️ مخزون ألوان منخفض:\n' + lw.map(x => `• ${x.code} (${x.line || '-'}) ${x.after <= 0 ? 'نفد' : 'المتبقي ' + x.after}`).join('\n')).catch(() => {});
   const short = n => n;
   const cell = x => String(x == null || x === '' ? '-' : x).replace(/\|/g, '/');
   const head = `طلب جديد من برايت للخيوط\n\nبيانات العميل:\n- الاسم: ${info.name}\n- الهاتف الأساسي: ${info.phone}\n- العنوان: ${[info.area, info.governorate].filter(Boolean).join('-')}\n${info.address}\n- طريقة الدفع: ${{ wallet: 'فودافون كاش', instapay: 'إنستا باي' }[method]}\n- المبلغ: ${egpAr(r.total)}${info.note ? '\n- ملاحظة: ' + info.note : ''}\n\nتفاصيل الطلب:\n\n| الصنف | الكود | الكمية |\n|-------|--------|---------|`;
@@ -447,6 +457,12 @@ app.patch('/api/admin/orders/:id', auth, can('orders'), wrap((req, res) => {
       db.prepare('SELECT i.product_id,SUM(i.qty) q,p.name,p.stock FROM order_items i JOIN products p ON p.id=i.product_id WHERE i.order_id=? GROUP BY i.product_id').all(id).forEach(i => {
         if (i.stock === null) return; db.prepare('UPDATE products SET stock=stock+? WHERE id=?').run(i.q, i.product_id);
         audit(req.user.name, 'stock', { id: i.product_id, name: i.name }, `${i.stock} → ${i.stock + i.q} (إلغاء طلب #${id})`);
+      });
+    if (status === 'cancelled' && o.status !== 'cancelled')
+      db.prepare('SELECT id,color_id,color_dec FROM order_items WHERE order_id=? AND color_dec>0 AND color_id IS NOT NULL').all(id).forEach(i => {
+        const c = db.prepare('SELECT code,stock FROM colors WHERE id=?').get(i.color_id);
+        if (c && c.stock !== null) { db.prepare('UPDATE colors SET stock=stock+? WHERE id=?').run(i.color_dec, i.color_id); audit(req.user.name, 'stock', { id: 0, name: 'لون ' + c.code }, `${c.stock} → ${c.stock + i.color_dec} (إلغاء طلب #${id})`); }
+        db.prepare('UPDATE order_items SET color_dec=0 WHERE id=?').run(i.id);
       });
     if (status) db.prepare('UPDATE orders SET status=? WHERE id=?').run(status, id);
     if (ps) db.prepare('UPDATE orders SET payment_status=? WHERE id=?').run(ps, id);
